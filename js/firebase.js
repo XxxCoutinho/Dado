@@ -8,12 +8,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "COLE_SUA_API_KEY",
-  authDomain: "COLE_SEU_AUTH_DOMAIN",
-  projectId: "COLE_SEU_PROJECT_ID",
-  storageBucket: "COLE_SEU_STORAGE_BUCKET",
-  messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID",
-  appId: "COLE_SEU_APP_ID"
+  apiKey: "AIzaSyDnHSWDVyknhU0V4JwIOLiSlEX2U2T3Hu8",
+  authDomain: "dado-1d5f1.firebaseapp.com",
+  projectId: "dado-1d5f1",
+  storageBucket: "dado-1d5f1.firebasestorage.app",
+  messagingSenderId: "401639555884",
+  appId: "1:401639555884:web:955de92edaff9738832289",
+  measurementId: "G-2G84QZ4V21"
 };
 
 export const app = initializeApp(firebaseConfig);
