@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha de jogo | Vampiro: A Máscara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/fichas.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html">Campanhas</a>
+      </nav>
+
+      <div class="auth-box">
+        <span data-user-name>Visitante</span>
+        <button class="btn btn-small" data-login-btn>Entrar</button>
+        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="play-sheet">
+        <aside class="play-portrait panel">
+          <img id="characterPortrait" alt="Imagem do personagem" />
+          <h1 id="characterName">Carregando...</h1>
+          <p id="characterSubtitle"></p>
+
+          <div class="sheet-actions">
+            <a class="btn btn-secondary" id="editCharacterLink" href="#">Editar ficha</a>
+            <button class="btn" id="saveRuntimeBtn">Salvar alterações</button>
+          </div>
+        </aside>
+
+        <section class="play-main">
+          <div class="runtime-grid">
+            <article class="panel">
+              <h2>Fome</h2>
+              <div class="tracker-line" data-runtime-tracker="hunger" data-max="5"></div>
+            </article>
+
+            <article class="panel">
+              <h2>Humanidade</h2>
+              <div class="tracker-line" data-runtime-tracker="humanity" data-max="10"></div>
+            </article>
+
+            <article class="panel">
+              <h2>Vitalidade</h2>
+              <div class="tracker-line" data-runtime-tracker="healthCurrent" data-max-field="healthMax"></div>
+            </article>
+
+            <article class="panel">
+              <h2>Força de Vontade</h2>
+              <div class="tracker-line" data-runtime-tracker="willpowerCurrent" data-max-field="willpowerMax"></div>
+            </article>
+          </div>
+
+          <section class="panel">
+            <h2>Rolagem</h2>
+
+            <div class="roll-builder">
+              <label>
+                Atributo
+                <select id="rollAttribute"></select>
+              </label>
+
+              <label>
+                Perícia
+                <select id="rollSkill"></select>
+              </label>
+
+              <label>
+                Dificuldade
+                <input id="rollDifficulty" type="number" min="1" max="10" value="2" />
+              </label>
+
+              <button class="btn" id="rollSheetDice">Rolar</button>
+            </div>
+
+            <div id="rollResult" class="dice-result">Escolha atributo + perícia e role.</div>
+          </section>
+
+          <section class="sheet-columns">
+            <article class="panel">
+              <h2>Atributos</h2>
+              <div id="attributesView" class="compact-stats"></div>
+            </article>
+
+            <article class="panel">
+              <h2>Perícias</h2>
+              <div id="skillsView" class="compact-stats"></div>
+            </article>
+          </section>
+
+          <section class="sheet-columns">
+            <article class="panel">
+              <h2>Disciplinas</h2>
+              <div id="disciplinesView" class="tag-list"></div>
+            </article>
+
+            <article class="panel">
+              <h2>História e anotações</h2>
+              <div id="storyView" class="story-block"></div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/ficha_vampiro_jogo.js"></script>
+</body>
+</html>

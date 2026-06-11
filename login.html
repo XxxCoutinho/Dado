@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Vampiro: A Máscara</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html">Campanhas</a>
+      </nav>
+    </header>
+
+    <main class="center-page">
+      <section class="panel login-panel">
+        <p class="eyebrow">Acesso</p>
+        <h1>Entrar na conta</h1>
+        <p>Entre para salvar personagens, criar campanhas e acessar fichas compartilhadas.</p>
+
+        <button class="btn btn-wide" data-login-btn>Entrar com Google</button>
+        <button class="btn btn-wide btn-ghost hidden" data-logout-btn>Sair da conta</button>
+
+        <p class="small-text">
+          Usuário atual: <strong data-user-name>Visitante</strong>
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

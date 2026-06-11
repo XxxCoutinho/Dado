@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campanhas | Vampiro: A Máscara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/campanhas.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html" class="active">Campanhas</a>
+        <a href="login.html" data-auth-link>Login</a>
+      </nav>
+
+      <div class="auth-box">
+        <span data-user-name>Visitante</span>
+        <button class="btn btn-small" data-login-btn>Entrar</button>
+        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-title-row">
+        <div>
+          <p class="eyebrow">Crônicas</p>
+          <h1>Minhas campanhas</h1>
+        </div>
+
+        <button class="btn" id="openCampaignModal">Criar campanha</button>
+      </section>
+
+      <section class="join-panel panel">
+        <h2>Entrar em campanha</h2>
+        <p>Use o código de convite enviado pelo mestre.</p>
+
+        <div class="inline-form">
+          <input id="inviteCodeInput" type="text" placeholder="Código de convite" />
+          <button class="btn btn-secondary" id="joinCampaignBtn">Entrar</button>
+        </div>
+      </section>
+
+      <section id="campaignsList" class="card-grid">
+        <div class="empty-state">Faça login para carregar suas campanhas.</div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="campaignModal" class="modal">
+    <form id="campaignForm" method="dialog" class="modal-content">
+      <h2>Nova campanha</h2>
+
+      <label>
+        Nome da campanha
+        <input id="campaignName" type="text" required placeholder="Ex.: Sangue em São Paulo" />
+      </label>
+
+      <label>
+        Cidade / cenário
+        <input id="campaignCity" type="text" placeholder="Ex.: São Paulo, 2026" />
+      </label>
+
+      <label>
+        Descrição
+        <textarea id="campaignDescription" rows="4" placeholder="Resumo da crônica..."></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="closeCampaignModal">Cancelar</button>
+        <button type="submit" class="btn">Criar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/campanhas.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campanha | Vampiro: A Máscara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/campanhas.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html">Campanhas</a>
+      </nav>
+
+      <div class="auth-box">
+        <span data-user-name>Visitante</span>
+        <button class="btn btn-small" data-login-btn>Entrar</button>
+        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="campaign-banner panel">
+        <div>
+          <p class="eyebrow">Campanha</p>
+          <h1 id="campaignTitle">Carregando campanha...</h1>
+          <p id="campaignMeta"></p>
+          <p id="campaignDescription"></p>
+        </div>
+
+        <div class="campaign-actions">
+          <button class="btn btn-secondary" id="copyInviteBtn">Copiar convite</button>
+          <button class="btn" id="openAddCharacterModal">Adicionar personagem</button>
+          <a class="btn" id="panelLink" href="#">Painel da campanha</a>
+          <a class="btn btn-ghost" id="virtualTableLink" href="#">Mesa virtual</a>
+          <button class="btn btn-danger" id="leaveCampaignBtn">Sair da campanha</button>
+        </div>
+      </section>
+
+      <section class="tabs">
+        <button class="tab-btn active" data-tab-target="charactersTab">Personagens</button>
+        <button class="tab-btn" data-tab-target="playersTab">Jogadores</button>
+        <button class="tab-btn" data-tab-target="notesTab">Anotações</button>
+      </section>
+
+      <section id="charactersTab" class="tab-panel active">
+        <div id="campaignCharactersList" class="card-grid">
+          <div class="empty-state">Nenhum personagem adicionado.</div>
+        </div>
+      </section>
+
+      <section id="playersTab" class="tab-panel">
+        <div id="playersList" class="panel"></div>
+      </section>
+
+      <section id="notesTab" class="tab-panel">
+        <form id="quickNoteForm" class="panel note-form">
+          <label>
+            Nova anotação
+            <textarea id="quickNoteText" rows="4" placeholder="Digite uma anotação rápida da campanha..."></textarea>
+          </label>
+          <button class="btn" type="submit">Salvar anotação</button>
+        </form>
+
+        <div id="notesList" class="notes-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="addCharacterModal" class="modal">
+    <form id="addCharacterForm" method="dialog" class="modal-content">
+      <h2>Adicionar personagem</h2>
+      <p>Escolha um personagem que você criou.</p>
+
+      <label>
+        Personagem
+        <select id="myCharactersSelect" required>
+          <option value="">Carregando...</option>
+        </select>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="closeAddCharacterModal">Cancelar</button>
+        <button type="submit" class="btn">Adicionar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/campanha.js"></script>
+</body>
+</html>

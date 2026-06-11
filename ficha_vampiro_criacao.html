@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar ficha | Vampiro: A Máscara</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/fichas.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html">Campanhas</a>
+      </nav>
+
+      <div class="auth-box">
+        <span data-user-name>Visitante</span>
+        <button class="btn btn-small" data-login-btn>Entrar</button>
+        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-title-row">
+        <div>
+          <p class="eyebrow">Ficha guiada</p>
+          <h1 id="formTitle">Criar personagem</h1>
+        </div>
+
+        <button class="btn" id="saveCharacterTop">Salvar ficha</button>
+      </section>
+
+      <form id="vampireSheetForm" class="sheet-form">
+        <section class="sheet-layout">
+          <aside class="portrait-card panel">
+            <label class="portrait-uploader">
+              <input id="portraitInput" type="file" accept="image/*" />
+              <img id="portraitPreview" alt="Imagem do personagem" />
+              <span>Adicionar imagem</span>
+            </label>
+
+            <label>
+              URL da imagem
+              <input id="portraitUrl" name="portraitUrl" type="url" placeholder="https://..." />
+            </label>
+          </aside>
+
+          <div class="sheet-sections">
+            <section class="panel">
+              <h2>Identidade</h2>
+
+              <div class="form-grid">
+                <label>
+                  Nome
+                  <input name="name" required placeholder="Nome do personagem" />
+                </label>
+
+                <label>
+                  Jogador
+                  <input name="playerName" placeholder="Nome do jogador" />
+                </label>
+
+                <label>
+                  Crônica
+                  <input name="chronicle" placeholder="Nome da campanha/crônica" />
+                </label>
+
+                <label>
+                  Conceito
+                  <input name="concept" placeholder="Ex.: herdeira decadente" />
+                </label>
+
+                <label>
+                  Clã
+                  <input name="clan" list="clanList" placeholder="Escolha ou digite" />
+                  <datalist id="clanList">
+                    <option value="Brujah"></option>
+                    <option value="Gangrel"></option>
+                    <option value="Malkavian"></option>
+                    <option value="Nosferatu"></option>
+                    <option value="Toreador"></option>
+                    <option value="Tremere"></option>
+                    <option value="Ventrue"></option>
+                    <option value="Banu Haqim"></option>
+                    <option value="Lasombra"></option>
+                    <option value="Ministry"></option>
+                    <option value="Ravnos"></option>
+                    <option value="Tzimisce"></option>
+                    <option value="Hecata"></option>
+                    <option value="Caitiff"></option>
+                    <option value="Sangue-Fraco"></option>
+                  </datalist>
+                </label>
+
+                <label>
+                  Predador
+                  <input name="predatorType" list="predatorList" placeholder="Escolha ou digite" />
+                  <datalist id="predatorList">
+                    <option value="Alleycat"></option>
+                    <option value="Bagger"></option>
+                    <option value="Blood Leech"></option>
+                    <option value="Cleaver"></option>
+                    <option value="Consensualist"></option>
+                    <option value="Farmer"></option>
+                    <option value="Osiris"></option>
+                    <option value="Sandman"></option>
+                    <option value="Scene Queen"></option>
+                    <option value="Siren"></option>
+                  </datalist>
+                </label>
+
+                <label>
+                  Senhor(a)
+                  <input name="sire" placeholder="Quem criou o personagem" />
+                </label>
+
+                <label>
+                  Geração
+                  <input name="generation" placeholder="Ex.: 12ª" />
+                </label>
+
+                <label>
+                  Ambição
+                  <input name="ambition" placeholder="Objetivo de longo prazo" />
+                </label>
+
+                <label>
+                  Desejo
+                  <input name="desire" placeholder="Objetivo imediato" />
+                </label>
+              </div>
+            </section>
+
+            <section class="panel">
+              <h2>Atributos</h2>
+              <div class="dots-grid" data-dot-section="attributes"></div>
+            </section>
+
+            <section class="panel">
+              <h2>Perícias</h2>
+              <div class="dots-grid" data-dot-section="skills"></div>
+            </section>
+
+            <section class="panel">
+              <h2>Disciplinas</h2>
+
+              <div id="disciplinesList" class="dynamic-list"></div>
+
+              <button class="btn btn-secondary" type="button" id="addDisciplineBtn">
+                Adicionar disciplina
+              </button>
+            </section>
+
+            <section class="panel">
+              <h2>Estados</h2>
+
+              <div class="tracker-grid">
+                <label>
+                  Fome
+                  <input name="hunger" type="number" min="0" max="5" value="1" />
+                </label>
+
+                <label>
+                  Humanidade
+                  <input name="humanity" type="number" min="0" max="10" value="7" />
+                </label>
+
+                <label>
+                  Manchas
+                  <input name="stains" type="number" min="0" max="10" value="0" />
+                </label>
+
+                <label>
+                  Potência de Sangue
+                  <input name="bloodPotency" type="number" min="0" max="10" value="1" />
+                </label>
+
+                <label>
+                  Vitalidade máxima
+                  <input name="healthMax" type="number" min="1" max="20" value="3" />
+                </label>
+
+                <label>
+                  Vitalidade atual
+                  <input name="healthCurrent" type="number" min="0" max="20" value="3" />
+                </label>
+
+                <label>
+                  Força de Vontade máxima
+                  <input name="willpowerMax" type="number" min="1" max="20" value="3" />
+                </label>
+
+                <label>
+                  Força de Vontade atual
+                  <input name="willpowerCurrent" type="number" min="0" max="20" value="3" />
+                </label>
+              </div>
+            </section>
+
+            <section class="panel">
+              <h2>Valores e história</h2>
+
+              <div class="form-grid">
+                <label>
+                  Convicções
+                  <textarea name="convictions" rows="4"></textarea>
+                </label>
+
+                <label>
+                  Toques
+                  <textarea name="touchstones" rows="4"></textarea>
+                </label>
+
+                <label>
+                  Vantagens
+                  <textarea name="advantages" rows="4"></textarea>
+                </label>
+
+                <label>
+                  Defeitos
+                  <textarea name="flaws" rows="4"></textarea>
+                </label>
+
+                <label>
+                  Equipamentos
+                  <textarea name="equipment" rows="4"></textarea>
+                </label>
+
+                <label>
+                  Anotações
+                  <textarea name="notes" rows="4"></textarea>
+                </label>
+              </div>
+            </section>
+
+            <section class="save-bar panel">
+              <button class="btn btn-ghost" type="button" id="cancelBtn">Cancelar</button>
+              <button class="btn" type="submit">Salvar ficha</button>
+              <button class="btn btn-secondary" type="button" id="finishBtn">Finalizar e acessar ficha</button>
+            </section>
+          </div>
+        </section>
+      </form>
+    </main>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/ficha_vampiro_criacao.js"></script>
+</body>
+</html>

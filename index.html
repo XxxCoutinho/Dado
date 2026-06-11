@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vampiro: A Máscara | RPG Online</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="main-header">
+      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+
+      <nav class="main-nav">
+        <a href="personagens.html">Personagens</a>
+        <a href="campanhas.html">Campanhas</a>
+        <a href="login.html" data-auth-link>Login</a>
+      </nav>
+
+      <div class="auth-box">
+        <span data-user-name>Visitante</span>
+        <button class="btn btn-small" data-login-btn>Entrar</button>
+        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+      </div>
+    </header>
+
+    <main class="hero">
+      <section class="hero-card">
+        <p class="eyebrow">Sistema de fichas online</p>
+        <h1>Organize personagens, campanhas e sessões de Vampiro.</h1>
+        <p>
+          Crie fichas, vincule personagens às campanhas, acompanhe fome,
+          humanidade, força de vontade, vitalidade, disciplinas, anotações e rolagens.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="personagens.html">Meus personagens</a>
+          <a class="btn btn-secondary" href="campanhas.html">Minhas campanhas</a>
+        </div>
+      </section>
+
+      <section class="status-grid">
+        <article class="status-card">
+          <strong data-count-characters>0</strong>
+          <span>Personagens</span>
+        </article>
+
+        <article class="status-card">
+          <strong data-count-campaigns>0</strong>
+          <span>Campanhas</span>
+        </article>
+
+        <article class="status-card">
+          <strong>V5</strong>
+          <span>Modelo principal</span>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
