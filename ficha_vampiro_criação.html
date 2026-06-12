@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha Vampiro - Criação</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --fundo: #030306;
+      --card: rgba(9, 7, 18, 0.82);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --borda: rgba(255, 255, 255, 0.14);
+      --borda-forte: rgba(255, 255, 255, 0.26);
+      --texto: #f4f0ff;
+      --muted: rgba(244, 240, 255, 0.66);
+      --rosa: #ff0078;
+      --azul: #00c8ff;
+      --roxo: #8a2be2;
+      --verde: #00ff85;
+      --amarelo: #ffdd55;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 0, 120, 0.14), transparent 32%),
+        radial-gradient(circle at 86% 74%, rgba(0, 200, 255, 0.13), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(138, 43, 226, 0.16), transparent 44%),
+        linear-gradient(180deg, #05030b 0%, #000 100%);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -50%;
+      background: conic-gradient(from 0deg, transparent, rgba(255, 0, 120, 0.065), rgba(0, 200, 255, 0.065), rgba(138, 43, 226, 0.065), transparent);
+      animation: girarBrilho 18s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10) 0 1px, transparent 1px),
+        radial-gradient(circle at 35% 55%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+      background-size: 34px 34px, 58px 58px, 92px 92px;
+      opacity: 0.22;
+      mix-blend-mode: screen;
+      animation: ruido 1.6s steps(2) infinite;
+      z-index: 0;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 34px));
+      min-height: 82px;
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      background: rgba(8, 6, 18, 0.72);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 22px rgba(255, 0, 120, 0.14), 0 0 42px rgba(0, 200, 255, 0.09), inset 0 0 28px rgba(255,255,255,.035);
+      overflow: hidden;
+      animation: surgirTopo 0.9s ease forwards;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078);
+      background-size: 320% 320%;
+      animation: moverCores 6s linear infinite;
+      opacity: 0.45;
+      pointer-events: none;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    .logo-dado {
+      justify-self: start;
+      color: #f5e6ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      letter-spacing: 0.12em;
+      line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite;
+      white-space: nowrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-abas {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 7px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 18px;
+      background: rgba(0,0,0,.28);
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-abas a {
+      min-width: 138px;
+      text-align: center;
+      padding: 12px 18px;
+      border-radius: 13px;
+      color: rgba(244, 240, 255, 0.72);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 900;
+      transition: 0.25s ease;
+    }
+
+    .nav-abas a:hover,
+    .nav-abas a.ativo {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255,0,120,.64), rgba(0,200,255,.52), rgba(138,43,226,.64));
+      background-size: 220% 220%;
+      box-shadow: 0 0 16px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14);
+      animation: moverCores 5s linear infinite;
+    }
+
+    .usuario-area {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .usuario-nome {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #fff;
+      font-weight: 800;
+      text-align: right;
+      text-shadow: 0 0 8px rgba(255,0,120,.34), 0 0 14px rgba(0,200,255,.2);
+    }
+
+    .btn-sair {
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      color: rgba(244,240,255,.82);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: .22s ease;
+    }
+
+    .btn-sair:hover { color: #fff; background: rgba(255,255,255,.13); transform: translateY(-1px); }
+
+    .conteudo {
+      width: min(1180px, calc(100% - 34px));
+      margin: 42px auto 56px;
+      position: relative;
+      z-index: 1;
+      animation: surgirConteudo 1s ease forwards;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+
+    .painel {
+      border: 1px solid var(--borda);
+      border-radius: 26px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 0 22px rgba(255,0,120,.12), 0 0 42px rgba(0,200,255,.08), inset 0 0 28px rgba(255,255,255,.032);
+      overflow: hidden;
+    }
+
+    .painel-intro { padding: clamp(26px, 5vw, 42px); }
+
+    .titulo-pagina {
+      font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 5.4rem);
+      line-height: .95;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,0,120,.45), 0 0 24px rgba(0,200,255,.22), 0 0 42px rgba(138,43,226,.22);
+    }
+
+    .descricao {
+      max-width: 760px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .resumo-guia { padding: 26px; }
+    .resumo-guia h2, .bloco h2 {
+      color: #fff;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      margin-bottom: 14px;
+    }
+
+    .resumo-guia ol {
+      display: grid;
+      gap: 10px;
+      list-style-position: inside;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: .95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-principal, .btn-fantasma, .btn-pequeno {
+      min-height: 46px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,.22);
+      color: #fff;
+      padding: 0 18px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: .78rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .btn-principal {
+      background: linear-gradient(90deg, rgba(255,0,120,.72), rgba(0,200,255,.62), rgba(138,43,226,.72));
+      background-size: 220% 220%;
+      animation: moverCores 5s linear infinite;
+      box-shadow: 0 0 18px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14);
+    }
+
+    .btn-fantasma, .btn-pequeno {
+      background: rgba(255,255,255,.06);
+      color: rgba(244,240,255,.82);
+    }
+
+    .btn-pequeno { min-height: 36px; padding: 0 12px; font-size: .68rem; border-radius: 12px; }
+    .btn-principal:hover, .btn-fantasma:hover, .btn-pequeno:hover { transform: translateY(-2px); color: #fff; border-color: rgba(255,255,255,.38); }
+
+    .guia-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .sumario {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+    }
+
+    .sumario h2 {
+      color: #fff;
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      margin-bottom: 12px;
+    }
+
+    .sumario a {
+      display: block;
+      color: rgba(244,240,255,.72);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: .22s ease;
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+
+    .sumario a:hover { color: #fff; background: rgba(255,255,255,.07); }
+
+    .formulario { display: grid; gap: 18px; }
+
+    .bloco { padding: 22px; scroll-margin-top: 24px; }
+
+    .bloco-cabecalho {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.09);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    .bloco-numero {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 900;
+      background: linear-gradient(135deg, rgba(255,0,120,.72), rgba(0,200,255,.62), rgba(138,43,226,.72));
+      box-shadow: 0 0 18px rgba(255,0,120,.18), 0 0 22px rgba(0,200,255,.1);
+    }
+
+    .bloco-titulo-area { flex: 1; }
+    .bloco-titulo-area h2 { margin-bottom: 6px; }
+    .bloco-titulo-area p { color: var(--muted); line-height: 1.55; font-size: .94rem; }
+
+    .campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .campo { display: flex; flex-direction: column; gap: 7px; }
+    .campo.full { grid-column: 1 / -1; }
+
+    label {
+      color: rgba(244,240,255,.84);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 15px;
+      background: rgba(0,0,0,.25);
+      color: #fff;
+      padding: 13px 14px;
+      outline: none;
+      font: inherit;
+      transition: .22s ease;
+    }
+
+    textarea { min-height: 104px; resize: vertical; line-height: 1.55; }
+    select option { background: #090712; color: #fff; }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(0,200,255,.55);
+      box-shadow: 0 0 0 3px rgba(0,200,255,.1), 0 0 18px rgba(0,200,255,.12);
+    }
+
+    .dica {
+      color: rgba(244,240,255,.58);
+      font-size: .82rem;
+      line-height: 1.5;
+    }
+
+    .foto-area {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .foto-preview {
+      width: 170px;
+      aspect-ratio: 1 / 1;
+      border-radius: 24px;
+      border: 1px dashed rgba(255,255,255,.24);
+      background: rgba(0,0,0,.25);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: rgba(244,240,255,.54);
+      text-align: center;
+      padding: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .75rem;
+    }
+
+    .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    .grade-atributos, .grade-habilidades, .grade-jogo {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .mini-card h3 {
+      color: #fff;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+
+    .linha-curta { display: grid; grid-template-columns: 1fr 88px; gap: 8px; align-items: end; }
+    .linha-curta input { text-align: center; }
+
+    .aviso-salvo {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 60;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      border: 1px solid rgba(0,255,133,.28);
+      border-radius: 16px;
+      background: rgba(4, 18, 14, .88);
+      color: #dfffee;
+      padding: 14px 16px;
+      box-shadow: 0 0 24px rgba(0,255,133,.16);
+      transition: .25s ease;
+      font-weight: 800;
+    }
+
+    .aviso-salvo.mostrar { opacity: 1; transform: translateY(0); }
+
+    @keyframes brilhoAtrasColorido {
+      0% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+      25% { text-shadow: 0 0 8px #00c8ff, 0 0 18px #00c8ff, 0 0 34px #00c8ff, 0 0 58px #004cff; }
+      50% { text-shadow: 0 0 8px #00ff85, 0 0 18px #00ff85, 0 0 34px #00ff85, 0 0 58px #00c8ff; }
+      75% { text-shadow: 0 0 8px #ffe600, 0 0 18px #ffe600, 0 0 34px #ff9f1c, 0 0 58px #ff00ff; }
+      100% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+    }
+    @keyframes moverCores { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes girarBrilho { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes ruido { 0% { transform: translate(0,0); } 50% { transform: translate(-1px,1px); } 100% { transform: translate(1px,-1px); } }
+    @keyframes surgirTopo { from { opacity: 0; transform: translateY(-16px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    @keyframes surgirConteudo { from { opacity: 0; transform: translateY(20px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+    @media (max-width: 980px) {
+      .intro, .guia-grid { grid-template-columns: 1fr; }
+      .sumario { position: static; }
+      .grade-atributos, .grade-habilidades, .grade-jogo { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      .topbar { grid-template-columns: 1fr; justify-items: center; padding: 18px; }
+      .logo-dado, .usuario-area, .nav-abas { justify-self: center; }
+      .usuario-nome { max-width: 78vw; text-align: center; }
+    }
+
+    @media (max-width: 620px) {
+      .campos, .grade-atributos, .grade-habilidades, .grade-jogo, .foto-area { grid-template-columns: 1fr; }
+      .foto-preview { width: 100%; max-width: 260px; margin: 0 auto; }
+      .toolbar { flex-direction: column; }
+      .btn-principal, .btn-fantasma { width: 100%; }
+      .nav-abas { width: 100%; gap: 6px; }
+      .nav-abas a { min-width: 0; flex: 1; padding: 11px 10px; font-size: .68rem; }
+    }
+
+    /* =========================================================
+       Ajuste responsivo global - celular e computador
+       ========================================================= */
+    html {
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    img, svg, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    input, textarea, select, button {
+      max-width: 100%;
+    }
+
+    button, a, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    @media (max-width: 900px) {
+      .topbar {
+        width: min(100% - 24px, 1180px);
+        min-height: 0;
+        margin-top: 12px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        padding: 16px 14px;
+        border-radius: 20px;
+      }
+
+      .logo-dado,
+      .nav-abas,
+      .usuario-area {
+        justify-self: center;
+      }
+
+      .nav-abas {
+        width: 100%;
+      }
+
+      .nav-abas a {
+        min-width: 0;
+        flex: 1 1 0;
+        padding: 11px 8px;
+        font-size: .68rem;
+        letter-spacing: .07em;
+      }
+
+      .usuario-area {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .usuario-nome {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .conteudo {
+        width: min(100% - 24px, 1180px);
+        margin-top: 24px;
+        margin-bottom: 36px;
+      }
+
+      .intro,
+      .guia-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sumario {
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .conteudo {
+        width: min(100% - 20px, 1180px);
+      }
+
+      .painel,
+      .bloco {
+        border-radius: 22px;
+      }
+
+      .painel-intro,
+      .resumo-guia,
+      .bloco,
+      .sumario {
+        padding: 18px;
+      }
+
+      .titulo-pagina {
+        font-size: clamp(2.2rem, 15vw, 3.8rem);
+      }
+
+      .toolbar,
+      .bloco-cabecalho {
+        flex-direction: column;
+      }
+
+      .btn-principal,
+      .btn-fantasma,
+      .btn-pequeno {
+        width: 100%;
+      }
+
+      .campos,
+      .grade-atributos,
+      .grade-habilidades,
+      .grade-jogo,
+      .foto-area {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-preview {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+      }
+
+      .linha-curta {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a href="personagens.html" class="logo-dado">Dado</a>
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html" class="ativo">Personagens</a>
+      <a href="campanhas.html">Campanhas</a>
+    </nav>
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+    <section class="intro">
+      <div class="painel painel-intro">
+        <h1 class="titulo-pagina">Criação de Vampiro</h1>
+        <p class="descricao">
+          Use este guia para montar a ficha do personagem. Os campos abaixo são livres: você pode seguir o passo a passo ou escrever textos personalizados para adaptar o personagem à sua mesa.
+        </p>
+        <div class="toolbar">
+          <button type="button" id="btnSalvarTopo" class="btn-fantasma">Salvar rascunho</button>
+          <button type="button" id="btnFinalizarTopo" class="btn-principal">Finalizar ficha</button>
+          <a href="personagens.html" class="btn-fantasma">Voltar</a>
+        </div>
+      </div>
+
+      <aside class="painel resumo-guia">
+        <h2>Resumo do guia</h2>
+        <ol>
+          <li>Defina conceito, nome e imagem.</li>
+          <li>Escolha clã, predador e identidade social.</li>
+          <li>Preencha atributos e habilidades.</li>
+          <li>Adicione disciplinas, vantagens e defeitos.</li>
+          <li>Finalize para abrir a ficha jogável.</li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="guia-grid">
+      <aside class="painel sumario">
+        <h2>Etapas</h2>
+        <a href="#identidade">1. Identidade</a>
+        <a href="#maldicao">2. Clã e maldição</a>
+        <a href="#cronica">3. Crônica e vínculos</a>
+        <a href="#atributos">4. Atributos</a>
+        <a href="#habilidades">5. Habilidades</a>
+        <a href="#disciplinas">6. Disciplinas</a>
+        <a href="#vantagens">7. Vantagens e defeitos</a>
+        <a href="#jogo">8. Valores de jogo</a>
+        <a href="#notas">9. Notas finais</a>
+      </aside>
+
+      <form id="formFicha" class="formulario">
+        <section id="identidade" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">1</div>
+            <div class="bloco-titulo-area">
+              <h2>Identidade do personagem</h2>
+              <p>Comece pela ideia central: quem era essa pessoa antes do Abraço e quem ela tenta ser agora.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo full foto-area">
+              <div id="fotoPreview" class="foto-preview">Imagem do personagem</div>
+              <div class="campo">
+                <label for="imagemPersonagem">Foto do personagem</label>
+                <input id="imagemPersonagem" type="file" accept="image/*" />
+                <p class="dica">A imagem será salva no navegador junto com a ficha atual.</p>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="nomePersonagem">Nome</label>
+              <input id="nomePersonagem" data-campo="nome" type="text" placeholder="Ex.: Mirela Fontes" />
+            </div>
+
+            <div class="campo">
+              <label for="jogador">Jogador</label>
+              <input id="jogador" data-campo="jogador" type="text" placeholder="Nome de quem joga" />
+            </div>
+
+            <div class="campo">
+              <label for="conceito">Conceito</label>
+              <input id="conceito" data-campo="conceito" type="text" placeholder="Ex.: herdeira arruinada, investigador noturno" />
+            </div>
+
+            <div class="campo">
+              <label for="aparencia">Aparência</label>
+              <input id="aparencia" data-campo="aparencia" type="text" placeholder="Descrição curta do visual" />
+            </div>
+
+            <div class="campo full">
+              <label for="historia">História breve</label>
+              <textarea id="historia" data-campo="historia" placeholder="Escreva um resumo da vida mortal, do Abraço e do conflito atual do personagem."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="maldicao" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">2</div>
+            <div class="bloco-titulo-area">
+              <h2>Clã, predador e natureza vampírica</h2>
+              <p>Você pode escolher uma opção do menu ou escrever livremente no campo personalizado.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo">
+              <label for="claSelect">Clã</label>
+              <select id="claSelect" data-campo="claSelect">
+                <option value="">Selecione ou personalize</option>
+                <option>Brujah</option>
+                <option>Gangrel</option>
+                <option>Malkavian</option>
+                <option>Nosferatu</option>
+                <option>Toreador</option>
+                <option>Tremere</option>
+                <option>Ventrue</option>
+                <option>Caitiff</option>
+                <option>Sangue-Fraco</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="claPersonalizado">Clã personalizado</label>
+              <input id="claPersonalizado" data-campo="claPersonalizado" type="text" placeholder="Escreva outro clã ou variação" />
+            </div>
+
+            <div class="campo">
+              <label for="predadorSelect">Tipo de predador</label>
+              <select id="predadorSelect" data-campo="predadorSelect">
+                <option value="">Selecione ou personalize</option>
+                <option>Alleycat</option>
+                <option>Bagger</option>
+                <option>Blood Leech</option>
+                <option>Cleaver</option>
+                <option>Consensualist</option>
+                <option>Farmer</option>
+                <option>Osiris</option>
+                <option>Sandman</option>
+                <option>Scene Queen</option>
+                <option>Siren</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="predadorPersonalizado">Predador personalizado</label>
+              <input id="predadorPersonalizado" data-campo="predadorPersonalizado" type="text" placeholder="Escreva outro estilo de caça" />
+            </div>
+
+            <div class="campo">
+              <label for="geracao">Geração</label>
+              <input id="geracao" data-campo="geracao" type="text" placeholder="Ex.: 13ª" />
+            </div>
+
+            <div class="campo">
+              <label for="potenciaSangue">Potência do sangue</label>
+              <input id="potenciaSangue" data-campo="potenciaSangue" type="text" placeholder="Ex.: 1" />
+            </div>
+
+            <div class="campo full">
+              <label for="maldicaoCla">Maldição / fraqueza / compulsão</label>
+              <textarea id="maldicaoCla" data-campo="maldicaoCla" placeholder="Descreva a maldição do clã, a compulsão e qualquer regra personalizada da mesa."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="cronica" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">3</div>
+            <div class="bloco-titulo-area">
+              <h2>Crônica, ambição e vínculos</h2>
+              <p>Use esta etapa para conectar o personagem ao cenário, aos outros personagens e aos seus desejos.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo">
+              <label for="cronicaNome">Crônica</label>
+              <input id="cronicaNome" data-campo="cronicaNome" type="text" placeholder="Nome da campanha" />
+            </div>
+            <div class="campo">
+              <label for="sire">Sire / criador</label>
+              <input id="sire" data-campo="sire" type="text" placeholder="Quem transformou o personagem" />
+            </div>
+            <div class="campo">
+              <label for="ambicao">Ambição</label>
+              <input id="ambicao" data-campo="ambicao" type="text" placeholder="Objetivo de longo prazo" />
+            </div>
+            <div class="campo">
+              <label for="desejo">Desejo</label>
+              <input id="desejo" data-campo="desejo" type="text" placeholder="Objetivo imediato" />
+            </div>
+            <div class="campo full">
+              <label for="conviccoes">Convicções</label>
+              <textarea id="conviccoes" data-campo="conviccoes" placeholder="Princípios pessoais que ainda prendem o vampiro à humanidade."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="touchstones">Touchstones / laços humanos</label>
+              <textarea id="touchstones" data-campo="touchstones" placeholder="Pessoas, lugares ou memórias que representam as convicções do personagem."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="atributos" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">4</div>
+            <div class="bloco-titulo-area">
+              <h2>Atributos</h2>
+              <p>Preencha valores, bolinhas, números ou texto. O modelo não trava as escolhas para você adaptar à sua versão da ficha.</p>
+            </div>
+          </div>
+
+          <div class="grade-atributos" data-grupo="atributos">
+            <div class="mini-card"><h3>Força</h3><input data-campo="atributo_forca" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Destreza</h3><input data-campo="atributo_destreza" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Vigor</h3><input data-campo="atributo_vigor" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Carisma</h3><input data-campo="atributo_carisma" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Manipulação</h3><input data-campo="atributo_manipulacao" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Autocontrole</h3><input data-campo="atributo_autocontrole" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Inteligência</h3><input data-campo="atributo_inteligencia" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Raciocínio</h3><input data-campo="atributo_raciocinio" type="text" placeholder="Valor" /></div>
+            <div class="mini-card"><h3>Determinação</h3><input data-campo="atributo_determinacao" type="text" placeholder="Valor" /></div>
+          </div>
+        </section>
+
+        <section id="habilidades" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">5</div>
+            <div class="bloco-titulo-area">
+              <h2>Habilidades</h2>
+              <p>Liste as habilidades importantes do personagem. Você pode usar nomes oficiais ou campos personalizados.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo full">
+              <label for="habilidadesFisicas">Físicas</label>
+              <textarea id="habilidadesFisicas" data-campo="habilidadesFisicas" placeholder="Ex.: Atletismo 2, Briga 1, Furtividade 3..."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="habilidadesSociais">Sociais</label>
+              <textarea id="habilidadesSociais" data-campo="habilidadesSociais" placeholder="Ex.: Persuasão 3, Intimidação 2, Etiqueta 1..."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="habilidadesMentais">Mentais</label>
+              <textarea id="habilidadesMentais" data-campo="habilidadesMentais" placeholder="Ex.: Investigação 2, Ocultismo 1, Tecnologia 2..."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="especializacoes">Especializações</label>
+              <textarea id="especializacoes" data-campo="especializacoes" placeholder="Adicione especializações, focos ou observações."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="disciplinas" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">6</div>
+            <div class="bloco-titulo-area">
+              <h2>Disciplinas e poderes</h2>
+              <p>Escreva as disciplinas, poderes, custos, testes e descrições do jeito que a sua mesa preferir.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo full">
+              <label for="disciplinasTexto">Disciplinas</label>
+              <textarea id="disciplinasTexto" data-campo="disciplinasTexto" placeholder="Ex.: Auspícios 2 — Sentidos Aguçados; Rapidez 1 — Reflexos Rápidos..."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="rituaisAlquimia">Rituais / alquimia / poderes especiais</label>
+              <textarea id="rituaisAlquimia" data-campo="rituaisAlquimia" placeholder="Campo livre para poderes fora do padrão, rituais, alquimia ou regras caseiras."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="vantagens" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">7</div>
+            <div class="bloco-titulo-area">
+              <h2>Vantagens, defeitos e recursos</h2>
+              <p>Registre contatos, influência, refúgio, aliados, inimigos, recursos e problemas.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo full">
+              <label for="vantagensTexto">Vantagens</label>
+              <textarea id="vantagensTexto" data-campo="vantagensTexto" placeholder="Liste vantagens e descrições."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="defeitosTexto">Defeitos</label>
+              <textarea id="defeitosTexto" data-campo="defeitosTexto" placeholder="Liste defeitos, inimigos, dívidas ou complicações."></textarea>
+            </div>
+            <div class="campo full">
+              <label for="equipamentosTexto">Equipamentos e recursos</label>
+              <textarea id="equipamentosTexto" data-campo="equipamentosTexto" placeholder="Itens, armas, documentos, dinheiro, refúgio, veículos etc."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="jogo" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">8</div>
+            <div class="bloco-titulo-area">
+              <h2>Valores de jogo</h2>
+              <p>Preencha os marcadores principais. Todos são campos de texto para permitir personalização.</p>
+            </div>
+          </div>
+
+          <div class="grade-jogo">
+            <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" type="text" placeholder="Ex.: 7" /></div>
+            <div class="mini-card"><h3>Fome</h3><input data-campo="fome" type="text" placeholder="Ex.: 1" /></div>
+            <div class="mini-card"><h3>Saúde</h3><input data-campo="saude" type="text" placeholder="Ex.: 0/5" /></div>
+            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="vontade" type="text" placeholder="Ex.: 0/6" /></div>
+            <div class="mini-card"><h3>Experiência</h3><input data-campo="experiencia" type="text" placeholder="Ex.: 0" /></div>
+            <div class="mini-card"><h3>Manchas</h3><input data-campo="manchas" type="text" placeholder="Ex.: 0" /></div>
+          </div>
+        </section>
+
+        <section id="notas" class="painel bloco">
+          <div class="bloco-cabecalho">
+            <div class="bloco-numero">9</div>
+            <div class="bloco-titulo-area">
+              <h2>Notas finais</h2>
+              <p>Antes de finalizar, registre qualquer regra da mesa, lembrete ou informação narrativa.</p>
+            </div>
+          </div>
+
+          <div class="campos">
+            <div class="campo full">
+              <label for="anotacoesGerais">Anotações gerais</label>
+              <textarea id="anotacoesGerais" data-campo="anotacoesGerais" placeholder="Notas da criação, pendências, ideias de interpretação, segredos etc."></textarea>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" id="btnSalvarFinal" class="btn-fantasma">Salvar rascunho</button>
+            <button type="button" id="btnFinalizarFinal" class="btn-principal">Finalizar e abrir ficha jogável</button>
+          </div>
+        </section>
+      </form>
+    </section>
+  </main>
+
+  <div id="avisoSalvo" class="aviso-salvo">Ficha salva.</div>
+
+  <script>
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const formFicha = document.getElementById('formFicha');
+    const avisoSalvo = document.getElementById('avisoSalvo');
+    const imagemPersonagem = document.getElementById('imagemPersonagem');
+    const fotoPreview = document.getElementById('fotoPreview');
+    const botoesSalvar = [document.getElementById('btnSalvarTopo'), document.getElementById('btnSalvarFinal')];
+    const botoesFinalizar = [document.getElementById('btnFinalizarTopo'), document.getElementById('btnFinalizarFinal')];
+    let imagemBase64 = '';
+
+    function carregarUsuario() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (!usuarioSalvo) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+        if (!usuario || usuario.logado !== true || !usuario.nome) {
+          localStorage.removeItem('usuarioLogado');
+          usuarioNome.textContent = 'Visitante';
+          btnSair.textContent = 'Login';
+          return;
+        }
+        usuarioNome.textContent = usuario.nome;
+        btnSair.textContent = 'Sair';
+        const jogador = document.getElementById('jogador');
+        if (jogador && !jogador.value) jogador.value = usuario.nome;
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+      }
+    }
+
+    function mostrarAviso(texto) {
+      avisoSalvo.textContent = texto;
+      avisoSalvo.classList.add('mostrar');
+      setTimeout(() => avisoSalvo.classList.remove('mostrar'), 2200);
+    }
+
+    function coletarFicha() {
+      const campos = {};
+      document.querySelectorAll('[data-campo]').forEach((campo) => {
+        campos[campo.dataset.campo] = campo.value || '';
+      });
+      const claFinal = campos.claPersonalizado || campos.claSelect || '';
+      const predadorFinal = campos.predadorPersonalizado || campos.predadorSelect || '';
+      return {
+        id: localStorage.getItem('personagemVampiroIdAtual') || crypto.randomUUID(),
+        modelo: 'Vampiro: A Máscara',
+        criadoEm: new Date().toISOString(),
+        atualizadoEm: new Date().toISOString(),
+        imagem: imagemBase64,
+        campos,
+        resumo: {
+          nome: campos.nome || 'Personagem sem nome',
+          jogador: campos.jogador || '',
+          cla: claFinal,
+          predador: predadorFinal,
+          conceito: campos.conceito || ''
+        }
+      };
+    }
+
+    function salvarFicha(silencioso = false) {
+      const ficha = coletarFicha();
+      localStorage.setItem('personagemVampiroIdAtual', ficha.id);
+      localStorage.setItem('personagemVampiroAtual', JSON.stringify(ficha));
+      salvarNaLista(ficha);
+      if (!silencioso) mostrarAviso('Rascunho salvo.');
+      return ficha;
+    }
+
+    function salvarNaLista(ficha) {
+      const lista = JSON.parse(localStorage.getItem('personagensVampiro') || '[]');
+      const indice = lista.findIndex((item) => item.id === ficha.id);
+      if (indice >= 0) lista[indice] = ficha;
+      else lista.push(ficha);
+      localStorage.setItem('personagensVampiro', JSON.stringify(lista));
+    }
+
+    function restaurarRascunho() {
+      const salvo = localStorage.getItem('personagemVampiroAtual');
+      if (!salvo) return;
+      try {
+        const ficha = JSON.parse(salvo);
+        if (ficha && ficha.campos) {
+          Object.entries(ficha.campos).forEach(([chave, valor]) => {
+            const campo = document.querySelector(`[data-campo="${chave}"]`);
+            if (campo) campo.value = valor;
+          });
+        }
+        if (ficha && ficha.imagem) {
+          imagemBase64 = ficha.imagem;
+          fotoPreview.innerHTML = `<img src="${imagemBase64}" alt="Imagem do personagem" />`;
+        }
+        if (ficha && ficha.id) localStorage.setItem('personagemVampiroIdAtual', ficha.id);
+      } catch (erro) {
+        console.warn('Não foi possível restaurar a ficha:', erro);
+      }
+    }
+
+    imagemPersonagem.addEventListener('change', () => {
+      const arquivo = imagemPersonagem.files && imagemPersonagem.files[0];
+      if (!arquivo) return;
+      const leitor = new FileReader();
+      leitor.onload = () => {
+        imagemBase64 = leitor.result;
+        fotoPreview.innerHTML = `<img src="${imagemBase64}" alt="Imagem do personagem" />`;
+        salvarFicha(true);
+        mostrarAviso('Imagem adicionada.');
+      };
+      leitor.readAsDataURL(arquivo);
+    });
+
+    formFicha.addEventListener('input', () => salvarFicha(true));
+
+    botoesSalvar.forEach((botao) => botao.addEventListener('click', () => salvarFicha(false)));
+    botoesFinalizar.forEach((botao) => {
+      botao.addEventListener('click', () => {
+        salvarFicha(true);
+        window.location.href = 'ficha_vampiro_jogo.html';
+      });
+    });
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      window.location.href = 'login.html';
+    });
+
+    carregarUsuario();
+    restaurarRascunho();
+  </script>
+</body>
+</html>

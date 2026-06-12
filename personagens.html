@@ -3,45 +3,972 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personagens | Vampiro: A Máscara</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/fichas.css" />
+  <title>Personagens</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --fundo: #030306;
+      --card: rgba(9, 7, 18, 0.78);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --borda: rgba(255, 255, 255, 0.14);
+      --texto: #f4f0ff;
+      --muted: rgba(244, 240, 255, 0.66);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 0, 120, 0.14), transparent 32%),
+        radial-gradient(circle at 86% 74%, rgba(0, 200, 255, 0.13), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(138, 43, 226, 0.16), transparent 44%),
+        linear-gradient(180deg, #05030b 0%, #000 100%);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -50%;
+      background:
+        conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(255, 0, 120, 0.065),
+          rgba(0, 200, 255, 0.065),
+          rgba(138, 43, 226, 0.065),
+          transparent
+        );
+      animation: girarBrilho 18s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10) 0 1px, transparent 1px),
+        radial-gradient(circle at 35% 55%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+      background-size: 34px 34px, 58px 58px, 92px 92px;
+      opacity: 0.22;
+      mix-blend-mode: screen;
+      animation: ruido 1.6s steps(2) infinite;
+      z-index: 0;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 34px));
+      min-height: 82px;
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      background: rgba(8, 6, 18, 0.72);
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 0 22px rgba(255, 0, 120, 0.14),
+        0 0 42px rgba(0, 200, 255, 0.09),
+        inset 0 0 28px rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+      animation: surgirTopo 0.9s ease forwards;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078);
+      background-size: 320% 320%;
+      animation: moverCores 6s linear infinite;
+      opacity: 0.45;
+      pointer-events: none;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    .logo-dado {
+      justify-self: start;
+      color: #f5e6ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      letter-spacing: 0.12em;
+      line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .nav-abas {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .nav-abas a {
+      min-width: 138px;
+      text-align: center;
+      padding: 12px 18px;
+      border-radius: 13px;
+      color: rgba(244, 240, 255, 0.72);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 900;
+      transition: 0.25s ease;
+    }
+
+    .nav-abas a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 18px rgba(0, 200, 255, 0.13);
+    }
+
+    .nav-abas a.ativo {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.64), rgba(0, 200, 255, 0.52), rgba(138, 43, 226, 0.64));
+      background-size: 220% 220%;
+      box-shadow:
+        0 0 16px rgba(255, 0, 120, 0.22),
+        0 0 26px rgba(0, 200, 255, 0.14);
+      animation: moverCores 5s linear infinite;
+    }
+
+    .usuario-area {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .usuario-nome {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #fff;
+      font-weight: 800;
+      text-align: right;
+      text-shadow:
+        0 0 8px rgba(255, 0, 120, 0.34),
+        0 0 14px rgba(0, 200, 255, 0.2);
+    }
+
+    .btn-sair {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(244, 240, 255, 0.82);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: 0.22s ease;
+    }
+
+    .btn-sair:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+
+    .conteudo {
+      width: min(1180px, calc(100% - 34px));
+      margin: 46px auto 0;
+      position: relative;
+      z-index: 1;
+      animation: surgirConteudo 1s ease forwards;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .painel-principal,
+    .painel-lateral {
+      border: 1px solid var(--borda);
+      border-radius: 26px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow:
+        0 0 22px rgba(255, 0, 120, 0.12),
+        0 0 42px rgba(0, 200, 255, 0.08),
+        inset 0 0 28px rgba(255, 255, 255, 0.032);
+    }
+
+    .painel-principal {
+      padding: clamp(26px, 5vw, 42px);
+      min-height: 360px;
+    }
+
+    .painel-lateral {
+      padding: 26px;
+    }
+
+    .titulo-pagina {
+      font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-shadow:
+        0 0 10px rgba(255, 0, 120, 0.45),
+        0 0 24px rgba(0, 200, 255, 0.22),
+        0 0 42px rgba(138, 43, 226, 0.22);
+    }
+
+    .descricao {
+      max-width: 720px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .acoes-personagens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .btn-primario,
+    .btn-secundario {
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.82rem;
+      font-weight: 900;
+      font-family: Arial, Helvetica, sans-serif;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .btn-primario {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.72), rgba(0, 200, 255, 0.62), rgba(138, 43, 226, 0.72));
+      background-size: 220% 220%;
+      animation: moverCores 5s linear infinite;
+      box-shadow:
+        0 0 18px rgba(255, 0, 120, 0.22),
+        0 0 26px rgba(0, 200, 255, 0.14);
+    }
+
+    .btn-secundario {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(244, 240, 255, 0.82);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .btn-primario:hover,
+    .btn-secundario:hover {
+      transform: translateY(-2px);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.38);
+    }
+
+    .card-vazio {
+      height: 100%;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 24px;
+    }
+
+    .card-vazio h2 {
+      color: #fff;
+      font-size: 1.18rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .card-vazio p {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+
+    .modal-personagem {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-personagem.mostrar {
+      display: flex;
+      animation: aparecerModalFundo 0.22s ease forwards;
+    }
+
+    .modal-caixa {
+      width: min(520px, 94vw);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255, 0, 120, 0.20), transparent 36%),
+        radial-gradient(circle at 88% 96%, rgba(0, 200, 255, 0.18), transparent 40%),
+        rgba(8, 6, 18, 0.94);
+      box-shadow:
+        0 0 26px rgba(255, 0, 120, 0.18),
+        0 0 54px rgba(0, 200, 255, 0.12),
+        inset 0 0 28px rgba(255, 255, 255, 0.04);
+      padding: clamp(24px, 5vw, 34px);
+      position: relative;
+      animation: surgirModal 0.32s ease forwards;
+      overflow: hidden;
+    }
+
+    .modal-caixa::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078);
+      background-size: 320% 320%;
+      animation: moverCores 6s linear infinite;
+      opacity: 0.48;
+      pointer-events: none;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    .modal-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .modal-titulo {
+      color: #fff;
+      font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-shadow:
+        0 0 10px rgba(255, 0, 120, 0.42),
+        0 0 20px rgba(0, 200, 255, 0.22);
+    }
+
+    .modal-fechar {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.82);
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+      transition: 0.22s ease;
+    }
+
+    .modal-fechar:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+
+    .modal-texto {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.98rem;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campo-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campo-modal label {
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .campo-modal select {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.36);
+      color: #fff;
+      padding: 0 16px;
+      font-size: 1rem;
+      outline: none;
+      cursor: pointer;
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.035);
+    }
+
+    .campo-modal select:focus {
+      border-color: rgba(0, 200, 255, 0.72);
+      box-shadow:
+        0 0 16px rgba(0, 200, 255, 0.18),
+        inset 0 0 16px rgba(255, 255, 255, 0.04);
+    }
+
+    .modal-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-modal-cancelar,
+    .btn-modal-continuar {
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      font-size: 0.74rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.24s ease;
+    }
+
+    .btn-modal-cancelar {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(244, 240, 255, 0.82);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .btn-modal-continuar {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.72), rgba(0, 200, 255, 0.62), rgba(138, 43, 226, 0.72));
+      background-size: 220% 220%;
+      animation: moverCores 5s linear infinite;
+      box-shadow:
+        0 0 18px rgba(255, 0, 120, 0.18),
+        0 0 26px rgba(0, 200, 255, 0.11);
+    }
+
+    .btn-modal-cancelar:hover,
+    .btn-modal-continuar:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.42);
+    }
+
+    @keyframes brilhoAtrasColorido {
+      0% {
+        text-shadow:
+          0 0 8px #ff004c,
+          0 0 18px #ff004c,
+          0 0 34px #ff004c,
+          0 0 58px #8a2be2;
+      }
+
+      25% {
+        text-shadow:
+          0 0 8px #00c8ff,
+          0 0 18px #00c8ff,
+          0 0 34px #00c8ff,
+          0 0 58px #004cff;
+      }
+
+      50% {
+        text-shadow:
+          0 0 8px #00ff85,
+          0 0 18px #00ff85,
+          0 0 34px #00ff85,
+          0 0 58px #00c8ff;
+      }
+
+      75% {
+        text-shadow:
+          0 0 8px #ffe600,
+          0 0 18px #ffe600,
+          0 0 34px #ff9f1c,
+          0 0 58px #ff00ff;
+      }
+
+      100% {
+        text-shadow:
+          0 0 8px #ff004c,
+          0 0 18px #ff004c,
+          0 0 34px #ff004c,
+          0 0 58px #8a2be2;
+      }
+    }
+
+    @keyframes moverCores {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes girarBrilho {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes ruido {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1px, 1px); }
+      100% { transform: translate(1px, -1px); }
+    }
+
+    @keyframes surgirTopo {
+      from { opacity: 0; transform: translateY(-16px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes surgirConteudo {
+      from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+
+    @keyframes aparecerModalFundo {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes surgirModal {
+      from { opacity: 0; transform: translateY(18px) scale(0.96); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @media (max-width: 860px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 18px;
+      }
+
+      .logo-dado,
+      .usuario-area,
+      .nav-abas {
+        justify-self: center;
+      }
+
+      .usuario-nome {
+        max-width: 78vw;
+        text-align: center;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-abas {
+        width: 100%;
+        gap: 6px;
+      }
+
+      .nav-abas a {
+        min-width: 0;
+        flex: 1;
+        padding: 11px 10px;
+        font-size: 0.68rem;
+      }
+
+      .acoes-personagens {
+        flex-direction: column;
+      }
+
+      .btn-primario,
+      .btn-secundario {
+        width: 100%;
+      }
+
+      .modal-acoes {
+        flex-direction: column-reverse;
+      }
+
+      .btn-modal-cancelar,
+      .btn-modal-continuar {
+        width: 100%;
+      }
+    }
+
+    /* =========================================================
+       Ajuste responsivo global - celular e computador
+       ========================================================= */
+    html {
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    img, svg, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    input, textarea, select, button {
+      max-width: 100%;
+    }
+
+    button, a, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    @media (max-width: 900px) {
+      .topbar {
+        width: min(100% - 24px, 1180px);
+        min-height: 0;
+        margin-top: 12px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        padding: 16px 14px;
+        border-radius: 20px;
+      }
+
+      .logo-dado,
+      .nav-abas,
+      .usuario-area {
+        justify-self: center;
+      }
+
+      .nav-abas {
+        width: 100%;
+      }
+
+      .nav-abas a {
+        min-width: 0;
+        flex: 1 1 0;
+        padding: 11px 8px;
+        font-size: .68rem;
+        letter-spacing: .07em;
+      }
+
+      .usuario-area {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .usuario-nome {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .conteudo {
+        width: min(100% - 24px, 1180px);
+        margin-top: 24px;
+        margin-bottom: 34px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .painel-principal,
+      .painel-lateral {
+        border-radius: 22px;
+      }
+
+      .painel-principal,
+      .painel-lateral,
+      .card-vazio {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .conteudo {
+        width: min(100% - 20px, 1180px);
+        margin-top: 18px;
+      }
+
+      .titulo-pagina {
+        font-size: clamp(2.3rem, 16vw, 3.8rem);
+        word-break: keep-all;
+      }
+
+      .descricao {
+        font-size: .94rem;
+        line-height: 1.6;
+      }
+
+      .acoes-personagens,
+      .acoes-campanhas {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-primario,
+      .btn-secundario {
+        width: 100%;
+        min-height: 46px;
+        padding: 0 14px;
+        font-size: .72rem;
+        letter-spacing: .08em;
+      }
+
+      .modal-personagem {
+        padding: 14px;
+        align-items: flex-start;
+        overflow: auto;
+      }
+
+      .modal-caixa {
+        width: 100%;
+        max-height: calc(100dvh - 28px);
+        overflow: auto;
+        border-radius: 22px;
+      }
+    }
+
+  </style>
 </head>
+
 <body>
-  <div class="page-shell">
-    <header class="main-header">
-      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+  <header class="topbar">
+    <a href="personagens.html" class="logo-dado">Dado</a>
 
-      <nav class="main-nav">
-        <a href="personagens.html" class="active">Personagens</a>
-        <a href="campanhas.html">Campanhas</a>
-        <a href="login.html" data-auth-link>Login</a>
-      </nav>
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html" class="ativo">Personagens</a>
+      <a href="campanhas.html">Campanhas</a>
+    </nav>
 
-      <div class="auth-box">
-        <span data-user-name>Visitante</span>
-        <button class="btn btn-small" data-login-btn>Entrar</button>
-        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+    <section class="hero">
+      <div class="painel-principal">
+        <h1 class="titulo-pagina">Personagens</h1>
+        <p class="descricao">
+          Esta é a página inicial após o login. Aqui você poderá listar, criar e acessar os personagens do jogador logado.
+        </p>
+
+        <div class="acoes-personagens">
+          <button type="button" id="btnCriarPersonagem" class="btn-primario">Criar personagem</button>
+          <a href="campanhas.html" class="btn-secundario">Ver campanhas</a>
+        </div>
       </div>
-    </header>
 
-    <main>
-      <section class="page-title-row">
-        <div>
-          <p class="eyebrow">Personagens</p>
-          <h1>Meus personagens</h1>
+      <aside class="painel-lateral">
+        <div class="card-vazio">
+          <h2>Nenhum personagem</h2>
+          <p>
+            Quando os personagens forem criados, eles podem aparecer aqui em cards com imagem, nome, modelo de ficha e botão para acessar.
+          </p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="modalPersonagem" class="modal-personagem" aria-hidden="true">
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalPersonagem">
+      <div class="modal-topo">
+        <h2 id="tituloModalPersonagem" class="modal-titulo">Nova ficha</h2>
+        <button type="button" id="btnFecharModal" class="modal-fechar" aria-label="Fechar janela">×</button>
+      </div>
+
+      <p class="modal-texto">
+        Escolha qual modelo de ficha será usado para criar o personagem.
+      </p>
+
+      <form id="formModeloFicha">
+        <div class="campo-modal">
+          <label for="modeloFicha">Modelo da ficha</label>
+          <select id="modeloFicha" name="modeloFicha" required>
+            <option value="">Selecione um modelo</option>
+            <option value="vampiro-a-mascara">Vampiro: A Máscara</option>
+          </select>
         </div>
 
-        <a class="btn" href="ficha_vampiro_criacao.html">Criar personagem</a>
-      </section>
-
-      <section id="charactersList" class="card-grid">
-        <div class="empty-state">Faça login para carregar seus personagens.</div>
-      </section>
-    </main>
+        <div class="modal-acoes">
+          <button type="button" id="btnCancelarModal" class="btn-modal-cancelar">Cancelar</button>
+          <button type="submit" class="btn-modal-continuar">Continuar</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <script type="module" src="js/auth.js"></script>
-  <script type="module" src="js/personagens.js"></script>
+
+  <script>
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const btnCriarPersonagem = document.getElementById('btnCriarPersonagem');
+    const modalPersonagem = document.getElementById('modalPersonagem');
+    const btnFecharModal = document.getElementById('btnFecharModal');
+    const btnCancelarModal = document.getElementById('btnCancelarModal');
+    const formModeloFicha = document.getElementById('formModeloFicha');
+    const modeloFicha = document.getElementById('modeloFicha');
+
+    function carregarUsuario() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (!usuarioSalvo) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+
+        if (!usuario || usuario.logado !== true || !usuario.nome) {
+          localStorage.removeItem('usuarioLogado');
+          usuarioNome.textContent = 'Visitante';
+          btnSair.textContent = 'Login';
+          return;
+        }
+
+        usuarioNome.textContent = usuario.nome;
+        btnSair.textContent = 'Sair';
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+      }
+    }
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      window.location.href = 'login.html';
+    });
+
+    function abrirModalPersonagem() {
+      modalPersonagem.classList.add('mostrar');
+      modalPersonagem.setAttribute('aria-hidden', 'false');
+      modeloFicha.focus();
+    }
+
+    function fecharModalPersonagem() {
+      modalPersonagem.classList.remove('mostrar');
+      modalPersonagem.setAttribute('aria-hidden', 'true');
+      formModeloFicha.reset();
+      btnCriarPersonagem.focus();
+    }
+
+    btnCriarPersonagem.addEventListener('click', abrirModalPersonagem);
+    btnFecharModal.addEventListener('click', fecharModalPersonagem);
+    btnCancelarModal.addEventListener('click', fecharModalPersonagem);
+
+    modalPersonagem.addEventListener('click', (evento) => {
+      if (evento.target === modalPersonagem) {
+        fecharModalPersonagem();
+      }
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && modalPersonagem.classList.contains('mostrar')) {
+        fecharModalPersonagem();
+      }
+    });
+
+    formModeloFicha.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+
+      if (!modeloFicha.value) {
+        modeloFicha.focus();
+        return;
+      }
+
+      localStorage.setItem('modeloFichaSelecionado', modeloFicha.value);
+      window.location.href = 'ficha_vampiro_criação.html';
+    });
+
+
+    carregarUsuario();
+  </script>
 </body>
 </html>

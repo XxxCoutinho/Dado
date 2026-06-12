@@ -3,61 +3,288 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vampiro: A Máscara | RPG Online</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Dado</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at center, rgba(120, 0, 180, 0.16), transparent 45%),
+        linear-gradient(180deg, #090212 0%, #020106 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #f5e6ff;
+      overflow: hidden;
+    }
+
+    .entrada-container {
+      text-align: center;
+      animation: surgirContainer 1.2s ease forwards;
+    }
+
+    .titulo-dado {
+      font-size: clamp(4rem, 14vw, 11rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f5e6ff;
+      opacity: 0;
+      transform: scale(0.75) translateY(40px);
+      filter: blur(14px);
+      animation:
+        surgirDado 2.2s ease forwards,
+        brilhoAtrasColorido 4s ease-in-out infinite;
+    }
+
+    .linha-colorida {
+      width: 0;
+      height: 3px;
+      margin: 18px auto 34px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        #ff004c,
+        #ff9f1c,
+        #ffe600,
+        #00ff85,
+        #00c8ff,
+        #8a2be2,
+        #ff00ff,
+        transparent
+      );
+      background-size: 300% 300%;
+      box-shadow:
+        0 0 12px rgba(255, 0, 76, 0.75),
+        0 0 22px rgba(0, 200, 255, 0.65),
+        0 0 32px rgba(138, 43, 226, 0.75);
+      animation:
+        expandirLinha 1.4s ease forwards,
+        moverCores 4s linear infinite;
+      animation-delay: 1.2s, 0s;
+    }
+
+    .btn-entrar {
+      display: inline-block;
+      padding: 14px 48px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 14px;
+      background: rgba(12, 4, 25, 0.78);
+      color: #f5e6ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 1rem;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+      box-shadow:
+        0 0 12px rgba(255, 0, 255, 0.45),
+        0 0 24px rgba(0, 200, 255, 0.35),
+        inset 0 0 14px rgba(255, 255, 255, 0.08);
+      animation: surgirBotao 1s ease forwards;
+      animation-delay: 1.8s;
+      transition: 0.3s ease;
+    }
+
+    .btn-entrar:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.95);
+      background: rgba(24, 6, 45, 0.95);
+      box-shadow:
+        0 0 16px #ff004c,
+        0 0 28px #00c8ff,
+        0 0 42px #8a2be2,
+        inset 0 0 18px rgba(255, 255, 255, 0.12);
+    }
+
+    @keyframes surgirDado {
+      0% {
+        opacity: 0;
+        transform: scale(0.75) translateY(40px);
+        filter: blur(14px);
+      }
+
+      60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(0);
+        filter: blur(2px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes brilhoAtrasColorido {
+      0% {
+        text-shadow:
+          0 0 10px #ff004c,
+          0 0 24px #ff004c,
+          0 0 48px #ff004c,
+          0 0 80px #8a2be2;
+      }
+
+      25% {
+        text-shadow:
+          0 0 10px #00c8ff,
+          0 0 24px #00c8ff,
+          0 0 48px #00c8ff,
+          0 0 80px #004cff;
+      }
+
+      50% {
+        text-shadow:
+          0 0 10px #00ff85,
+          0 0 24px #00ff85,
+          0 0 48px #00ff85,
+          0 0 80px #00c8ff;
+      }
+
+      75% {
+        text-shadow:
+          0 0 10px #ffe600,
+          0 0 24px #ffe600,
+          0 0 48px #ff9f1c,
+          0 0 80px #ff00ff;
+      }
+
+      100% {
+        text-shadow:
+          0 0 10px #ff004c,
+          0 0 24px #ff004c,
+          0 0 48px #ff004c,
+          0 0 80px #8a2be2;
+      }
+    }
+
+    @keyframes moverCores {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes expandirLinha {
+      from {
+        width: 0;
+        opacity: 0;
+      }
+
+      to {
+        width: min(420px, 70vw);
+        opacity: 1;
+      }
+    }
+
+    @keyframes surgirBotao {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes surgirContainer {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* =========================================================
+       Ajuste responsivo global - celular e computador
+       ========================================================= */
+    html {
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    img, svg, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    input, textarea, select, button {
+      max-width: 100%;
+    }
+
+    button, a, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    @supports (min-height: 100dvh) {
+      body { min-height: 100dvh; }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        overflow: auto;
+        padding: 26px 18px;
+      }
+
+      .entrada-container {
+        width: min(100%, 520px);
+      }
+
+      .titulo-dado {
+        font-size: clamp(3.4rem, 22vw, 7rem);
+        letter-spacing: .08em;
+      }
+
+      .linha-colorida {
+        margin-bottom: 26px;
+      }
+
+      .btn-entrar {
+        width: min(100%, 280px);
+        padding: 14px 20px;
+      }
+    }
+
+    @media (max-height: 520px) {
+      body {
+        align-items: flex-start;
+        overflow: auto;
+      }
+    }
+
+  </style>
 </head>
+
 <body>
-  <div class="page-shell">
-    <header class="main-header">
-      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+  <main class="entrada-container">
+    <h1 class="titulo-dado">Dado</h1>
 
-      <nav class="main-nav">
-        <a href="personagens.html">Personagens</a>
-        <a href="campanhas.html">Campanhas</a>
-        <a href="login.html" data-auth-link>Login</a>
-      </nav>
+    <div class="linha-colorida"></div>
 
-      <div class="auth-box">
-        <span data-user-name>Visitante</span>
-        <button class="btn btn-small" data-login-btn>Entrar</button>
-        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
-      </div>
-    </header>
-
-    <main class="hero">
-      <section class="hero-card">
-        <p class="eyebrow">Sistema de fichas online</p>
-        <h1>Organize personagens, campanhas e sessões de Vampiro.</h1>
-        <p>
-          Crie fichas, vincule personagens às campanhas, acompanhe fome,
-          humanidade, força de vontade, vitalidade, disciplinas, anotações e rolagens.
-        </p>
-
-        <div class="hero-actions">
-          <a class="btn" href="personagens.html">Meus personagens</a>
-          <a class="btn btn-secondary" href="campanhas.html">Minhas campanhas</a>
-        </div>
-      </section>
-
-      <section class="status-grid">
-        <article class="status-card">
-          <strong data-count-characters>0</strong>
-          <span>Personagens</span>
-        </article>
-
-        <article class="status-card">
-          <strong data-count-campaigns>0</strong>
-          <span>Campanhas</span>
-        </article>
-
-        <article class="status-card">
-          <strong>V5</strong>
-          <span>Modelo principal</span>
-        </article>
-      </section>
-    </main>
-  </div>
-
-  <script type="module" src="js/auth.js"></script>
+    <a href="aviso.html" class="btn-entrar">Entrar</a>
+  </main>
 </body>
 </html>

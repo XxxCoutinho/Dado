@@ -3,117 +3,2694 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ficha de jogo | Vampiro: A Máscara</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/fichas.css" />
+  <title>Ficha Vampiro - Jogo</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --fundo: #000;
+      --papel: #020202;
+      --linha: rgba(235,235,235,.75);
+      --linha-fraca: rgba(235,235,235,.38);
+      --texto: #f7f7f7;
+      --muted: rgba(247,247,247,.68);
+      --verde: #0d5a2b;
+      --rosa: #ff0078;
+      --azul: #00c8ff;
+      --roxo: #8a2be2;
+      --vermelho: #b3514f;
+      --vontade: #79a9e6;
+      --humanidade: #82dfb5;
+      --fome: #9b9b9b;
+      --sangue: #9b55f2;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 10%, rgba(69, 15, 119, .26), transparent 28%),
+        radial-gradient(circle at 90% 25%, rgba(0, 200, 255, .08), transparent 27%),
+        radial-gradient(circle at 50% 90%, rgba(255, 0, 120, .08), transparent 35%),
+        #000;
+      color: var(--texto);
+      font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+      overflow-x: auto;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.11) 0 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,.06) 0 1px, transparent 1px);
+      background-size: 40px 40px, 82px 82px;
+      opacity: .16;
+      z-index: 0;
+    }
+
+    .topbar {
+      width: min(1240px, calc(100% - 34px));
+      min-width: 1120px;
+      min-height: 82px;
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 24px;
+      background: rgba(8, 6, 18, .78);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 22px rgba(255,0,120,.14), 0 0 42px rgba(0,200,255,.09), inset 0 0 28px rgba(255,255,255,.035);
+      overflow: hidden;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078);
+      background-size: 320% 320%;
+      animation: moverCores 6s linear infinite;
+      opacity: .45;
+      pointer-events: none;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    .logo-dado {
+      justify-self: start;
+      color: #f5e6ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.9rem, 4vw, 2.65rem);
+      letter-spacing: .12em;
+      line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite;
+      white-space: nowrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-abas {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 7px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 18px;
+      background: rgba(0,0,0,.28);
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-abas a {
+      min-width: 138px;
+      text-align: center;
+      padding: 12px 18px;
+      border-radius: 13px;
+      color: rgba(244,240,255,.72);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .78rem;
+      font-weight: 900;
+      transition: .25s ease;
+    }
+
+    .nav-abas a:hover,
+    .nav-abas a.ativo {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255,0,120,.64), rgba(0,200,255,.52), rgba(138,43,226,.64));
+      background-size: 220% 220%;
+      box-shadow: 0 0 16px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14);
+      animation: moverCores 5s linear infinite;
+    }
+
+    .usuario-area {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .usuario-nome {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.05rem;
+      text-align: right;
+      text-shadow: 0 0 8px rgba(255,0,120,.34), 0 0 14px rgba(0,200,255,.2);
+    }
+
+    .btn-sair {
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      color: rgba(244,240,255,.82);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: .22s ease;
+    }
+
+    .btn-sair:hover { color: #fff; background: rgba(255,255,255,.13); transform: translateY(-1px); }
+
+    .conteudo {
+      width: min(1240px, calc(100% - 34px));
+      min-width: 1120px;
+      margin: 15px auto 44px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sheet-header {
+      display: grid;
+      grid-template-columns: 56px 1fr 1fr 1.06fr;
+      column-gap: 18px;
+      row-gap: 7px;
+      align-items: end;
+      margin: 0 18px 8px;
+      padding-top: 2px;
+    }
+
+    .mini-foto-topo {
+      grid-row: span 2;
+      width: 56px;
+      height: 56px;
+      background: var(--verde);
+      border: 1px solid rgba(255,255,255,.08);
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mini-foto-topo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mini-foto-topo::after {
+      content: "foto";
+      position: absolute;
+      inset: auto 0 0;
+      padding: 3px 0;
+      background: rgba(0,0,0,.55);
+      color: rgba(255,255,255,.72);
+      text-align: center;
+      font-size: .55rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: .2s ease;
+    }
+    .mini-foto-topo:hover::after { opacity: 1; }
+
+    .field-line {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+      color: #fff;
+      font-weight: 900;
+      text-shadow: 0 0 2px #000;
+    }
+
+    .field-line label {
+      font-size: 1rem;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .line-input,
+    .line-area {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      border-bottom: 2px solid rgba(255,255,255,.88);
+      border-radius: 0;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      padding: 0 3px 2px;
+      font: inherit;
+      font-weight: 800;
+      min-width: 30px;
+      text-shadow: 0 0 2px #000;
+    }
+
+    .line-input:focus,
+    .line-area:focus { border-bottom-color: #fff; box-shadow: 0 4px 0 rgba(255,255,255,.08); }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: minmax(405px, 1.16fr) minmax(330px, .92fr) minmax(365px, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .v5-panel {
+      --corte-borda: 18px;
+      min-width: 0;
+      min-height: 745px;
+      border: 0;
+      background: transparent;
+      position: relative;
+      padding: 24px 18px 20px;
+      box-shadow: none;
+      isolation: isolate;
+    }
+
+    .v5-panel::before,
+    .v5-panel::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+      clip-path: polygon(
+        var(--corte-borda) 0,
+        calc(100% - var(--corte-borda)) 0,
+        100% var(--corte-borda),
+        100% calc(100% - var(--corte-borda)),
+        calc(100% - var(--corte-borda)) 100%,
+        var(--corte-borda) 100%,
+        0 calc(100% - var(--corte-borda)),
+        0 var(--corte-borda)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+    }
+
+    .v5-panel::before {
+      inset: 0;
+      padding: 1.5px;
+      background: rgba(255,255,255,.72);
+    }
+
+    .v5-panel::after {
+      inset: 5px;
+      padding: 1px;
+      background: rgba(255,255,255,.36);
+    }
+
+    .v5-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .corner-tr,
+    .corner-bl { display: none; }
+
+    .panel-title,
+    .tabs-title {
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 1000;
+      letter-spacing: -.02em;
+      line-height: 1;
+      border-bottom: 2px solid rgba(255,255,255,.84);
+      margin-bottom: 8px;
+      padding: 0 0 4px;
+      text-shadow: 0 1px 0 #000, 0 0 3px #000;
+    }
+
+    .tabs-title {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: .98rem;
+    }
+
+    .tabs-title span,
+    .tabs-title .tab-btn {
+      opacity: .94;
+      color: #fff;
+      text-transform: uppercase;
+      font: inherit;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .tabs-title .tab-btn {
+      border: 0;
+      background: transparent;
+      padding: 0 0 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      text-align: left;
+      letter-spacing: -.02em;
+      text-shadow: 0 1px 0 #000, 0 0 3px #000;
+      transition: opacity .18s ease, transform .18s ease, text-shadow .18s ease;
+    }
+
+    .tabs-title .tab-btn:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+      text-shadow: 0 1px 0 #000, 0 0 8px rgba(255,255,255,.28);
+    }
+
+    .tabs-title .active,
+    .tabs-title .tab-btn[aria-selected="true"] {
+      opacity: 1;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 2px;
+    }
+
+    .sheet-tabs {
+      max-width: 100%;
+      min-width: 0;
+      flex-wrap: nowrap;
+      gap: 18px;
+      margin-bottom: 10px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+    }
+
+    .sheet-tabs .tab-btn { flex: 0 0 auto; }
+    .sheet-tabs::-webkit-scrollbar { display: none; }
+    .sheet-tabs .tab-btn { font-size: clamp(.68rem, .85vw, .82rem) !important; }
+
+
+    /* Força o tamanho correto das abas da ficha */
+    .tabs-title.sheet-tabs,
+    .tabs-title.sheet-tabs .tab-btn {
+      font-size: clamp(.68rem, .85vw, .82rem) !important;
+    }
+
+    .tab-panel[hidden] { display: none !important; }
+
+    .tab-panel {
+      min-height: 648px;
+      animation: trocarAba .16s ease both;
+    }
+
+    .tab-panel-notes {
+      margin-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.38);
+      padding-top: 9px;
+    }
+
+    .tab-panel-notes label {
+      display: block;
+      color: #fff;
+      font-weight: 900;
+      font-size: .68rem;
+      margin-bottom: 3px;
+    }
+
+    .tab-extra-grid.tab-single {
+      grid-template-columns: 1fr;
+      border-top: 0;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    .tab-extra-grid .tab-textarea { min-height: 306px; }
+
+    .atributos-bloco {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px;
+      border-bottom: 1px solid rgba(255,255,255,.38);
+      padding: 0 2px 9px;
+      margin-bottom: 8px;
+    }
+
+    .attr-col {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .attr-titulo {
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+      font-size: .66rem;
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+
+    .attr-row,
+    .skill-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+      color: #fff;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .attr-row label {
+      font-size: .89rem;
+      white-space: nowrap;
+    }
+
+    .skill-row {
+      grid-template-columns: 10px auto 1fr auto;
+      gap: 2px;
+      margin: 1px 0;
+      font-size: .70rem;
+    }
+
+    .skill-bullet {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #a5a5a5, #353535 65%);
+      box-shadow: 0 0 2px rgba(255,255,255,.32);
+    }
+
+    .skill-name { white-space: nowrap; }
+    .leader {
+      height: 3px;
+      min-width: 10px;
+      background-image: radial-gradient(circle, rgba(255,255,255,.72) 0 1px, transparent 1px);
+      background-size: 3px 3px;
+      background-position: center;
+      opacity: .9;
+    }
+
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 50%;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .attr-row .dot {
+      width: 4px !important;
+      height: 4px !important;
+      border-width: 1px;
+    }
+    .attr-row .rating {
+      gap: 1px !important;
+    }
+    .dot.active { background: #fff; box-shadow: 0 0 4px rgba(255,255,255,.5); }
+    .dot:hover { background: rgba(255,255,255,.7); }
+    .rating input { display: none; }
+
+    .dupla-caixas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 5px 0 18px;
+    }
+
+    .boxed-line {
+      border: 2px solid rgba(255,255,255,.82);
+      min-height: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 0 8px;
+      gap: 8px;
+      color: #fff;
+      font-weight: 900;
+      font-size: .92rem;
+    }
+
+    .boxed-line input {
+      width: 100%;
+      min-width: 45px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      text-align: right;
+      outline: none;
+      font: inherit;
+      font-weight: 900;
+    }
+
+    .tracker { margin: 6px 0; }
+    .tracker-title {
+      text-align: center;
+      color: #fff;
+      font-weight: 1000;
+      font-size: .96rem;
+      text-shadow: 0 1px 0 #000;
+      margin-bottom: 3px;
+    }
+
+    .tracker-bar {
+      min-height: 28px;
+      display: grid;
+      grid-template-columns: 20px 1fr 20px;
+      align-items: center;
+      font-weight: 1000;
+      color: #fff;
+      text-shadow: 0 1px 0 rgba(0,0,0,.55);
+      padding: 0 4px;
+    }
+
+    .tracker-bar button {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      opacity: .9;
+    }
+
+    .tracker-bar input {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      text-align: center;
+      outline: none;
+      font: inherit;
+      font-weight: 1000;
+      min-width: 0;
+    }
+
+    .vitalidade { background: var(--vermelho); }
+    .vontade { background: var(--vontade); }
+    .humanidade { background: var(--humanidade); }
+    .fome { background: var(--fome); }
+    .sangue { background: var(--sangue); }
+
+    /* Experiência agora é uma barra igual às demais */
+    .somente-deslocamento {
+      grid-template-columns: 1fr !important;
+      margin-bottom: 12px !important;
+    }
+
+    .deslocamento-box {
+      width: min(180px, 100%) !important;
+      justify-self: end !important;
+    }
+
+    .tracker-experiencia {
+      margin: 2px 0 16px !important;
+    }
+
+    /* Barras responsivas: preenchem conforme valor atual / valor máximo */
+    .tracker-bar {
+      --tracker-color: rgba(255,255,255,.35);
+      --tracker-pct: 0%;
+      position: relative !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(255,255,255,.55);
+      background: linear-gradient(
+        90deg,
+        var(--tracker-color) 0%,
+        var(--tracker-color) var(--tracker-pct),
+        rgba(0,0,0,.28) var(--tracker-pct),
+        rgba(0,0,0,.28) 100%
+      ) !important;
+      transition: background .18s ease;
+    }
+
+    .tracker-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), transparent 48%, rgba(0,0,0,.14));
+      z-index: 0;
+    }
+
+    .tracker-bar button,
+    .tracker-bar input {
+      position: relative;
+      z-index: 1;
+    }
+
+    .vitalidade { --tracker-color: var(--vermelho); }
+    .vontade { --tracker-color: var(--vontade); }
+    .humanidade { --tracker-color: var(--humanidade); }
+    .fome { --tracker-color: var(--fome); }
+    .sangue { --tracker-color: var(--sangue); }
+    .experiencia { --tracker-color: #d6b56a; }
+
+    .thin-label {
+      color: #fff;
+      font-weight: 900;
+      font-size: .58rem;
+      border-bottom: 1px solid rgba(255,255,255,.38);
+      min-height: 20px;
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      padding-bottom: 2px;
+    }
+
+    .thin-label input {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      font-size: .65rem;
+    }
+
+    .thin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .wide-line { grid-column: 1 / -1; }
+
+    .nota-area {
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.38);
+      border-radius: 0;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      resize: vertical;
+      padding: 4px 0;
+      font: inherit;
+      font-size: .75rem;
+      line-height: 1.35;
+    }
+
+    .tab-extra-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.38);
+      padding-top: 9px;
+    }
+
+    .tab-extra-grid label {
+      display: block;
+      color: #fff;
+      font-weight: 900;
+      font-size: .68rem;
+      margin-bottom: 3px;
+    }
+
+    .descricao-topo {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin-top: 8px;
+    }
+
+    .foto-grande {
+      height: 190px;
+      background: var(--verde);
+      border: 1px solid rgba(255,255,255,.14);
+      overflow: hidden;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,.7);
+      text-transform: uppercase;
+      font-size: .68rem;
+      font-weight: 900;
+    }
+
+    .foto-grande img { width: 100%; height: 100%; object-fit: cover; }
+
+    .desc-lista {
+      display: grid;
+      gap: 2px;
+    }
+
+    .mini-info-line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px;
+      color: #fff;
+      font-size: .66rem;
+      font-weight: 900;
+      align-items: baseline;
+      line-height: 1.12;
+    }
+
+    .mini-info-line input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      font: inherit;
+      font-weight: 800;
+      padding: 0;
+    }
+
+    .mini-info-line input:focus { border-bottom-color: rgba(255,255,255,.6); }
+
+    .descricao-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 12px;
+      margin-top: 12px;
+    }
+
+    .desc-box label {
+      display: block;
+      color: #fff;
+      font-size: .66rem;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+
+    .desc-box textarea {
+      min-height: 48px;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      border-bottom: 1px solid rgba(255,255,255,.35);
+      color: #fff;
+      resize: vertical;
+      outline: none;
+      font: inherit;
+      font-size: .72rem;
+      line-height: 1.25;
+    }
+
+    .desc-box.tall textarea { min-height: 100px; }
+    .desc-box.full { grid-column: 1 / -1; }
+
+    .inventario-area {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.38);
+      padding-top: 8px;
+    }
+
+    .inventario-area textarea {
+      width: 100%;
+      min-height: 96px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      resize: vertical;
+      font: inherit;
+      font-size: .73rem;
+      line-height: 1.35;
+    }
+
+    .inventario-tab-area {
+      margin-top: 8px;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .inventario-tab-area textarea {
+      min-height: 605px;
+      border-bottom: 1px solid rgba(255,255,255,.35);
+    }
+
+    .sheet-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px auto 0;
+    }
+
+    .btn-principal,
+    .btn-fantasma {
+      min-height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      color: #fff;
+      padding: 0 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-size: .70rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .btn-principal {
+      background: linear-gradient(90deg, rgba(255,0,120,.72), rgba(0,200,255,.62), rgba(138,43,226,.72));
+      background-size: 220% 220%;
+      animation: moverCores 5s linear infinite;
+      box-shadow: 0 0 18px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14);
+    }
+    .btn-fantasma { background: rgba(255,255,255,.06); color: rgba(244,240,255,.84); }
+    .btn-principal:hover, .btn-fantasma:hover { transform: translateY(-2px); color: #fff; border-color: rgba(255,255,255,.38); }
+
+    .aviso-salvo {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 60;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      border: 1px solid rgba(0,255,133,.28);
+      border-radius: 16px;
+      background: rgba(4,18,14,.88);
+      color: #dfffee;
+      padding: 14px 16px;
+      box-shadow: 0 0 24px rgba(0,255,133,.16);
+      transition: .25s ease;
+      font-weight: 800;
+    }
+    .aviso-salvo.mostrar { opacity: 1; transform: translateY(0); }
+
+    #imagemPersonagem { display: none; }
+
+    /* Ajuste dos atributos: maior sem perder alinhamento */
+    .atributos-bloco {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 4px !important;
+      padding: 0 0 9px !important;
+      overflow: hidden !important;
+    }
+
+    .atributos-bloco .attr-col {
+      min-width: 0 !important;
+      overflow: hidden !important;
+      gap: 3px !important;
+    }
+
+    .atributos-bloco .attr-titulo {
+      font-size: .62rem !important;
+      line-height: 1.08 !important;
+      margin-bottom: 3px !important;
+    }
+
+    .atributos-bloco .attr-row {
+      grid-template-columns: minmax(0, auto) 1fr auto !important;
+      gap: 3px !important;
+      line-height: 1.08 !important;
+      overflow: hidden !important;
+    }
+
+    .atributos-bloco .attr-row label {
+      font-size: .64rem !important;
+      letter-spacing: -.035em !important;
+      max-width: 78px !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      text-overflow: clip !important;
+    }
+
+    .atributos-bloco .attr-row .rating {
+      gap: 1px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .atributos-bloco .attr-row .dot {
+      width: 5px !important;
+      height: 5px !important;
+      min-width: 5px !important;
+      min-height: 5px !important;
+      padding: 0 !important;
+    }
+
+    /* Ajuste final dos atributos abreviados */
+    .atributos-bloco {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 10px !important;
+      padding: 0 2px 9px !important;
+      overflow: hidden !important;
+    }
+
+    .atributos-bloco .attr-col {
+      min-width: 0 !important;
+      overflow: hidden !important;
+      gap: 5px !important;
+    }
+
+    .atributos-bloco .attr-titulo {
+      font-size: .92rem !important;
+      line-height: 1.1 !important;
+      margin-bottom: 4px !important;
+    }
+
+    .atributos-bloco .attr-row {
+      grid-template-columns: 48px 1fr auto !important;
+      gap: 5px !important;
+      line-height: 1.08 !important;
+      overflow: hidden !important;
+      align-items: center !important;
+    }
+
+    .atributos-bloco .attr-row label {
+      font-size: 1.05rem !important;
+      letter-spacing: 0 !important;
+      max-width: 48px !important;
+      overflow: visible !important;
+      white-space: nowrap !important;
+      text-overflow: clip !important;
+    }
+
+    .atributos-bloco .attr-row .rating {
+      gap: 2px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .atributos-bloco .attr-row .dot {
+      width: 8px !important;
+      height: 8px !important;
+      min-width: 8px !important;
+      min-height: 8px !important;
+      padding: 0 !important;
+    }
+
+
+
+
+
+
+    /* Ajuste de largura dos painéis principais */
+    .sheet-grid {
+      grid-template-columns: minmax(405px, 1.16fr) minmax(330px, .92fr) minmax(365px, 1fr) !important;
+    }
+
+    .sheet-grid > .v5-panel:nth-child(2) {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+
+
+
+    /* Ajuste das habilidades: fonte maior e ícone de d20 */
+    .skill-row {
+      grid-template-columns: 17px auto 1fr auto !important;
+      gap: 5px !important;
+      margin: 3px 0 !important;
+      font-size: .96rem !important;
+      line-height: 1.16 !important;
+      align-items: center !important;
+    }
+
+    .skill-bullet {
+      width: 15px !important;
+      height: 15px !important;
+      border-radius: 0 !important;
+      background: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223.4%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2232%2C4%2010%2C16%204%2C40%2020%2C56%2044%2C56%2060%2C40%2054%2C16%22/%3E%0A%20%20%20%20%3Cpolyline%20points%3D%2232%2C4%2026%2C24%2038%2C24%2032%2C4%22/%3E%0A%20%20%20%20%3Cpolyline%20points%3D%2210%2C16%2026%2C24%2020%2C56%22/%3E%0A%20%20%20%20%3Cpolyline%20points%3D%2254%2C16%2038%2C24%2044%2C56%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2226%22%20y1%3D%2224%22%20x2%3D%2238%22%20y2%3D%2224%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2226%22%20y1%3D%2224%22%20x2%3D%2220%22%20y2%3D%2256%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%2224%22%20x2%3D%2244%22%20y2%3D%2256%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2220%22%20y1%3D%2256%22%20x2%3D%2244%22%20y2%3D%2256%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%224%22%20y1%3D%2240%22%20x2%3D%2220%22%20y2%3D%2256%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2260%22%20y1%3D%2240%22%20x2%3D%2244%22%20y2%3D%2256%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2210%22%20y1%3D%2216%22%20x2%3D%224%22%20y2%3D%2240%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2254%22%20y1%3D%2216%22%20x2%3D%2260%22%20y2%3D%2240%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E") center / contain no-repeat !important;
+      box-shadow: none !important;
+      filter: grayscale(1) brightness(1.15) contrast(1.2) !important;
+      opacity: .95 !important;
+    }
+
+    .skill-name {
+      white-space: nowrap !important;
+      font-size: .96rem !important;
+      font-weight: 900 !important;
+      letter-spacing: -.01em !important;
+    }
+
+    .skill-row .rating {
+      gap: 3px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .skill-row .dot {
+      width: 8px !important;
+      height: 8px !important;
+      min-width: 8px !important;
+      min-height: 8px !important;
+      border-width: 1px !important;
+      padding: 0 !important;
+    }
+
+    #listaHabilidades {
+      display: grid;
+      gap: 1px;
+    }
+
+
+
+
+    /* Aba Disciplinas: botões, caixinhas, janela e filtro */
+    .disciplinas-acoes {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 6px;
+      margin: 2px 6px 10px 0;
+    }
+
+    .btn-disciplina {
+      min-height: 22px;
+      min-width: 90px;
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 0;
+      background: rgba(0,0,0,.42);
+      color: #fff;
+      padding: 0 8px;
+      cursor: pointer;
+      font-size: .54rem;
+      font-weight: 1000;
+      line-height: 1;
+      text-align: center;
+      text-transform: none;
+      letter-spacing: -.04em;
+      font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+      transition: .18s ease;
+      white-space: nowrap;
+    }
+
+    .btn-disciplina:hover {
+      background: rgba(255,255,255,.08);
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .btn-disciplina:active { transform: translateY(0); }
+
+    .disciplinas-ficha-area {
+      display: grid;
+      gap: 8px;
+    }
+
+    .disciplinas-ficha-area > label,
+    .rituais-area label {
+      color: #fff;
+      font-weight: 1000;
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .disciplinas-ficha-lista {
+      display: grid;
+      gap: 8px;
+      min-height: 68px;
+    }
+
+    .disciplinas-vazio {
+      border: 1px dashed rgba(255,255,255,.42);
+      background: rgba(255,255,255,.025);
+      padding: 12px;
+      color: rgba(255,255,255,.82) !important;
+      font-size: .74rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .disciplina-ficha-card {
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(255,255,255,.035);
+      padding: 9px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+    }
+
+    .disciplina-ficha-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .disciplina-ficha-nome {
+      display: block;
+      color: #fff;
+      font-size: .96rem;
+      font-weight: 1000;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .disciplina-ficha-tags,
+    .disciplina-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-clan {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(255,255,255,.11);
+      padding: 2px 6px;
+      color: #fff;
+      font-size: .56rem;
+      font-weight: 1000;
+      letter-spacing: .03em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .btn-remover-disciplina {
+      min-width: 22px;
+      height: 22px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 1000;
+      line-height: 1;
+      opacity: .82;
+    }
+
+    .btn-remover-disciplina:hover {
+      opacity: 1;
+      background: rgba(255,255,255,.1);
+    }
+
+    .disciplina-ficha-texto {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(0,0,0,.26);
+      color: #fff;
+      padding: 7px;
+      font-size: .74rem;
+      font-weight: 800;
+      line-height: 1.28;
+      white-space: pre-wrap;
+    }
+
+    .campo-disciplinas-escondido { display: none !important; }
+
+    .rituais-area {
+      margin-top: 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .rituais-area textarea {
+      min-height: 125px;
+    }
+
+    .modal-ficha[hidden] { display: none !important; }
+
+    .modal-ficha {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(0,0,0,.76);
+      backdrop-filter: blur(5px);
+    }
+
+    body.modal-aberto { overflow: hidden; }
+
+    .modal-caixa {
+      width: min(780px, calc(100vw - 34px));
+      max-height: min(84vh, 760px);
+      overflow: auto;
+      border: 2px solid rgba(255,255,255,.9);
+      background: rgba(1,1,1,.96);
+      box-shadow: 0 0 28px rgba(255,255,255,.12), 0 0 44px rgba(138,43,226,.18);
+      padding: 18px;
+    }
+
+    .modal-caixa.modal-pequeno { width: min(520px, calc(100vw - 34px)); }
+
+    .modal-topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 2px solid rgba(255,255,255,.88);
+      padding-bottom: 9px;
+      margin-bottom: 14px;
+    }
+
+    .modal-topo h2 {
+      color: #fff;
+      font-size: 1.15rem;
+      line-height: 1;
+      text-transform: uppercase;
+      font-weight: 1000;
+      letter-spacing: -.02em;
+    }
+
+    .modal-fechar {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.75);
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.15rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .modal-descricao {
+      color: #fff;
+      font-size: .82rem;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      opacity: .9;
+    }
+
+    .filtro-disciplinas {
+      display: grid;
+      grid-template-columns: auto minmax(180px, 280px);
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 12px;
+    }
+
+    .filtro-disciplinas label {
+      color: #fff;
+      font-size: .76rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .filtro-disciplinas select {
+      min-height: 32px;
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 0 8px;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .disciplinas-lista-modal {
+      display: grid;
+      gap: 9px;
+    }
+
+    .disciplina-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.5);
+      background: rgba(255,255,255,.035);
+      padding: 10px;
+    }
+
+    .disciplina-nome {
+      display: block;
+      margin-bottom: 6px;
+      color: #fff;
+      font-size: .98rem;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .disciplina-descricao {
+      color: rgba(255,255,255,.9) !important;
+      font-size: .72rem;
+      line-height: 1.28;
+      margin: 0 0 8px;
+    }
+
+    .btn-modal-add,
+    .btn-modal-salvar,
+    .btn-modal-cancelar {
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.85);
+      background: rgba(0,0,0,.52);
+      color: #fff;
+      padding: 0 12px;
+      cursor: pointer;
+      font-size: .72rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .btn-modal-add:hover,
+    .btn-modal-salvar:hover,
+    .btn-modal-cancelar:hover,
+    .modal-fechar:hover {
+      background: rgba(255,255,255,.1);
+    }
+
+    .nova-disciplina-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .nova-disciplina-form label {
+      display: grid;
+      gap: 5px;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .nova-disciplina-form input,
+    .nova-disciplina-form textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      outline: none;
+      padding: 9px;
+      font: inherit;
+      font-size: .82rem;
+      resize: vertical;
+    }
+
+    .nova-disciplina-form textarea { min-height: 118px; }
+
+    .modal-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    /* Ajuste final: todas as fontes cinza ficam brancas */
+    body,
+    label,
+    span,
+    button,
+    a,
+    input,
+    textarea,
+    .tabs-title span,
+    .tabs-title .tab-btn,
+    .nav-abas a,
+    .usuario-nome,
+    .btn-sair,
+    .btn-fantasma,
+    .thin-label,
+    .tab-extra-grid label,
+    .desc-box label,
+    .mini-info-line,
+    .foto-grande,
+    .nota-area,
+    .line-input,
+    .line-area {
+      color: #fff !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #fff !important;
+      opacity: 1 !important;
+    }
+
+    .skill-name,
+    .attr-row label,
+    .attr-titulo,
+    .tracker-title,
+    .panel-title {
+      color: #fff !important;
+    }
+
+    @keyframes trocarAba {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes brilhoAtrasColorido {
+      0% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+      25% { text-shadow: 0 0 8px #00c8ff, 0 0 18px #00c8ff, 0 0 34px #00c8ff, 0 0 58px #004cff; }
+      50% { text-shadow: 0 0 8px #00ff85, 0 0 18px #00ff85, 0 0 34px #00ff85, 0 0 58px #00c8ff; }
+      75% { text-shadow: 0 0 8px #ffe600, 0 0 18px #ffe600, 0 0 34px #ff9f1c, 0 0 58px #ff00ff; }
+      100% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+    }
+    @keyframes moverCores { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    @media (max-width: 1160px) {
+      body { overflow-x: auto; }
+      .topbar, .conteudo { margin-left: 18px; margin-right: 18px; }
+    }
+
+    /* =========================================================
+       Ajuste responsivo global - celular e computador
+       ========================================================= */
+    html {
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    img, svg, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    input, textarea, select, button {
+      max-width: 100%;
+    }
+
+    button, a, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    @media (max-width: 1160px) {
+      body {
+        overflow-x: hidden;
+      }
+
+      .topbar,
+      .conteudo {
+        width: min(100% - 24px, 1240px) !important;
+        min-width: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+
+      .sheet-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px;
+      }
+
+      .v5-panel {
+        min-height: auto;
+      }
+
+      .tab-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        min-height: 0;
+        margin-top: 12px !important;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        padding: 16px 14px;
+        border-radius: 20px;
+      }
+
+      .logo-dado,
+      .nav-abas,
+      .usuario-area {
+        justify-self: center;
+      }
+
+      .nav-abas {
+        width: 100%;
+      }
+
+      .nav-abas a {
+        min-width: 0;
+        flex: 1 1 0;
+        padding: 11px 8px;
+        font-size: .68rem;
+        letter-spacing: .07em;
+      }
+
+      .usuario-area {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .usuario-nome {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .conteudo {
+        margin-top: 18px !important;
+        margin-bottom: 36px;
+      }
+
+      .sheet-header {
+        grid-template-columns: 64px 1fr;
+        margin: 0 0 14px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .mini-foto-topo {
+        grid-row: span 3;
+        width: 64px;
+        height: 64px;
+      }
+
+      .field-line {
+        width: 100%;
+      }
+
+      .field-line label {
+        font-size: .88rem;
+      }
+
+      .v5-panel {
+        padding: 18px 14px;
+        --corte-borda: 14px;
+      }
+
+      .sheet-tabs {
+        gap: 12px;
+        padding-bottom: 4px;
+      }
+
+      .tabs-title.sheet-tabs .tab-btn,
+      .sheet-tabs .tab-btn {
+        font-size: .72rem !important;
+      }
+
+      .dupla-caixas,
+      .thin-grid,
+      .tab-extra-grid,
+      .descricao-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .deslocamento-box {
+        width: 100% !important;
+        justify-self: stretch !important;
+      }
+
+      .descricao-topo {
+        grid-template-columns: 130px 1fr;
+      }
+
+      .foto-grande {
+        height: 170px;
+      }
+
+      .modal-ficha {
+        padding: 14px;
+        align-items: start;
+        overflow: auto;
+      }
+
+      .modal-caixa,
+      .modal-caixa.modal-pequeno {
+        width: 100%;
+        max-height: calc(100dvh - 28px);
+        padding: 14px;
+      }
+
+      .disciplina-card {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .btn-modal-add,
+      .btn-modal-salvar,
+      .btn-modal-cancelar {
+        width: 100%;
+      }
+
+      .modal-acoes {
+        flex-direction: column-reverse;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .conteudo {
+        width: min(100% - 18px, 1240px) !important;
+      }
+
+      .topbar {
+        padding: 14px 10px;
+      }
+
+      .logo-dado {
+        font-size: clamp(1.7rem, 12vw, 2.35rem);
+      }
+
+      .nav-abas {
+        gap: 6px;
+        padding: 6px;
+      }
+
+      .nav-abas a {
+        padding: 10px 6px;
+        font-size: .62rem;
+      }
+
+      .sheet-header {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-foto-topo {
+        grid-row: auto;
+        justify-self: center;
+        width: 86px;
+        height: 86px;
+      }
+
+      .field-line {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        align-items: end;
+      }
+
+      .field-line label:empty {
+        display: none;
+      }
+
+      .v5-panel {
+        padding: 16px 12px;
+      }
+
+      .atributos-bloco {
+        gap: 6px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .atributos-bloco .attr-titulo {
+        font-size: .72rem !important;
+      }
+
+      .atributos-bloco .attr-row {
+        grid-template-columns: 38px 1fr auto !important;
+        gap: 3px !important;
+      }
+
+      .atributos-bloco .attr-row label {
+        font-size: .82rem !important;
+        max-width: 38px !important;
+      }
+
+      .atributos-bloco .attr-row .dot {
+        width: 6px !important;
+        height: 6px !important;
+        min-width: 6px !important;
+        min-height: 6px !important;
+      }
+
+      .skill-row {
+        grid-template-columns: 15px minmax(112px, auto) 1fr auto !important;
+        gap: 4px !important;
+        font-size: .82rem !important;
+      }
+
+      .skill-bullet {
+        width: 13px !important;
+        height: 13px !important;
+      }
+
+      .skill-name {
+        font-size: .82rem !important;
+        white-space: normal !important;
+        line-height: 1.05;
+      }
+
+      .skill-row .rating {
+        gap: 2px !important;
+      }
+
+      .skill-row .dot {
+        width: 7px !important;
+        height: 7px !important;
+        min-width: 7px !important;
+        min-height: 7px !important;
+      }
+
+      .tracker-title {
+        font-size: .86rem;
+      }
+
+      .tracker-bar {
+        min-height: 34px;
+        grid-template-columns: 32px 1fr 32px;
+      }
+
+      .thin-label {
+        min-height: 34px;
+        flex-wrap: wrap;
+      }
+
+      .descricao-topo {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-grande {
+        width: min(100%, 260px);
+        height: 260px;
+        justify-self: center;
+      }
+
+      .sheet-actions {
+        flex-direction: column;
+      }
+
+      .btn-principal,
+      .btn-fantasma {
+        width: 100%;
+        min-height: 42px;
+      }
+
+      .filtro-disciplinas {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-topo h2 {
+        font-size: .98rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .atributos-bloco {
+        grid-template-columns: 1fr !important;
+      }
+
+      .atributos-bloco .attr-row {
+        grid-template-columns: 52px 1fr auto !important;
+      }
+
+      .atributos-bloco .attr-row label {
+        max-width: 52px !important;
+      }
+
+      .skill-row {
+        grid-template-columns: 15px minmax(0, 1fr) auto !important;
+      }
+
+      .skill-row .leader {
+        display: none;
+      }
+    }
+
+  </style>
 </head>
+
 <body>
-  <div class="page-shell">
-    <header class="main-header">
-      <a class="brand" href="index.html">Vampiro: A Máscara</a>
+  <header class="topbar">
+    <a href="personagens.html" class="logo-dado">Dado</a>
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html" class="ativo">Personagens</a>
+      <a href="campanhas.html">Campanhas</a>
+    </nav>
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
 
-      <nav class="main-nav">
-        <a href="personagens.html">Personagens</a>
-        <a href="campanhas.html">Campanhas</a>
-      </nav>
+  <main class="conteudo">
+    <input id="imagemPersonagem" type="file" accept="image/*" />
 
-      <div class="auth-box">
-        <span data-user-name>Visitante</span>
-        <button class="btn btn-small" data-login-btn>Entrar</button>
-        <button class="btn btn-small btn-ghost hidden" data-logout-btn>Sair</button>
-      </div>
-    </header>
+    <section class="sheet-header" aria-label="Informações principais da ficha">
+      <button type="button" id="miniFotoTopo" class="mini-foto-topo" aria-label="Alterar imagem do personagem"></button>
 
-    <main>
-      <section class="play-sheet">
-        <aside class="play-portrait panel">
-          <img id="characterPortrait" alt="Imagem do personagem" />
-          <h1 id="characterName">Carregando...</h1>
-          <p id="characterSubtitle"></p>
+      <div class="field-line"><label>Nome:</label><input data-campo="nome" class="line-input" type="text" autocomplete="off" /></div>
+      <div class="field-line"><label>Jogador:</label><input data-campo="jogador" class="line-input" type="text" autocomplete="off" /></div>
+      <div class="field-line"><label>Campanha:</label><input data-campo="cronicaNome" class="line-input" type="text" autocomplete="off" /></div>
 
-          <div class="sheet-actions">
-            <a class="btn btn-secondary" id="editCharacterLink" href="#">Editar ficha</a>
-            <button class="btn" id="saveRuntimeBtn">Salvar alterações</button>
+      <div class="field-line"><label>Clã:</label><input data-campo="claFinal" class="line-input" type="text" autocomplete="off" /></div>
+      <div class="field-line"><label>Predador:</label><input data-campo="predadorFinal" class="line-input" type="text" autocomplete="off" /></div>
+      <div class="field-line"><label></label><input data-campo="resumoLivreTopo" class="line-input" type="text" autocomplete="off" /></div>
+    </section>
+
+    <section class="sheet-grid">
+      <section class="v5-panel">
+        <span class="corner-tr"></span><span class="corner-bl"></span>
+
+        <div class="atributos-bloco">
+          <div class="attr-col">
+            <div class="attr-titulo">Físicos</div>
+            <div class="attr-row"><label>FOR</label><span></span><div class="rating" data-campo="atributo_forca" data-max="5"></div></div>
+            <div class="attr-row"><label>DES</label><span></span><div class="rating" data-campo="atributo_destreza" data-max="5"></div></div>
+            <div class="attr-row"><label>VIG</label><span></span><div class="rating" data-campo="atributo_vigor" data-max="5"></div></div>
           </div>
-        </aside>
-
-        <section class="play-main">
-          <div class="runtime-grid">
-            <article class="panel">
-              <h2>Fome</h2>
-              <div class="tracker-line" data-runtime-tracker="hunger" data-max="5"></div>
-            </article>
-
-            <article class="panel">
-              <h2>Humanidade</h2>
-              <div class="tracker-line" data-runtime-tracker="humanity" data-max="10"></div>
-            </article>
-
-            <article class="panel">
-              <h2>Vitalidade</h2>
-              <div class="tracker-line" data-runtime-tracker="healthCurrent" data-max-field="healthMax"></div>
-            </article>
-
-            <article class="panel">
-              <h2>Força de Vontade</h2>
-              <div class="tracker-line" data-runtime-tracker="willpowerCurrent" data-max-field="willpowerMax"></div>
-            </article>
+          <div class="attr-col">
+            <div class="attr-titulo">Sociais</div>
+            <div class="attr-row"><label>CAR</label><span></span><div class="rating" data-campo="atributo_carisma" data-max="5"></div></div>
+            <div class="attr-row"><label>MANI</label><span></span><div class="rating" data-campo="atributo_manipulacao" data-max="5"></div></div>
+            <div class="attr-row"><label>AUTOC.</label><span></span><div class="rating" data-campo="atributo_autocontrole" data-max="5"></div></div>
           </div>
+          <div class="attr-col">
+            <div class="attr-titulo">Mentais</div>
+            <div class="attr-row"><label>INT</label><span></span><div class="rating" data-campo="atributo_inteligencia" data-max="5"></div></div>
+            <div class="attr-row"><label>RAC.</label><span></span><div class="rating" data-campo="atributo_raciocinio" data-max="5"></div></div>
+            <div class="attr-row"><label>DET.</label><span></span><div class="rating" data-campo="atributo_determinacao" data-max="5"></div></div>
+          </div>
+        </div>
 
-          <section class="panel">
-            <h2>Rolagem</h2>
+        <div class="dupla-caixas somente-deslocamento">
+          <div class="boxed-line deslocamento-box"><span>Deslocamento</span><input data-campo="deslocamento" type="text" placeholder="9m" /></div>
+        </div>
 
-            <div class="roll-builder">
-              <label>
-                Atributo
-                <select id="rollAttribute"></select>
-              </label>
+        <div class="tracker tracker-experiencia">
+          <div class="tracker-title">Experiência</div>
+          <div class="tracker-bar experiencia"><button type="button" data-dec="experiencia">&lt;</button><input data-campo="experiencia" type="text" placeholder="12/34" /><button type="button" data-inc="experiencia">&gt;</button></div>
+        </div>
 
-              <label>
-                Perícia
-                <select id="rollSkill"></select>
-              </label>
+        <div class="tracker">
+          <div class="tracker-title">Vitalidade</div>
+          <div class="tracker-bar vitalidade"><button type="button" data-dec="vitalidade">&lt;</button><input data-campo="vitalidade" type="text" placeholder="36/36" /><button type="button" data-inc="vitalidade">&gt;</button></div>
+        </div>
+        <div class="tracker">
+          <div class="tracker-title">Força de vontade</div>
+          <div class="tracker-bar vontade"><button type="button" data-dec="vontade">&lt;</button><input data-campo="vontade" type="text" placeholder="36/36" /><button type="button" data-inc="vontade">&gt;</button></div>
+        </div>
+        <div class="tracker">
+          <div class="tracker-title">Humanidade</div>
+          <div class="tracker-bar humanidade"><button type="button" data-dec="humanidade">&lt;</button><input data-campo="humanidade" type="text" placeholder="36/36" /><button type="button" data-inc="humanidade">&gt;</button></div>
+        </div>
+        <div class="tracker">
+          <div class="tracker-title">Fome</div>
+          <div class="tracker-bar fome"><button type="button" data-dec="fome">&lt;</button><input data-campo="fome" type="text" placeholder="36/36" /><button type="button" data-inc="fome">&gt;</button></div>
+        </div>
 
-              <label>
-                Dificuldade
-                <input id="rollDifficulty" type="number" min="1" max="10" value="2" />
-              </label>
+        <div class="thin-label wide-line" style="margin-top:14px;">Ressonância <input data-campo="ressonancia" type="text" /></div>
 
-              <button class="btn" id="rollSheetDice">Rolar</button>
-            </div>
+        <div class="tracker" style="margin-top:8px;">
+          <div class="tracker-title">Potência do Sangue</div>
+          <div class="tracker-bar sangue"><button type="button" data-dec="potenciaSangue">&lt;</button><input data-campo="potenciaSangue" type="text" placeholder="36/36" /><button type="button" data-inc="potenciaSangue">&gt;</button></div>
+        </div>
 
-            <div id="rollResult" class="dice-result">Escolha atributo + perícia e role.</div>
-          </section>
+        <div class="thin-grid">
+          <div class="thin-label">Surto de Sangue: <input data-campo="surtoSangue" type="text" /></div>
+          <div class="thin-label">Quantidade Recuperada: <input data-campo="quantidadeRecuperada" type="text" /></div>
+          <div class="thin-label">Bônus de Poder: <input data-campo="bonusPoder" type="text" /></div>
+          <div class="thin-label">Rolagem de Sangue: <input data-campo="rolagemSangue" type="text" /></div>
+          <div class="thin-label">Penalidade de Alimentação: <input data-campo="penalidadeAlimentacao" type="text" /></div>
+          <div class="thin-label">Gravidade de Perdição: <input data-campo="gravidadePerdicao" type="text" /></div>
+        </div>
 
-          <section class="sheet-columns">
-            <article class="panel">
-              <h2>Atributos</h2>
-              <div id="attributesView" class="compact-stats"></div>
-            </article>
-
-            <article class="panel">
-              <h2>Perícias</h2>
-              <div id="skillsView" class="compact-stats"></div>
-            </article>
-          </section>
-
-          <section class="sheet-columns">
-            <article class="panel">
-              <h2>Disciplinas</h2>
-              <div id="disciplinesView" class="tag-list"></div>
-            </article>
-
-            <article class="panel">
-              <h2>História e anotações</h2>
-              <div id="storyView" class="story-block"></div>
-            </article>
-          </section>
-        </section>
+        <div class="thin-label wide-line" style="margin-top:20px;">Anotações rápidas</div>
+        <textarea data-campo="anotacoesGerais" class="nota-area" placeholder="Condições, danos, efeitos ativos..."></textarea>
       </section>
-    </main>
+
+      <section class="v5-panel">
+        <span class="corner-tr"></span><span class="corner-bl"></span>
+        <div class="tabs-title sheet-tabs" role="tablist" aria-label="Abas de habilidades, disciplinas, vantagens e defeitos">
+          <button type="button" class="tab-btn active" role="tab" aria-selected="true" aria-controls="abaHabilidades" data-tab-target="habilidades">Habilidades</button>
+          <button type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="abaDisciplinas" data-tab-target="disciplinas" tabindex="-1">Disciplinas</button>
+          <button type="button" id="tabVantagensDefeitos" class="tab-btn" role="tab" aria-selected="false" aria-controls="abaVantagens" data-tab-target="vantagens" tabindex="-1">VAN. E DEF.</button>
+        </div>
+
+        <div id="abaHabilidades" class="tab-panel" role="tabpanel" data-tab-panel="habilidades">
+          <div id="listaHabilidades" class="skills-list"></div>
+          <div class="tab-panel-notes">
+            <label>Especializações</label>
+            <textarea data-campo="especializacoes" class="nota-area" placeholder="Especializações das habilidades"></textarea>
+          </div>
+        </div>
+
+        <div id="abaDisciplinas" class="tab-panel" role="tabpanel" data-tab-panel="disciplinas" hidden>
+          <div class="disciplinas-acoes" aria-label="Ações de disciplinas">
+            <button type="button" id="btnNovaDisciplina" class="btn-disciplina">Nova diciplina</button>
+            <button type="button" id="btnAdicionarDisciplina" class="btn-disciplina">Adicionar diciplinas</button>
+          </div>
+
+          <div class="disciplinas-ficha-area">
+            <label>Disciplinas adicionadas</label>
+            <div id="listaDisciplinasFicha" class="disciplinas-ficha-lista"></div>
+            <textarea data-campo="disciplinasTexto" class="campo-disciplinas-escondido" aria-hidden="true"></textarea>
+          </div>
+
+          <div class="rituais-area">
+            <label>Rituais / Poderes especiais</label>
+            <textarea data-campo="rituaisAlquimia" class="nota-area tab-textarea" placeholder="Rituais, alquimia, poderes..."></textarea>
+          </div>
+        </div>
+
+        <div id="abaVantagens" class="tab-panel" role="tabpanel" data-tab-panel="vantagens" hidden>
+          <div class="tab-extra-grid tab-single">
+            <div>
+              <label>Vantagens e Defeitos</label>
+              <textarea data-campo="vantagensDefeitosTexto" class="nota-area tab-textarea" placeholder="Vantagens, defeitos, custos e observações..."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="v5-panel">
+        <span class="corner-tr"></span><span class="corner-bl"></span>
+        <div class="tabs-title sheet-tabs" role="tablist" aria-label="Abas de inventário e descrição">
+          <button type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="abaInventario" data-tab-target="inventario" tabindex="-1">Inventário</button>
+          <button type="button" class="tab-btn active" role="tab" aria-selected="true" aria-controls="abaDescricao" data-tab-target="descricao">Descrição</button>
+        </div>
+
+        <div id="abaInventario" class="tab-panel" role="tabpanel" data-tab-panel="inventario" hidden>
+          <div class="inventario-area inventario-tab-area">
+            <textarea data-campo="equipamentosTexto" placeholder="Equipamentos, dinheiro, recursos, refúgio, itens importantes..."></textarea>
+          </div>
+        </div>
+
+        <div id="abaDescricao" class="tab-panel" role="tabpanel" data-tab-panel="descricao">
+          <div class="descricao-topo">
+            <button type="button" id="fotoPreview" class="foto-grande" aria-label="Alterar imagem do personagem">Imagem</button>
+            <div class="desc-lista">
+              <div class="mini-info-line"><label>Nome:</label><input data-campo="nomeDescricao" type="text" /></div>
+              <div class="mini-info-line"><label>Idade Verdadeira:</label><input data-campo="idadeVerdadeira" type="text" /></div>
+              <div class="mini-info-line"><label>Idade aparente:</label><input data-campo="idadeAparente" type="text" /></div>
+              <div class="mini-info-line"><label>Data de Nascimento:</label><input data-campo="dataNascimento" type="text" /></div>
+              <div class="mini-info-line"><label>Data da Morte:</label><input data-campo="dataMorte" type="text" /></div>
+              <div class="mini-info-line"><label>Conceito:</label><input data-campo="conceito" type="text" /></div>
+              <div class="mini-info-line"><label>Predador:</label><input data-campo="predadorDescricao" type="text" /></div>
+              <div class="mini-info-line"><label>Crônica:</label><input data-campo="cronicaDescricao" type="text" /></div>
+              <div class="mini-info-line"><label>Ambição:</label><input data-campo="ambicao" type="text" /></div>
+              <div class="mini-info-line"><label>Clã:</label><input data-campo="claDescricao" type="text" /></div>
+              <div class="mini-info-line"><label>Senhor:</label><input data-campo="sire" type="text" /></div>
+              <div class="mini-info-line"><label>Desejo:</label><input data-campo="desejo" type="text" /></div>
+              <div class="mini-info-line"><label>Geração:</label><input data-campo="geracao" type="text" /></div>
+            </div>
+          </div>
+
+          <div class="descricao-grid">
+            <div class="desc-box"><label>Princípios da Crônica:</label><textarea data-campo="principiosCronica"></textarea></div>
+            <div class="desc-box"><label>Aparência:</label><textarea data-campo="aparencia"></textarea></div>
+            <div class="desc-box"><label>Pilares & Convicções:</label><textarea data-campo="conviccoes"></textarea></div>
+            <div class="desc-box"><label>Traços Distintivos:</label><textarea data-campo="tracosDistintivos"></textarea></div>
+            <div class="desc-box"><label>Perdição do Clã:</label><textarea data-campo="perdicaoCla"></textarea></div>
+            <div class="desc-box tall"><label>História:</label><textarea data-campo="historia"></textarea></div>
+            <div class="desc-box full"><label>Touchstones / Laços:</label><textarea data-campo="touchstones"></textarea></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <div class="sheet-actions">
+      <button type="button" id="btnSalvar" class="btn-principal">Salvar ficha</button>
+      <a href="ficha_vampiro_criação.html" class="btn-fantasma">Voltar para criação</a>
+      <a href="personagens.html" class="btn-fantasma">Personagens</a>
+    </div>
+  </main>
+
+  <div id="avisoSalvo" class="aviso-salvo">Ficha salva.</div>
+
+  <div id="modalDisciplinas" class="modal-ficha" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalDisciplinas">
+      <div class="modal-topo">
+        <h2 id="tituloModalDisciplinas">Adicionar diciplinas</h2>
+        <button type="button" class="modal-fechar" data-modal-close="disciplinas" aria-label="Fechar">×</button>
+      </div>
+      <p class="modal-descricao">Escolha uma diciplina para adicionar à ficha. Cada card mostra uma breve descrição e as tags dos clãs que costumam ter acesso a ela.</p>
+      <div class="filtro-disciplinas">
+        <label for="filtroClaDisciplina">Filtrar por clã</label>
+        <select id="filtroClaDisciplina">
+          <option value="todos">Todos os clãs</option>
+        </select>
+      </div>
+      <div id="listaDisciplinasModal" class="disciplinas-lista-modal"></div>
+    </div>
   </div>
 
-  <script type="module" src="js/auth.js"></script>
-  <script type="module" src="js/ficha_vampiro_jogo.js"></script>
+  <div id="modalNovaDisciplina" class="modal-ficha" hidden>
+    <div class="modal-caixa modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="tituloModalNovaDisciplina">
+      <div class="modal-topo">
+        <h2 id="tituloModalNovaDisciplina">Nova diciplina</h2>
+        <button type="button" class="modal-fechar" data-modal-close="nova-disciplina" aria-label="Fechar">×</button>
+      </div>
+      <div class="nova-disciplina-form">
+        <label>Nome da diciplina
+          <input id="novaDisciplinaNome" type="text" autocomplete="off" placeholder="Ex.: Disciplina personalizada" />
+        </label>
+        <label>Descrição, nível, poderes ou anotações
+          <textarea id="novaDisciplinaDescricao" placeholder="Nível:
+Poderes:
+Anotações:"></textarea>
+        </label>
+        <div class="modal-acoes">
+          <button type="button" class="btn-modal-cancelar" data-modal-close="nova-disciplina">Cancelar</button>
+          <button type="button" id="btnSalvarNovaDisciplina" class="btn-modal-salvar">Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const avisoSalvo = document.getElementById('avisoSalvo');
+    const imagemPersonagem = document.getElementById('imagemPersonagem');
+    const fotoPreview = document.getElementById('fotoPreview');
+    const miniFotoTopo = document.getElementById('miniFotoTopo');
+    const listaHabilidades = document.getElementById('listaHabilidades');
+    const btnAdicionarDisciplina = document.getElementById('btnAdicionarDisciplina');
+    const btnNovaDisciplina = document.getElementById('btnNovaDisciplina');
+    const modalDisciplinas = document.getElementById('modalDisciplinas');
+    const listaDisciplinasModal = document.getElementById('listaDisciplinasModal');
+    const listaDisciplinasFicha = document.getElementById('listaDisciplinasFicha');
+    const filtroClaDisciplina = document.getElementById('filtroClaDisciplina');
+    const modalNovaDisciplina = document.getElementById('modalNovaDisciplina');
+    const novaDisciplinaNome = document.getElementById('novaDisciplinaNome');
+    const novaDisciplinaDescricao = document.getElementById('novaDisciplinaDescricao');
+    const btnSalvarNovaDisciplina = document.getElementById('btnSalvarNovaDisciplina');
+    let imagemBase64 = '';
+    let fichaAtual = null;
+    let disciplinasAdicionadas = [];
+
+    const habilidades = [
+      ['Armas Brancas', 'habilidade_armasBrancas'],
+      ['Armas de Fogo', 'habilidade_armasFogo'],
+      ['Atletismo', 'habilidade_atletismo'],
+      ['Briga', 'habilidade_briga'],
+      ['Condução', 'habilidade_conducao'],
+      ['Furtividade', 'habilidade_furtividade'],
+      ['Ladroagem', 'habilidade_ladroagem'],
+      ['Ofícios', 'habilidade_oficios'],
+      ['Sobrevivência', 'habilidade_sobrevivencia'],
+      ['Empatia com animais', 'habilidade_empatiaAnimais'],
+      ['Etiqueta', 'habilidade_etiqueta'],
+      ['Intimidação', 'habilidade_intimidacao'],
+      ['Liderança', 'habilidade_lideranca'],
+      ['Manha', 'habilidade_manha'],
+      ['Performance', 'habilidade_performance'],
+      ['Persuasão', 'habilidade_persuasao'],
+      ['Sagacidade', 'habilidade_sagacidade'],
+      ['Subterfúgio', 'habilidade_subterfugio'],
+      ['Ciência', 'habilidade_ciencia'],
+      ['Erudição', 'habilidade_erudicao'],
+      ['Finanças', 'habilidade_financas'],
+      ['Investigação', 'habilidade_investigacao'],
+      ['Medicina', 'habilidade_medicina'],
+      ['Ocultismo', 'habilidade_ocultismo'],
+      ['Percepção', 'habilidade_percepcao'],
+      ['Política', 'habilidade_politica'],
+      ['Tecnologia', 'habilidade_tecnologia']
+    ];
+
+    const disciplinasV5 = [
+      { nome: 'Animalismo', clas: ['Gangrel', 'Nosferatu', 'Ravnos', 'Tzimisce'], descricao: 'Permite compreender, acalmar, comandar ou invocar animais, além de tocar a Besta interior.' },
+      { nome: 'Auspícios', clas: ['Malkaviano', 'Toreador', 'Tremere', 'Hecata', 'Salubri'], descricao: 'Aguça sentidos sobrenaturais, revela auras, pressentimentos, segredos e presenças ocultas.' },
+      { nome: 'Celeridade', clas: ['Brujah', 'Toreador', 'Banu Haqim'], descricao: 'Concede velocidade, reflexos e movimentos impossíveis para agir antes dos demais.' },
+      { nome: 'Dominação', clas: ['Ventrue', 'Tremere', 'Lasombra', 'Tzimisce', 'Salubri'], descricao: 'Impõe comandos à mente, altera lembranças e força obediência pela vontade vampírica.' },
+      { nome: 'Fortitude', clas: ['Gangrel', 'Ventrue', 'Hecata', 'Salubri'], descricao: 'Torna o vampiro resistente a ferimentos, dor, medo e pressão sobrenatural.' },
+      { nome: 'Metamorfose', clas: ['Gangrel', 'Ministério', 'Tzimisce'], descricao: 'Transforma o corpo: sentidos bestiais, garras, formas animais e adaptações monstruosas.' },
+      { nome: 'Ofuscação', clas: ['Malkaviano', 'Nosferatu', 'Banu Haqim', 'Ministério', 'Ravnos'], descricao: 'Esconde a presença, mascara a aparência e permite desaparecer da percepção dos outros.' },
+      { nome: 'Potência', clas: ['Brujah', 'Nosferatu', 'Lasombra'], descricao: 'Amplifica a força física, tornando golpes, saltos e feitos brutos devastadores.' },
+      { nome: 'Presença', clas: ['Brujah', 'Toreador', 'Ventrue', 'Ministério', 'Ravnos'], descricao: 'Manipula emoções com magnetismo sobrenatural, fascínio, admiração, desejo ou terror.' },
+      { nome: 'Feitiçaria do Sangue', clas: ['Tremere', 'Banu Haqim'], descricao: 'Usa o sangue para rituais, maldições, proteção, investigação mística e efeitos arcanos.' },
+      { nome: 'Oblívio', clas: ['Lasombra', 'Hecata'], descricao: 'Canaliza sombras, morte e esquecimento, tocando forças ligadas ao vazio e aos mortos.' },
+      { nome: 'Alquimia Sangue-Fraco', clas: ['Sangue-Fraco'], descricao: 'Cria fórmulas instáveis capazes de simular poderes vampíricos de formas imprevisíveis.' }
+    ];
+
+    function clansDasDisciplinas() {
+      return [...new Set(disciplinasV5.flatMap((disciplina) => disciplina.clas || []))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }
+
+    function preencherFiltroCla() {
+      if (!filtroClaDisciplina || filtroClaDisciplina.dataset.preenchido === 'true') return;
+      filtroClaDisciplina.innerHTML = '<option value="todos">Todos os clãs</option>' + clansDasDisciplinas()
+        .map((cla) => `<option value="${escapeHtml(cla)}">${escapeHtml(cla)}</option>`)
+        .join('');
+      filtroClaDisciplina.dataset.preenchido = 'true';
+    }
+
+    function textoDisciplina(item) {
+      const tags = Array.isArray(item.clas) && item.clas.length ? item.clas.join(', ') : '';
+      const linhas = [item.nome || 'Diciplina sem nome'];
+      if (tags) linhas.push(`Clã: ${tags}`);
+      if (item.descricao) linhas.push(item.descricao);
+      return linhas.join('\n');
+    }
+
+    function sincronizarCampoDisciplinas() {
+      const campo = getCampo('disciplinasTexto');
+      if (!campo) return;
+      campo.value = disciplinasAdicionadas.map(textoDisciplina).join('\n\n');
+    }
+
+    function renderizarDisciplinasFicha() {
+      if (!listaDisciplinasFicha) return;
+
+      if (!disciplinasAdicionadas.length) {
+        listaDisciplinasFicha.innerHTML = '<div class="disciplinas-vazio">Nenhuma diciplina adicionada ainda.</div>';
+        sincronizarCampoDisciplinas();
+        return;
+      }
+
+      listaDisciplinasFicha.innerHTML = disciplinasAdicionadas.map((disciplina, indice) => {
+        const tags = Array.isArray(disciplina.clas) ? disciplina.clas : [];
+        return `
+          <article class="disciplina-ficha-card">
+            <div class="disciplina-ficha-topo">
+              <div>
+                <strong class="disciplina-ficha-nome">${escapeHtml(disciplina.nome || 'Diciplina sem nome')}</strong>
+                <div class="disciplina-ficha-tags">
+                  ${tags.map((cla) => `<span class="tag-clan">${escapeHtml(cla)}</span>`).join('')}
+                </div>
+              </div>
+              <button type="button" class="btn-remover-disciplina" data-remover-disciplina="${indice}" aria-label="Remover diciplina">×</button>
+            </div>
+            <div class="disciplina-ficha-texto">${escapeHtml(disciplina.descricao || 'Sem descrição cadastrada.')}</div>
+          </article>
+        `;
+      }).join('');
+      sincronizarCampoDisciplinas();
+    }
+
+    function adicionarDisciplinaNaFicha({ nome, clas = [], descricao = '' }) {
+      const nomeLimpo = String(nome || '').trim();
+      if (!nomeLimpo) return;
+
+      disciplinasAdicionadas.push({
+        nome: nomeLimpo,
+        clas: Array.isArray(clas) ? clas : [],
+        descricao: String(descricao || '')
+      });
+
+      renderizarDisciplinasFicha();
+      salvarFicha(true);
+    }
+
+    function carregarDisciplinasAdicionadas(lista = [], textoAntigo = '') {
+      if (Array.isArray(lista) && lista.length) {
+        disciplinasAdicionadas = lista.map((item) => ({
+          nome: item?.nome || 'Diciplina sem nome',
+          clas: Array.isArray(item?.clas) ? item.clas : [],
+          descricao: item?.descricao || ''
+        }));
+      } else if (String(textoAntigo || '').trim()) {
+        disciplinasAdicionadas = [{
+          nome: 'Diciplinas antigas',
+          clas: [],
+          descricao: String(textoAntigo || '').trim()
+        }];
+      } else {
+        disciplinasAdicionadas = [];
+      }
+      renderizarDisciplinasFicha();
+    }
+
+    function removerDisciplina(indice) {
+      disciplinasAdicionadas.splice(indice, 1);
+      renderizarDisciplinasFicha();
+      salvarFicha(true);
+      mostrarAviso('Diciplina removida.');
+    }
+
+    function abrirModal(modal) {
+      if (!modal) return;
+      modal.hidden = false;
+      document.body.classList.add('modal-aberto');
+    }
+
+    function fecharModal(modal) {
+      if (!modal) return;
+      modal.hidden = true;
+      if (![...document.querySelectorAll('.modal-ficha')].some((item) => !item.hidden)) {
+        document.body.classList.remove('modal-aberto');
+      }
+    }
+
+    function renderizarListaDisciplinas() {
+      if (!listaDisciplinasModal) return;
+      const filtro = filtroClaDisciplina?.value || 'todos';
+      const listaFiltrada = filtro === 'todos'
+        ? disciplinasV5
+        : disciplinasV5.filter((disciplina) => (disciplina.clas || []).includes(filtro));
+
+      if (!listaFiltrada.length) {
+        listaDisciplinasModal.innerHTML = '<div class="disciplinas-vazio">Nenhuma diciplina encontrada para esse clã.</div>';
+        return;
+      }
+
+      listaDisciplinasModal.innerHTML = listaFiltrada.map((disciplina) => {
+        const indice = disciplinasV5.indexOf(disciplina);
+        return `
+          <article class="disciplina-card">
+            <div>
+              <strong class="disciplina-nome">${escapeHtml(disciplina.nome)}</strong>
+              <p class="disciplina-descricao">${escapeHtml(disciplina.descricao)}</p>
+              <div class="disciplina-tags">
+                ${disciplina.clas.map((cla) => `<span class="tag-clan">${escapeHtml(cla)}</span>`).join('')}
+              </div>
+            </div>
+            <button type="button" class="btn-modal-add" data-add-disciplina="${indice}">Adicionar</button>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function adicionarDisciplinaPadrao(disciplina) {
+      if (!disciplina) return;
+      adicionarDisciplinaNaFicha({
+        nome: disciplina.nome,
+        clas: disciplina.clas,
+        descricao: disciplina.descricao
+      });
+      fecharModal(modalDisciplinas);
+      mostrarAviso('Diciplina adicionada.');
+    }
+
+    function abrirAdicionarDisciplina() {
+      preencherFiltroCla();
+      renderizarListaDisciplinas();
+      abrirModal(modalDisciplinas);
+    }
+
+    function abrirNovaDisciplina() {
+      if (novaDisciplinaNome) novaDisciplinaNome.value = '';
+      if (novaDisciplinaDescricao) novaDisciplinaDescricao.value = 'Nível: \nPoderes: \nAnotações: ';
+      abrirModal(modalNovaDisciplina);
+      setTimeout(() => novaDisciplinaNome?.focus(), 50);
+    }
+
+    function salvarNovaDisciplina() {
+      const nome = novaDisciplinaNome?.value?.trim();
+      if (!nome) {
+        mostrarAviso('Informe o nome da diciplina.');
+        novaDisciplinaNome?.focus();
+        return;
+      }
+      const descricao = novaDisciplinaDescricao?.value?.trim() || 'Nível: \nPoderes: \nAnotações: ';
+      adicionarDisciplinaNaFicha({ nome, clas: ['Personalizada'], descricao });
+      fecharModal(modalNovaDisciplina);
+      mostrarAviso('Nova diciplina criada.');
+    }
+
+
+    function montarHabilidades() {
+      listaHabilidades.innerHTML = habilidades.map(([nome, chave]) => `
+        <div class="skill-row">
+          <span class="skill-bullet"></span>
+          <span class="skill-name">${nome}</span>
+          <span class="leader"></span>
+          <div class="rating" data-campo="${chave}" data-max="5"></div>
+        </div>
+      `).join('');
+    }
+
+    function initAbasDaFicha() {
+      const botoes = document.querySelectorAll('[data-tab-target]');
+      botoes.forEach((botao) => {
+        botao.addEventListener('click', () => {
+          const painelPai = botao.closest('.v5-panel');
+          const aba = botao.dataset.tabTarget;
+          if (!painelPai || !aba) return;
+
+          painelPai.querySelectorAll('[data-tab-target]').forEach((outroBotao) => {
+            const ativo = outroBotao === botao;
+            outroBotao.classList.toggle('active', ativo);
+            outroBotao.setAttribute('aria-selected', ativo ? 'true' : 'false');
+            outroBotao.tabIndex = ativo ? 0 : -1;
+          });
+
+          painelPai.querySelectorAll('[data-tab-panel]').forEach((painel) => {
+            painel.hidden = painel.dataset.tabPanel !== aba;
+          });
+        });
+      });
+    }
+
+    function carregarUsuario() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (!usuarioSalvo) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+        if (!usuario || usuario.logado !== true || !usuario.nome) {
+          localStorage.removeItem('usuarioLogado');
+          usuarioNome.textContent = 'Visitante';
+          btnSair.textContent = 'Login';
+          return;
+        }
+        usuarioNome.textContent = usuario.nome;
+        btnSair.textContent = 'Sair';
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+      }
+    }
+
+    function mostrarAviso(texto) {
+      avisoSalvo.textContent = texto;
+      avisoSalvo.classList.add('mostrar');
+      setTimeout(() => avisoSalvo.classList.remove('mostrar'), 2200);
+    }
+
+    function escapeHtml(texto) {
+      return String(texto || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    function getCampo(chave) {
+      return document.querySelector(`[data-campo="${chave}"]`);
+    }
+
+    function syncCamposEspelhados(origem) {
+      const pares = {
+        nome: ['nomeDescricao'],
+        nomeDescricao: ['nome'],
+        claFinal: ['claDescricao'],
+        claDescricao: ['claFinal'],
+        predadorFinal: ['predadorDescricao'],
+        predadorDescricao: ['predadorFinal'],
+        cronicaNome: ['cronicaDescricao'],
+        cronicaDescricao: ['cronicaNome']
+      };
+      const campoOrigem = origem?.dataset?.campo;
+      if (!campoOrigem || !pares[campoOrigem]) return;
+      pares[campoOrigem].forEach((chave) => {
+        const destino = getCampo(chave);
+        if (destino && destino !== origem) destino.value = origem.value;
+      });
+    }
+
+    function initRatings() {
+      document.querySelectorAll('.rating').forEach((rating) => {
+        const chave = rating.dataset.campo;
+        const max = Number(rating.dataset.max || 5);
+        if (!rating.querySelector('input')) {
+          const hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.dataset.campo = chave;
+          hidden.value = '';
+          rating.appendChild(hidden);
+        }
+        for (let i = 1; i <= max; i++) {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'dot';
+          dot.title = `${i}`;
+          dot.addEventListener('click', () => {
+            const input = rating.querySelector('input');
+            const valorAtual = Number(input.value || 0);
+            input.value = valorAtual === i ? 0 : i;
+            atualizarRating(rating);
+            salvarFicha(true);
+          });
+          rating.appendChild(dot);
+        }
+        atualizarRating(rating);
+      });
+    }
+
+    function atualizarRating(rating) {
+      const input = rating.querySelector('input');
+      const valor = Number(input?.value || 0);
+      rating.querySelectorAll('.dot').forEach((dot, indice) => {
+        dot.classList.toggle('active', indice < valor);
+      });
+    }
+
+    function atualizarRatings() {
+      document.querySelectorAll('.rating').forEach(atualizarRating);
+    }
+
+    function numerosDaBarra(texto) {
+      return String(texto || '').match(/-?\d+/g)?.map(Number) || [];
+    }
+
+    function lerBarra(campo) {
+      const valorTexto = String(campo?.value || '').trim();
+      const placeholderTexto = String(campo?.placeholder || '').trim();
+      const numerosValor = numerosDaBarra(valorTexto);
+      const numerosPlaceholder = numerosDaBarra(placeholderTexto);
+      const maxSalvo = Number(campo?.dataset?.maximoBarra || 0);
+
+      const usarPlaceholder = numerosValor.length === 0 && numerosPlaceholder.length >= 2;
+      const base = usarPlaceholder ? numerosPlaceholder : numerosValor;
+
+      let atual = base.length >= 1 ? base[0] : 0;
+      let maximo = base.length >= 2
+        ? base[1]
+        : (maxSalvo > 0 ? maxSalvo : (numerosPlaceholder.length >= 2 ? numerosPlaceholder[1] : Math.max(atual, 1)));
+
+      if (!Number.isFinite(atual)) atual = 0;
+      if (!Number.isFinite(maximo) || maximo <= 0) maximo = 1;
+
+      atual = Math.max(0, Math.min(atual, maximo));
+      campo.dataset.maximoBarra = String(maximo);
+
+      return { atual, maximo, temMaximo: numerosValor.length >= 2 || valorTexto.includes('/') };
+    }
+
+    function atualizarBarra(campo) {
+      const barra = campo?.closest?.('.tracker-bar');
+      if (!barra) return;
+
+      const { atual, maximo } = lerBarra(campo);
+      const pct = Math.max(0, Math.min(100, (atual / maximo) * 100));
+      barra.style.setProperty('--tracker-pct', `${pct}%`);
+      barra.dataset.atual = String(atual);
+      barra.dataset.maximo = String(maximo);
+    }
+
+    function atualizarTodasBarras() {
+      document.querySelectorAll('.tracker-bar input[data-campo]').forEach(atualizarBarra);
+    }
+
+    function alterarBarra(chave, delta) {
+      const campo = getCampo(chave);
+      if (!campo) return;
+
+      const info = lerBarra(campo);
+      const novoAtual = Math.max(0, Math.min(info.maximo, info.atual + delta));
+      const placeholderTemMaximo = numerosDaBarra(campo.placeholder || '').length >= 2;
+
+      campo.value = (info.temMaximo || placeholderTemMaximo)
+        ? `${novoAtual}/${info.maximo}`
+        : String(novoAtual);
+
+      atualizarBarra(campo);
+      salvarFicha(true);
+    }
+
+    function coletarFicha() {
+      const campos = {};
+      document.querySelectorAll('[data-campo]').forEach((campo) => {
+        campos[campo.dataset.campo] = campo.value || '';
+      });
+
+      const id = fichaAtual?.id || localStorage.getItem('personagemVampiroIdAtual') || crypto.randomUUID();
+      return {
+        id,
+        modelo: 'Vampiro: A Máscara',
+        criadoEm: fichaAtual?.criadoEm || new Date().toISOString(),
+        atualizadoEm: new Date().toISOString(),
+        imagem: imagemBase64,
+        campos,
+        listas: {
+          ...(fichaAtual?.listas || {}),
+          disciplinasAdicionadas
+        },
+        resumo: {
+          nome: campos.nome || campos.nomeDescricao || 'Personagem sem nome',
+          jogador: campos.jogador || '',
+          cla: campos.claFinal || campos.claDescricao || '',
+          predador: campos.predadorFinal || campos.predadorDescricao || '',
+          conceito: campos.conceito || ''
+        }
+      };
+    }
+
+    function salvarNaLista(ficha) {
+      const lista = JSON.parse(localStorage.getItem('personagensVampiro') || '[]');
+      const indice = lista.findIndex((item) => item.id === ficha.id);
+      if (indice >= 0) lista[indice] = ficha;
+      else lista.push(ficha);
+      localStorage.setItem('personagensVampiro', JSON.stringify(lista));
+    }
+
+    function salvarFicha(silencioso = false) {
+      fichaAtual = coletarFicha();
+      localStorage.setItem('personagemVampiroIdAtual', fichaAtual.id);
+      localStorage.setItem('personagemVampiroAtual', JSON.stringify(fichaAtual));
+      salvarNaLista(fichaAtual);
+      if (!silencioso) mostrarAviso('Ficha salva.');
+    }
+
+    function aplicarCampos(campos = {}) {
+      const mapa = { ...campos };
+      mapa.claFinal = mapa.claFinal || mapa.claPersonalizado || mapa.claSelect || mapa.claDescricao || '';
+      mapa.claDescricao = mapa.claDescricao || mapa.claFinal || '';
+      mapa.predadorFinal = mapa.predadorFinal || mapa.predadorPersonalizado || mapa.predadorSelect || mapa.predadorDescricao || '';
+      mapa.predadorDescricao = mapa.predadorDescricao || mapa.predadorFinal || '';
+      mapa.cronicaDescricao = mapa.cronicaDescricao || mapa.cronicaNome || '';
+      mapa.nomeDescricao = mapa.nomeDescricao || mapa.nome || '';
+      mapa.vantagensDefeitosTexto = mapa.vantagensDefeitosTexto || [mapa.vantagensTexto, mapa.defeitosTexto].filter(Boolean).join('\n\n');
+      mapa.perdicaoCla = mapa.perdicaoCla || mapa.maldicaoCla || '';
+
+      Object.entries(mapa).forEach(([chave, valor]) => {
+        const campo = getCampo(chave);
+        if (campo) campo.value = valor || '';
+      });
+
+      const campoNome = getCampo('nome');
+      const campoNomeDesc = getCampo('nomeDescricao');
+      if (campoNome && !campoNome.value) campoNome.value = 'Personagem sem nome';
+      if (campoNomeDesc && !campoNomeDesc.value) campoNomeDesc.value = campoNome?.value || 'Personagem sem nome';
+      atualizarRatings();
+      atualizarTodasBarras();
+    }
+
+    function aplicarImagem(src) {
+      if (!src) return;
+      imagemBase64 = src;
+      const imgHtml = `<img src="${escapeHtml(src)}" alt="Imagem do personagem" />`;
+      fotoPreview.innerHTML = imgHtml;
+      miniFotoTopo.innerHTML = imgHtml;
+    }
+
+    function carregarFicha() {
+      const salvo = localStorage.getItem('personagemVampiroAtual');
+      if (!salvo) {
+        aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
+        carregarDisciplinasAdicionadas([], '');
+        return;
+      }
+      try {
+        fichaAtual = JSON.parse(salvo);
+        aplicarCampos(fichaAtual.campos || {});
+        carregarDisciplinasAdicionadas(fichaAtual.listas?.disciplinasAdicionadas || [], fichaAtual.campos?.disciplinasTexto || '');
+        aplicarImagem(fichaAtual.imagem || '');
+      } catch (erro) {
+        console.warn('Não foi possível carregar a ficha:', erro);
+        aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
+        carregarDisciplinasAdicionadas([], '');
+      }
+    }
+
+    function abrirUploadImagem() {
+      imagemPersonagem.click();
+    }
+
+    imagemPersonagem.addEventListener('change', () => {
+      const arquivo = imagemPersonagem.files && imagemPersonagem.files[0];
+      if (!arquivo) return;
+      const leitor = new FileReader();
+      leitor.onload = () => {
+        aplicarImagem(leitor.result);
+        salvarFicha(true);
+        mostrarAviso('Imagem atualizada.');
+      };
+      leitor.readAsDataURL(arquivo);
+    });
+
+    fotoPreview.addEventListener('click', abrirUploadImagem);
+    miniFotoTopo.addEventListener('click', abrirUploadImagem);
+
+    document.addEventListener('input', (evento) => {
+      if (evento.target.matches('[data-campo]')) {
+        syncCamposEspelhados(evento.target);
+        atualizarBarra(evento.target);
+        salvarFicha(true);
+      }
+    });
+
+    document.querySelectorAll('[data-inc], [data-dec]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const chave = botao.dataset.inc || botao.dataset.dec;
+        alterarBarra(chave, botao.dataset.inc ? 1 : -1);
+      });
+    });
+
+    btnAdicionarDisciplina?.addEventListener('click', abrirAdicionarDisciplina);
+    btnNovaDisciplina?.addEventListener('click', abrirNovaDisciplina);
+    btnSalvarNovaDisciplina?.addEventListener('click', salvarNovaDisciplina);
+    filtroClaDisciplina?.addEventListener('change', renderizarListaDisciplinas);
+
+    document.addEventListener('click', (evento) => {
+      const botaoAdicionar = evento.target.closest('[data-add-disciplina]');
+      if (botaoAdicionar) {
+        const indice = Number(botaoAdicionar.dataset.addDisciplina);
+        adicionarDisciplinaPadrao(disciplinasV5[indice]);
+        return;
+      }
+
+      const botaoRemover = evento.target.closest('[data-remover-disciplina]');
+      if (botaoRemover) {
+        removerDisciplina(Number(botaoRemover.dataset.removerDisciplina));
+        return;
+      }
+
+      const fechar = evento.target.closest('[data-modal-close]');
+      if (fechar) {
+        const alvo = fechar.dataset.modalClose;
+        if (alvo === 'disciplinas') fecharModal(modalDisciplinas);
+        if (alvo === 'nova-disciplina') fecharModal(modalNovaDisciplina);
+        return;
+      }
+
+      if (evento.target === modalDisciplinas) fecharModal(modalDisciplinas);
+      if (evento.target === modalNovaDisciplina) fecharModal(modalNovaDisciplina);
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape') {
+        fecharModal(modalDisciplinas);
+        fecharModal(modalNovaDisciplina);
+      }
+    });
+
+    btnSalvar.addEventListener('click', () => salvarFicha(false));
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      window.location.href = 'login.html';
+    });
+
+    const tabVantagensDefeitos = document.querySelector('[data-tab-target="vantagens"]');
+    if (tabVantagensDefeitos) tabVantagensDefeitos.textContent = 'VAN. E DEF.';
+
+    montarHabilidades();
+    initRatings();
+    initAbasDaFicha();
+    carregarUsuario();
+    carregarFicha();
+    atualizarTodasBarras();
+  </script>
 </body>
 </html>
