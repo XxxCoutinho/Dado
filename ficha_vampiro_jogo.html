@@ -1386,7 +1386,11 @@
     }
 
     .nova-disciplina-form input,
-    .nova-disciplina-form textarea {
+    .nova-disciplina-form select,
+    .nova-disciplina-form textarea,
+    .nova-vantagem-form input,
+    .nova-vantagem-form select,
+    .nova-vantagem-form textarea {
       width: 100%;
       border: 1px solid rgba(255,255,255,.62);
       background: rgba(0,0,0,.55);
@@ -1398,7 +1402,16 @@
       resize: vertical;
     }
 
-    .nova-disciplina-form textarea { min-height: 118px; }
+    .nova-disciplina-form textarea,
+    .nova-vantagem-form textarea { min-height: 118px; }
+
+    .nova-vantagem-ajuda {
+      color: rgba(255,255,255,.86) !important;
+      font-size: .68rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-top: -6px;
+    }
 
     .modal-acoes {
       display: flex;
@@ -1406,6 +1419,474 @@
       gap: 8px;
       margin-top: 4px;
     }
+
+
+
+    /* Aba Van. e Def.: pontos, lista adicionada e modal com filtros */
+    .vantagens-topo {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: end;
+      margin: 2px 0 12px;
+    }
+
+    .vantagens-pontos {
+      display: grid;
+      gap: 4px;
+      color: #fff;
+      font-weight: 1000;
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .vantagens-pontos input {
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(0,0,0,.36);
+      color: #fff;
+      outline: none;
+      padding: 0 9px;
+      font: inherit;
+      font-size: .86rem;
+      font-weight: 900;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .btn-vantagem {
+      min-height: 30px;
+      min-width: 96px;
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .vantagens-ficha-area {
+      display: grid;
+      gap: 8px;
+    }
+
+    .vantagens-ficha-area > label,
+    .vantagens-notas label {
+      color: #fff;
+      font-weight: 1000;
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .vantagens-ficha-lista {
+      display: grid;
+      gap: 8px;
+      min-height: 72px;
+    }
+
+    .vantagens-vazio {
+      border: 1px dashed rgba(255,255,255,.42);
+      background: rgba(255,255,255,.025);
+      padding: 12px;
+      color: rgba(255,255,255,.82) !important;
+      font-size: .74rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .vantagem-ficha-card {
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(255,255,255,.035);
+      padding: 9px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+    }
+
+    .vantagem-ficha-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .vantagem-ficha-nome,
+    .vantagem-nome {
+      display: block;
+      color: #fff;
+      font-size: .96rem;
+      font-weight: 1000;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .vantagem-meta,
+    .vantagem-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-vantagem-tipo,
+    .tag-vantagem-pontos {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(255,255,255,.11);
+      padding: 2px 6px;
+      color: #fff;
+      font-size: .56rem;
+      font-weight: 1000;
+      letter-spacing: .03em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .tag-vantagem-pontos {
+      background: rgba(255,255,255,.05);
+    }
+
+    .btn-remover-vantagem {
+      min-width: 22px;
+      height: 22px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 1000;
+      line-height: 1;
+      opacity: .82;
+    }
+
+    .btn-remover-vantagem:hover {
+      opacity: 1;
+      background: rgba(255,255,255,.1);
+    }
+
+    .vantagem-ficha-texto,
+    .vantagem-descricao {
+      color: rgba(255,255,255,.9) !important;
+      font-size: .72rem;
+      line-height: 1.28;
+      margin: 0;
+    }
+
+    .vantagem-ficha-texto {
+      width: 100%;
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(0,0,0,.26);
+      padding: 7px;
+      font-weight: 800;
+      white-space: pre-wrap;
+    }
+
+    .vantagens-notas {
+      margin-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.38);
+      padding-top: 9px;
+    }
+
+    .filtro-vantagens {
+      display: grid;
+      grid-template-columns: auto minmax(150px, 210px) auto minmax(180px, 1fr);
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 12px;
+    }
+
+    .filtro-vantagens label {
+      color: #fff;
+      font-size: .76rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .filtro-vantagens select,
+    .filtro-vantagens input {
+      min-height: 32px;
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 0 8px;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .vantagens-lista-modal {
+      display: grid;
+      gap: 9px;
+    }
+
+    .vantagem-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.5);
+      background: rgba(255,255,255,.035);
+      padding: 10px;
+    }
+
+
+    .vantagem-pontos-escolha {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+      max-width: 150px;
+    }
+
+    .vantagem-pontos-escolha label {
+      color: #fff;
+      font-size: .62rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .vantagem-pontos-select {
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 0 8px;
+      font: inherit;
+      font-size: .76rem;
+      font-weight: 900;
+      outline: none;
+    }
+
+
+    /* Aba Inventário: botões, cards, categorias e janela de itens */
+    .inventario-topo {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin: 2px 0 12px;
+    }
+
+    .btn-inventario {
+      min-height: 30px;
+      min-width: 104px;
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .inventario-ficha-area {
+      display: grid;
+      gap: 8px;
+    }
+
+    .inventario-ficha-area > label,
+    .inventario-notas label {
+      color: #fff;
+      font-weight: 1000;
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+
+    .inventario-ficha-lista {
+      display: grid;
+      gap: 8px;
+      min-height: 72px;
+    }
+
+    .inventario-vazio {
+      border: 1px dashed rgba(255,255,255,.42);
+      background: rgba(255,255,255,.025);
+      padding: 12px;
+      color: rgba(255,255,255,.82) !important;
+      font-size: .74rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .item-ficha-card,
+    .item-card {
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(255,255,255,.035);
+      padding: 9px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+    }
+
+    .item-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border-color: rgba(255,255,255,.5);
+      padding: 10px;
+    }
+
+    .item-ficha-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .item-ficha-nome,
+    .item-nome {
+      display: block;
+      color: #fff;
+      font-size: .96rem;
+      font-weight: 1000;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .item-meta,
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-item-categoria,
+    .tag-item-quantidade {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(255,255,255,.11);
+      padding: 2px 6px;
+      color: #fff;
+      font-size: .56rem;
+      font-weight: 1000;
+      letter-spacing: .03em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .tag-item-quantidade {
+      background: rgba(255,255,255,.05);
+    }
+
+    .btn-remover-item {
+      min-width: 22px;
+      height: 22px;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 1000;
+      line-height: 1;
+      opacity: .82;
+    }
+
+    .btn-remover-item:hover {
+      opacity: 1;
+      background: rgba(255,255,255,.1);
+    }
+
+    .item-ficha-texto,
+    .item-descricao {
+      color: rgba(255,255,255,.9) !important;
+      font-size: .72rem;
+      line-height: 1.28;
+      margin: 0;
+    }
+
+    .item-ficha-texto {
+      width: 100%;
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(0,0,0,.26);
+      padding: 7px;
+      font-weight: 800;
+      white-space: pre-wrap;
+    }
+
+    .inventario-notas {
+      margin-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.38);
+      padding-top: 9px;
+    }
+
+    .inventario-notas textarea {
+      min-height: 170px;
+    }
+
+    .inventario-categorias {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 12px;
+    }
+
+    .inventario-categoria-btn {
+      min-height: 28px;
+      border: 1px solid rgba(255,255,255,.58);
+      background: rgba(0,0,0,.46);
+      color: #fff;
+      padding: 0 9px;
+      cursor: pointer;
+      font-size: .62rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      transition: .18s ease;
+    }
+
+    .inventario-categoria-btn:hover,
+    .inventario-categoria-btn.active {
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.9);
+      transform: translateY(-1px);
+    }
+
+    .filtro-itens {
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr);
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 12px;
+    }
+
+    .filtro-itens label {
+      color: #fff;
+      font-size: .76rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .filtro-itens input,
+    .novo-item-form input,
+    .novo-item-form select,
+    .novo-item-form textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      outline: none;
+      padding: 9px;
+      font: inherit;
+      font-size: .82rem;
+      resize: vertical;
+    }
+
+    .filtro-itens input {
+      min-height: 32px;
+      padding: 0 8px;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .itens-lista-modal {
+      display: grid;
+      gap: 9px;
+    }
+
+    .novo-item-form textarea { min-height: 118px; }
 
     /* Ajuste final: todas as fontes cinza ficam brancas */
     body,
@@ -1790,8 +2271,21 @@
         min-height: 42px;
       }
 
-      .filtro-disciplinas {
+      .filtro-disciplinas,
+      .filtro-vantagens,
+      .filtro-itens,
+      .vantagens-topo {
         grid-template-columns: 1fr;
+      }
+
+      .inventario-topo {
+        justify-content: stretch;
+        flex-direction: column;
+      }
+
+      .btn-inventario,
+      .btn-vantagem {
+        width: 100%;
       }
 
       .modal-topo h2 {
@@ -1843,6 +2337,193 @@
       }
     }
 
+
+
+    /* Correção: bolinhas grandes dos atributos sem ficarem cobertas no computador */
+    @media (min-width: 1231px) {
+      .sheet-grid {
+        grid-template-columns: minmax(535px, 1.38fr) minmax(295px, .76fr) minmax(340px, .88fr) !important;
+      }
+
+      .sheet-grid > .v5-panel:first-child {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+      }
+
+      .atributos-bloco {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        overflow: visible !important;
+      }
+
+      .atributos-bloco .attr-col,
+      .atributos-bloco .attr-row {
+        overflow: visible !important;
+      }
+
+      .atributos-bloco .attr-row {
+        grid-template-columns: 58px 0 auto !important;
+        gap: 4px !important;
+        align-items: center !important;
+      }
+
+      .atributos-bloco .attr-row > span {
+        width: 0 !important;
+        min-width: 0 !important;
+      }
+
+      .atributos-bloco .attr-row label {
+        max-width: 58px !important;
+        font-size: 1rem !important;
+      }
+
+      .atributos-bloco .attr-row .rating {
+        gap: 2px !important;
+        justify-self: end !important;
+      }
+
+      .atributos-bloco .attr-row .dot {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+      }
+    }
+
+    /* Em telas intermediárias, empilha os painéis para evitar qualquer corte horizontal */
+    @media (min-width: 1161px) and (max-width: 1230px) {
+      .sheet-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+
+      .v5-panel,
+      .tab-panel {
+        min-height: auto !important;
+      }
+
+      .atributos-bloco {
+        overflow: visible !important;
+      }
+
+      .atributos-bloco .attr-col,
+      .atributos-bloco .attr-row {
+        overflow: visible !important;
+      }
+    }
+
+    /* Ajuste solicitado: aba de atributos mais apertadinha */
+    .atributos-bloco {
+      gap: 5px !important;
+      padding: 0 0 7px !important;
+      margin-bottom: 6px !important;
+      overflow: visible !important;
+    }
+
+    .atributos-bloco .attr-col {
+      gap: 2px !important;
+      overflow: visible !important;
+    }
+
+    .atributos-bloco .attr-titulo {
+      font-size: .88rem !important;
+      line-height: 1 !important;
+      margin-bottom: 2px !important;
+    }
+
+    .atributos-bloco .attr-row {
+      grid-template-columns: 45px 0 auto !important;
+      gap: 2px !important;
+      min-height: 17px !important;
+      line-height: 1 !important;
+      overflow: visible !important;
+    }
+
+    .atributos-bloco .attr-row > span {
+      width: 0 !important;
+      min-width: 0 !important;
+    }
+
+    .atributos-bloco .attr-row label {
+      max-width: 45px !important;
+      font-size: .96rem !important;
+      letter-spacing: -.035em !important;
+      overflow: visible !important;
+    }
+
+    .atributos-bloco .attr-row .rating {
+      gap: 1px !important;
+      justify-self: end !important;
+      flex-shrink: 0 !important;
+    }
+
+    .atributos-bloco .attr-row .dot {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      min-height: 15px !important;
+    }
+
+    @media (min-width: 1231px) {
+      .sheet-grid {
+        grid-template-columns: minmax(485px, 1.08fr) minmax(325px, .93fr) minmax(360px, 1fr) !important;
+      }
+
+      .sheet-grid > .v5-panel:first-child {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+
+      .atributos-bloco {
+        gap: 6px !important;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .atributos-bloco {
+        gap: 4px !important;
+        padding-bottom: 7px !important;
+      }
+
+      .atributos-bloco .attr-titulo {
+        font-size: .68rem !important;
+        margin-bottom: 2px !important;
+      }
+
+      .atributos-bloco .attr-row {
+        grid-template-columns: 34px 0 auto !important;
+        gap: 2px !important;
+        min-height: 14px !important;
+      }
+
+      .atributos-bloco .attr-row label {
+        max-width: 34px !important;
+        font-size: .76rem !important;
+      }
+
+      .atributos-bloco .attr-row .dot {
+        width: 11px !important;
+        height: 11px !important;
+        min-width: 11px !important;
+        min-height: 11px !important;
+      }
+
+      .atributos-bloco .attr-row .rating {
+        gap: 1px !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .atributos-bloco .attr-row {
+        grid-template-columns: 45px 0 auto !important;
+      }
+
+      .atributos-bloco .attr-row label {
+        max-width: 45px !important;
+      }
+    }
+
+
   </style>
 </head>
 
@@ -1889,7 +2570,7 @@
             <div class="attr-titulo">Sociais</div>
             <div class="attr-row"><label>CAR</label><span></span><div class="rating" data-campo="atributo_carisma" data-max="5"></div></div>
             <div class="attr-row"><label>MANI</label><span></span><div class="rating" data-campo="atributo_manipulacao" data-max="5"></div></div>
-            <div class="attr-row"><label>AUTOC.</label><span></span><div class="rating" data-campo="atributo_autocontrole" data-max="5"></div></div>
+            <div class="attr-row"><label>AUTC.</label><span></span><div class="rating" data-campo="atributo_autocontrole" data-max="5"></div></div>
           </div>
           <div class="attr-col">
             <div class="attr-titulo">Mentais</div>
@@ -1980,11 +2661,23 @@
         </div>
 
         <div id="abaVantagens" class="tab-panel" role="tabpanel" data-tab-panel="vantagens" hidden>
-          <div class="tab-extra-grid tab-single">
-            <div>
-              <label>Vantagens e Defeitos</label>
-              <textarea data-campo="vantagensDefeitosTexto" class="nota-area tab-textarea" placeholder="Vantagens, defeitos, custos e observações..."></textarea>
-            </div>
+          <div class="vantagens-topo">
+            <label class="vantagens-pontos">Pontos para gastar
+              <input data-campo="pontosVantagensDefeitos" type="text" autocomplete="off" placeholder="Calculado automaticamente" />
+            </label>
+            <button type="button" id="btnAdicionarVantagem" class="btn-disciplina btn-vantagem">Adicionar</button>
+            <button type="button" id="btnNovaVantagemDefeito" class="btn-disciplina btn-vantagem">Nova van/def</button>
+          </div>
+
+          <div class="vantagens-ficha-area">
+            <label>Vantagens e Defeitos adicionados</label>
+            <div id="listaVantagensFicha" class="vantagens-ficha-lista"></div>
+            <textarea data-campo="vantagensDefeitosTexto" class="campo-disciplinas-escondido" aria-hidden="true"></textarea>
+          </div>
+
+          <div class="vantagens-notas">
+            <label>Anotações</label>
+            <textarea data-campo="vantagensDefeitosAnotacoes" class="nota-area tab-textarea" placeholder="Observações sobre vantagens, defeitos, custos ou combinações..."></textarea>
           </div>
         </div>
       </section>
@@ -1998,7 +2691,21 @@
 
         <div id="abaInventario" class="tab-panel" role="tabpanel" data-tab-panel="inventario" hidden>
           <div class="inventario-area inventario-tab-area">
-            <textarea data-campo="equipamentosTexto" placeholder="Equipamentos, dinheiro, recursos, refúgio, itens importantes..."></textarea>
+            <div class="inventario-topo" aria-label="Ações de inventário">
+              <button type="button" id="btnAdicionarItem" class="btn-disciplina btn-inventario">Adicionar item</button>
+              <button type="button" id="btnNovoItem" class="btn-disciplina btn-inventario">Novo Item</button>
+            </div>
+
+            <div class="inventario-ficha-area">
+              <label>Itens adicionados</label>
+              <div id="listaItensFicha" class="inventario-ficha-lista"></div>
+              <textarea data-campo="equipamentosTexto" class="campo-disciplinas-escondido" aria-hidden="true"></textarea>
+            </div>
+
+            <div class="inventario-notas">
+              <label>Anotações do inventário</label>
+              <textarea data-campo="inventarioAnotacoes" class="nota-area tab-textarea" placeholder="Dinheiro, recursos, refúgio, itens importantes ou observações..."></textarea>
+            </div>
           </div>
         </div>
 
@@ -2072,9 +2779,7 @@
           <input id="novaDisciplinaNome" type="text" autocomplete="off" placeholder="Ex.: Disciplina personalizada" />
         </label>
         <label>Descrição, nível, poderes ou anotações
-          <textarea id="novaDisciplinaDescricao" placeholder="Nível:
-Poderes:
-Anotações:"></textarea>
+          <textarea id="novaDisciplinaDescricao" placeholder="Descrição da diciplina"></textarea>
         </label>
         <div class="modal-acoes">
           <button type="button" class="btn-modal-cancelar" data-modal-close="nova-disciplina">Cancelar</button>
@@ -2083,6 +2788,104 @@ Anotações:"></textarea>
       </div>
     </div>
   </div>
+
+  <div id="modalVantagens" class="modal-ficha" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalVantagens">
+      <div class="modal-topo">
+        <h2 id="tituloModalVantagens">Adicionar vantagem ou defeito</h2>
+        <button type="button" class="modal-fechar" data-modal-close="vantagens" aria-label="Fechar">×</button>
+      </div>
+      <p class="modal-descricao">Escolha uma qualidade ou defeito para adicionar à ficha. Use o filtro de tipo ou pesquise pelo nome.</p>
+      <div class="filtro-vantagens">
+        <label for="filtroTipoVantagem">Tipo</label>
+        <select id="filtroTipoVantagem">
+          <option value="todos">Todos</option>
+          <option value="qualidade">Qualidades</option>
+          <option value="defeito">Defeitos</option>
+        </select>
+        <label for="pesquisaVantagem">Pesquisar</label>
+        <input id="pesquisaVantagem" type="search" autocomplete="off" placeholder="Nome da qualidade ou defeito" />
+      </div>
+      <div id="listaVantagensModal" class="vantagens-lista-modal"></div>
+    </div>
+  </div>
+
+
+
+  <div id="modalNovaVantagem" class="modal-ficha" hidden>
+    <div class="modal-caixa modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="tituloModalNovaVantagem">
+      <div class="modal-topo">
+        <h2 id="tituloModalNovaVantagem">Nova van/def</h2>
+        <button type="button" class="modal-fechar" data-modal-close="nova-vantagem" aria-label="Fechar">×</button>
+      </div>
+      <div class="nova-disciplina-form nova-vantagem-form">
+        <label>Nome da qualidade/defeito
+          <input id="novaVantagemNome" type="text" autocomplete="off" placeholder="Ex.: Aliado influente" />
+        </label>
+        <label>Tipo
+          <select id="novaVantagemTipo">
+            <option value="qualidade">Qualidade</option>
+            <option value="defeito">Defeito</option>
+          </select>
+        </label>
+        <label>Quantidade de pontos
+          <input id="novaVantagemPontos" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 1" />
+        </label>
+        <p class="nova-vantagem-ajuda">Qualidade soma pontos. Defeito subtrai pontos automaticamente.</p>
+        <label>Descrição
+          <textarea id="novaVantagemDescricao" placeholder="Descrição da qualidade ou defeito"></textarea>
+        </label>
+        <div class="modal-acoes">
+          <button type="button" class="btn-modal-cancelar" data-modal-close="nova-vantagem">Cancelar</button>
+          <button type="button" id="btnSalvarNovaVantagem" class="btn-modal-salvar">Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalItens" class="modal-ficha" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalItens">
+      <div class="modal-topo">
+        <h2 id="tituloModalItens">Adicionar item</h2>
+        <button type="button" class="modal-fechar" data-modal-close="itens" aria-label="Fechar">×</button>
+      </div>
+      <p class="modal-descricao">Escolha uma categoria e adicione itens prontos ao inventário da ficha.</p>
+      <div id="abasCategoriasItens" class="inventario-categorias" role="tablist" aria-label="Categorias de itens"></div>
+      <div class="filtro-itens">
+        <label for="pesquisaItem">Pesquisar</label>
+        <input id="pesquisaItem" type="search" autocomplete="off" placeholder="Nome do item" />
+      </div>
+      <div id="listaItensModal" class="itens-lista-modal"></div>
+    </div>
+  </div>
+
+  <div id="modalNovoItem" class="modal-ficha" hidden>
+    <div class="modal-caixa modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="tituloModalNovoItem">
+      <div class="modal-topo">
+        <h2 id="tituloModalNovoItem">Novo Item</h2>
+        <button type="button" class="modal-fechar" data-modal-close="novo-item" aria-label="Fechar">×</button>
+      </div>
+      <div class="nova-disciplina-form novo-item-form">
+        <label>Nome do item
+          <input id="novoItemNome" type="text" autocomplete="off" placeholder="Ex.: Chave do apartamento" />
+        </label>
+        <label>Categoria
+          <select id="novoItemCategoria"></select>
+        </label>
+        <label>Quantidade
+          <input id="novoItemQuantidade" type="text" autocomplete="off" placeholder="Ex.: 1" />
+        </label>
+        <label>Descrição
+          <textarea id="novoItemDescricao" placeholder="Descrição, função ou observações do item"></textarea>
+        </label>
+        <div class="modal-acoes">
+          <button type="button" class="btn-modal-cancelar" data-modal-close="novo-item">Cancelar</button>
+          <button type="button" id="btnSalvarNovoItem" class="btn-modal-salvar">Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
@@ -2103,9 +2906,38 @@ Anotações:"></textarea>
     const novaDisciplinaNome = document.getElementById('novaDisciplinaNome');
     const novaDisciplinaDescricao = document.getElementById('novaDisciplinaDescricao');
     const btnSalvarNovaDisciplina = document.getElementById('btnSalvarNovaDisciplina');
+    const btnAdicionarVantagem = document.getElementById('btnAdicionarVantagem');
+    const btnNovaVantagemDefeito = document.getElementById('btnNovaVantagemDefeito');
+    const modalVantagens = document.getElementById('modalVantagens');
+    const modalNovaVantagem = document.getElementById('modalNovaVantagem');
+    const filtroTipoVantagem = document.getElementById('filtroTipoVantagem');
+    const pesquisaVantagem = document.getElementById('pesquisaVantagem');
+    const listaVantagensModal = document.getElementById('listaVantagensModal');
+    const listaVantagensFicha = document.getElementById('listaVantagensFicha');
+    const novaVantagemNome = document.getElementById('novaVantagemNome');
+    const novaVantagemTipo = document.getElementById('novaVantagemTipo');
+    const novaVantagemPontos = document.getElementById('novaVantagemPontos');
+    const novaVantagemDescricao = document.getElementById('novaVantagemDescricao');
+    const btnSalvarNovaVantagem = document.getElementById('btnSalvarNovaVantagem');
+    const btnAdicionarItem = document.getElementById('btnAdicionarItem');
+    const btnNovoItem = document.getElementById('btnNovoItem');
+    const modalItens = document.getElementById('modalItens');
+    const modalNovoItem = document.getElementById('modalNovoItem');
+    const abasCategoriasItens = document.getElementById('abasCategoriasItens');
+    const pesquisaItem = document.getElementById('pesquisaItem');
+    const listaItensModal = document.getElementById('listaItensModal');
+    const listaItensFicha = document.getElementById('listaItensFicha');
+    const novoItemNome = document.getElementById('novoItemNome');
+    const novoItemCategoria = document.getElementById('novoItemCategoria');
+    const novoItemQuantidade = document.getElementById('novoItemQuantidade');
+    const novoItemDescricao = document.getElementById('novoItemDescricao');
+    const btnSalvarNovoItem = document.getElementById('btnSalvarNovoItem');
     let imagemBase64 = '';
     let fichaAtual = null;
     let disciplinasAdicionadas = [];
+    let vantagensDefeitosAdicionados = [];
+    let itensInventarioAdicionados = [];
+    let categoriaItemAtual = 'Todos';
 
     const habilidades = [
       ['Armas Brancas', 'habilidade_armasBrancas'],
@@ -2152,6 +2984,624 @@ Anotações:"></textarea>
       { nome: 'Alquimia Sangue-Fraco', clas: ['Sangue-Fraco'], descricao: 'Cria fórmulas instáveis capazes de simular poderes vampíricos de formas imprevisíveis.' }
     ];
 
+
+    const vantagensDefeitosV5 = [
+          {
+                "nome": "Aliado - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Mortal fraco, pouco útil em perigo. Ex.: vizinho fofoqueiro, porteiro, estudante."
+          },
+          {
+                "nome": "Aliado - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Mortal competente, com recursos moderados ou coragem limitada. Ex.: policial local, médico, advogado iniciante."
+          },
+          {
+                "nome": "Aliado - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Aliado forte ou pequeno grupo capaz de agir em situações perigosas. Ex.: gangue, vereador influente, investigador experiente."
+          },
+          {
+                "nome": "Contato - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Fonte simples e ocasional de informação. Ex.: balconista, taxista, funcionário de prédio."
+          },
+          {
+                "nome": "Contato - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Contato confiável em uma área específica, com acesso regular a informações úteis."
+          },
+          {
+                "nome": "Contato - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Rede de contatos ou fonte bem posicionada, capaz de revelar informações difíceis de obter."
+          },
+          {
+                "nome": "Fama - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Conhecido em um nicho pequeno ou bairro; abre portas simples, mas também chama atenção."
+          },
+          {
+                "nome": "Fama - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Reconhecido em uma cidade, cena cultural ou comunidade relevante."
+          },
+          {
+                "nome": "Fama - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Figura famosa o bastante para afetar interações sociais e dificultar anonimato."
+          },
+          {
+                "nome": "Influência - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Influência pequena em uma instituição, bairro, subcultura ou área profissional."
+          },
+          {
+                "nome": "Influência - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Influência útil e recorrente em uma área local."
+          },
+          {
+                "nome": "Influência - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Influência forte em uma organização ou setor da cidade."
+          },
+          {
+                "nome": "Influência - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Poder amplo, capaz de mover pessoas, processos e favores importantes."
+          },
+          {
+                "nome": "Influência - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "Influência excepcional, com alcance dominante em uma esfera social ou institucional."
+          },
+          {
+                "nome": "Recursos - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Alguma renda, reserva ou acesso a bens simples."
+          },
+          {
+                "nome": "Recursos - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Conforto financeiro modesto, com moradia e equipamentos melhores."
+          },
+          {
+                "nome": "Recursos - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Boa renda, propriedades ou acesso consistente a recursos caros."
+          },
+          {
+                "nome": "Recursos - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Riqueza elevada, investimentos e patrimônio significativo."
+          },
+          {
+                "nome": "Recursos - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "Fortuna muito alta, capaz de sustentar operações, luxo e grandes aquisições."
+          },
+          {
+                "nome": "Rebanho - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Poucas fontes de sangue disponíveis com algum risco ou pouca frequência."
+          },
+          {
+                "nome": "Rebanho - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Pequeno grupo ou fonte regular que facilita alimentação discreta."
+          },
+          {
+                "nome": "Rebanho - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Rebanho confiável e variado, com acesso relativamente seguro."
+          },
+          {
+                "nome": "Rebanho - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Grande rede de mortais acessíveis, bem condicionados ou protegidos."
+          },
+          {
+                "nome": "Rebanho - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "Fonte abundante e organizada, capaz de sustentar o personagem com pouco risco."
+          },
+          {
+                "nome": "Mentor - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Mentor distante, ocupado ou de poder limitado."
+          },
+          {
+                "nome": "Mentor - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Mentor acessível, capaz de oferecer orientação e pequenos favores."
+          },
+          {
+                "nome": "Mentor - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Mentor influente, com conhecimento e proteção relevantes."
+          },
+          {
+                "nome": "Mentor - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Mentor poderoso, respeitado e capaz de intervir em assuntos perigosos."
+          },
+          {
+                "nome": "Mentor - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "Mentor extremamente poderoso ou antigo, cuja ajuda pode mudar o rumo da crônica."
+          },
+          {
+                "nome": "Máscara - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Identidade mortal básica, com documentos simples e poucos vínculos verificáveis."
+          },
+          {
+                "nome": "Máscara - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Identidade mortal sólida, com histórico, registros e cobertura social convincente."
+          },
+          {
+                "nome": "Refúgio - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Refúgio pequeno e simples, com segurança mínima."
+          },
+          {
+                "nome": "Refúgio - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Refúgio confortável, discreto e com proteção razoável."
+          },
+          {
+                "nome": "Refúgio - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Refúgio seguro, bem equipado, difícil de invadir ou localizar."
+          },
+          {
+                "nome": "Status - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Respeito mínimo dentro de um grupo, clã, seita ou domínio."
+          },
+          {
+                "nome": "Status - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Reputação reconhecida e algum peso em conversas políticas."
+          },
+          {
+                "nome": "Status - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Posição importante, com acesso a reuniões, favores e proteção social."
+          },
+          {
+                "nome": "Status - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Status alto, capaz de influenciar decisões e impor respeito."
+          },
+          {
+                "nome": "Status - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "Prestígio excepcional; poucos ignoram a palavra ou a presença do personagem."
+          },
+          {
+                "nome": "Linguística - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Conhece idiomas adicionais, códigos, jargões ou linguagem técnica útil."
+          },
+          {
+                "nome": "Bela Aparência - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Aparência atraente; facilita situações sociais em que beleza ou charme importam."
+          },
+          {
+                "nome": "Aparência Deslumbrante - 4 pontos",
+                "tipo": "qualidade",
+                "pontos": "+4",
+                "descricao": "Beleza marcante e memorável, capaz de abrir portas e atrair atenção imediata."
+          },
+          {
+                "nome": "Resistência ao Laço - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "O personagem resiste melhor a vínculos de sangue e manipulações de dependência vampírica."
+          },
+          {
+                "nome": "Resistência ao Laço - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Resistência forte contra laços de sangue; é muito difícil prender sua vontade por esse meio."
+          },
+          {
+                "nome": "Impossível de Laçar - 5 pontos",
+                "tipo": "qualidade",
+                "pontos": "+5",
+                "descricao": "O personagem não pode ser preso por laço de sangue comum."
+          },
+          {
+                "nome": "Faro para Sangue - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Percebe detalhes do sangue, como qualidade, cheiro, condição ou pistas sobrenaturais."
+          },
+          {
+                "nome": "Estômago de Ferro - 3 pontos",
+                "tipo": "qualidade",
+                "pontos": "+3",
+                "descricao": "Consegue se alimentar de sangue ruim, frio, contaminado ou de origem desagradável com menos problema."
+          },
+          {
+                "nome": "Comer Comida - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Consegue ingerir comida e bebida mortais por aparência social, ainda que isso não alimente de verdade."
+          },
+          {
+                "nome": "Semblante de Vivo - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Consegue parecer mais vivo com facilidade: pele menos cadavérica, respiração simulada e presença menos estranha."
+          },
+          {
+                "nome": "Sono Leve - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Acorda com mais facilidade diante de ameaça, barulho ou presença suspeita durante o repouso."
+          },
+          {
+                "nome": "Equilíbrio Predatório - 2 pontos",
+                "tipo": "qualidade",
+                "pontos": "+2",
+                "descricao": "Tem maior controle sobre hábitos de caça e deixa menos rastros durante a alimentação."
+          },
+          {
+                "nome": "Sangue-Fraco: Alquimista - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Tem acesso inicial a fórmulas instáveis de alquimia de sangue-fraco."
+          },
+          {
+                "nome": "Sangue-Fraco: Aparência de Vivo - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "A fisiologia parece mais viva que a de outros vampiros, ajudando a disfarçar a condição."
+          },
+          {
+                "nome": "Sangue-Fraco: Disciplina Afim - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Possui afinidade temporária ou limitada com uma disciplina vampírica específica."
+          },
+          {
+                "nome": "Sangue-Fraco: Resistência Diurna - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "Tolera melhor luz, horários ou atividades próximas do dia do que outros condenados."
+          },
+          {
+                "nome": "Sangue-Fraco: Sangue Rico - 1 ponto",
+                "tipo": "qualidade",
+                "pontos": "+1",
+                "descricao": "O sangue do personagem é incomum ou mais potente do que se espera de um sangue-fraco."
+          },
+          {
+                "nome": "Inimigo - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Inimigo fraco, incômodo ou pouco informado, mas persistente."
+          },
+          {
+                "nome": "Inimigo - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Inimigo competente, com recursos moderados e intenção clara de prejudicar."
+          },
+          {
+                "nome": "Inimigo - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "Inimigo perigoso, influente ou com aliados capazes de causar dano sério."
+          },
+          {
+                "nome": "Inimigo - 4 pontos",
+                "tipo": "defeito",
+                "pontos": "-4",
+                "descricao": "Inimigo muito poderoso, com meios para caçar, expor ou destruir o personagem."
+          },
+          {
+                "nome": "Inimigo - 5 pontos",
+                "tipo": "defeito",
+                "pontos": "-5",
+                "descricao": "Ameaça extrema e recorrente; o inimigo pode afetar toda a crônica."
+          },
+          {
+                "nome": "Caçado - 4 pontos",
+                "tipo": "defeito",
+                "pontos": "-4",
+                "descricao": "O personagem está sob a mira de caçadores, autoridades, rivais ou uma força organizada."
+          },
+          {
+                "nome": "Exclusão de Presa - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Recusa-se ou é incapaz de se alimentar de um tipo específico de vítima."
+          },
+          {
+                "nome": "Feio - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Aparência desagradável que causa má impressão ou dificulta interações sociais."
+          },
+          {
+                "nome": "Repulsivo - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Aparência ou presença profundamente perturbadora; as pessoas evitam contato quando possível."
+          },
+          {
+                "nome": "Sem Refúgio - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Não possui um local seguro próprio para repousar durante o dia."
+          },
+          {
+                "nome": "Refúgio Comprometido - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "O refúgio tem uma falha séria: vizinhos curiosos, entrada fraca, localização ruim ou risco recorrente."
+          },
+          {
+                "nome": "Refúgio Comprometido - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "O refúgio é perigoso ou conhecido por pessoas erradas; pode virar armadilha rapidamente."
+          },
+          {
+                "nome": "Máscara Frágil - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Identidade mortal incompleta ou com inconsistências fáceis de encontrar."
+          },
+          {
+                "nome": "Máscara Frágil - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "A cobertura mortal é fraca, suspeita ou já chama atenção de pessoas perigosas."
+          },
+          {
+                "nome": "Sem Máscara - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Não possui identidade mortal funcional, documentação convincente ou vida civil segura."
+          },
+          {
+                "nome": "Vício - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Dependência leve ou hábito perigoso que cria problemas ocasionais."
+          },
+          {
+                "nome": "Vício - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Vício forte, frequentemente explorável por inimigos ou pela Besta."
+          },
+          {
+                "nome": "Vício - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "Dependência grave, capaz de dominar decisões e colocar o grupo em risco."
+          },
+          {
+                "nome": "Estigma - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Marca social, rumor ou reputação ruim que gera desconfiança."
+          },
+          {
+                "nome": "Suscetível ao Laço - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Tem mais dificuldade para resistir a laços de sangue e dependências vampíricas."
+          },
+          {
+                "nome": "Viciado em Laço - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Sente atração perigosa pela sensação de submissão, vínculo ou dependência por vitae."
+          },
+          {
+                "nome": "Laço Curto - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Forma laços de sangue com mais rapidez ou intensidade do que o normal."
+          },
+          {
+                "nome": "Folclórico: Bloqueio - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Uma superstição ou símbolo específico impede, atrasa ou constrange o personagem em certas situações."
+          },
+          {
+                "nome": "Folclórico: Bloqueio - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "A restrição folclórica aparece com frequência e pode atrapalhar cenas importantes."
+          },
+          {
+                "nome": "Folclórico: Bloqueio - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "A restrição é severa, fácil de explorar e perigosa quando descoberta."
+          },
+          {
+                "nome": "Folclórico: Perdição - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "O personagem sofre com uma fraqueza sobrenatural menor ligada a lendas vampíricas."
+          },
+          {
+                "nome": "Folclórico: Perdição - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "A fraqueza folclórica é relevante, dolorosa ou perigosa em cenas recorrentes."
+          },
+          {
+                "nome": "Folclórico: Perdição - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "A fraqueza é grave e pode ser usada como arma contra o personagem."
+          },
+          {
+                "nome": "Maldição Agravada - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "A perdição do clã ou uma limitação sobrenatural pesa mais do que o normal."
+          },
+          {
+                "nome": "Dívida - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Deve um favor pequeno, dinheiro ou obediência limitada a alguém inconveniente."
+          },
+          {
+                "nome": "Dívida - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "Dívida séria com alguém perigoso, com cobrança provável durante a crônica."
+          },
+          {
+                "nome": "Dívida - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "Dívida pesada, capaz de forçar missões, traições ou exposição."
+          },
+          {
+                "nome": "Segredo Perigoso - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Guarda um segredo que causaria problemas sociais ou pessoais se revelado."
+          },
+          {
+                "nome": "Segredo Perigoso - 2 pontos",
+                "tipo": "defeito",
+                "pontos": "-2",
+                "descricao": "O segredo pode destruir reputação, alianças ou segurança do personagem."
+          },
+          {
+                "nome": "Compulsão Notória - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Um comportamento recorrente denuncia o personagem ou causa problemas em momentos de tensão."
+          },
+          {
+                "nome": "Caçador Conhecido - 3 pontos",
+                "tipo": "defeito",
+                "pontos": "-3",
+                "descricao": "Um caçador ou investigador sabe algo sobre o personagem e já iniciou perseguição."
+          },
+          {
+                "nome": "Sangue-Fraco: Maldição de Clã - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Carrega uma versão limitada de uma perdição de clã, criando uma fraqueza adicional."
+          },
+          {
+                "nome": "Sangue-Fraco: Marcado - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "Possui marca social, política ou física que denuncia sua condição a vampiros atentos."
+          },
+          {
+                "nome": "Sangue-Fraco: Vitae Fraca - 1 ponto",
+                "tipo": "defeito",
+                "pontos": "-1",
+                "descricao": "O sangue tem limitações extras, dificultando usos sobrenaturais ou relações com outros vampiros."
+          }
+    ];
+
+    const categoriasInventario = ['Todos', 'Armas', 'Proteção', 'Tecnologia', 'Ferramentas', 'Veículos', 'Refúgio', 'Documentos', 'Consumíveis', 'Oculto', 'Diversos'];
+
+    const itensBaseInventario = [
+      { nome: 'Pistola compacta', categoria: 'Armas', quantidade: '1', descricao: 'Arma de fogo pequena e fácil de esconder; útil em situações de ameaça imediata.' },
+      { nome: 'Revólver antigo', categoria: 'Armas', quantidade: '1', descricao: 'Arma confiável e chamativa, com aparência clássica e presença intimidadora.' },
+      { nome: 'Faca dobrável', categoria: 'Armas', quantidade: '1', descricao: 'Lâmina simples, discreta e fácil de carregar no bolso ou na bota.' },
+      { nome: 'Bastão retrátil', categoria: 'Armas', quantidade: '1', descricao: 'Objeto contundente compacto, usado para defesa ou intimidação.' },
+      { nome: 'Estaca de madeira', categoria: 'Armas', quantidade: '1', descricao: 'Ferramenta improvisada contra vampiros; perigosa quando usada com precisão.' },
+      { nome: 'Jaqueta reforçada', categoria: 'Proteção', quantidade: '1', descricao: 'Roupa pesada com camadas internas; ajuda contra cortes, quedas e pancadas leves.' },
+      { nome: 'Colete balístico discreto', categoria: 'Proteção', quantidade: '1', descricao: 'Proteção sob a roupa; reduz risco em conflitos armados, mas limita movimento.' },
+      { nome: 'Luvas resistentes', categoria: 'Proteção', quantidade: '1 par', descricao: 'Protegem as mãos ao arrombar, escalar, lutar ou manipular objetos perigosos.' },
+      { nome: 'Máscara e óculos de proteção', categoria: 'Proteção', quantidade: '1', descricao: 'Proteção básica contra fumaça, poeira, respingos e identificação por câmeras.' },
+      { nome: 'Celular descartável', categoria: 'Tecnologia', quantidade: '1', descricao: 'Telefone simples para chamadas temporárias, contatos suspeitos ou operações discretas.' },
+      { nome: 'Smartphone criptografado', categoria: 'Tecnologia', quantidade: '1', descricao: 'Aparelho preparado para comunicação segura, senhas fortes e aplicativos úteis.' },
+      { nome: 'Notebook compacto', categoria: 'Tecnologia', quantidade: '1', descricao: 'Computador portátil para pesquisa, invasões narrativas, registros e análise de arquivos.' },
+      { nome: 'Rastreador GPS', categoria: 'Tecnologia', quantidade: '1', descricao: 'Pequeno dispositivo para acompanhar veículos, malas ou pessoas em uma cena.' },
+      { nome: 'Câmera pequena', categoria: 'Tecnologia', quantidade: '1', descricao: 'Dispositivo discreto para registrar encontros, vigiar entradas ou produzir chantagem.' },
+      { nome: 'Kit de arrombamento', categoria: 'Ferramentas', quantidade: '1', descricao: 'Conjunto compacto para fechaduras simples, portas internas e acessos discretos.' },
+      { nome: 'Lanterna potente', categoria: 'Ferramentas', quantidade: '1', descricao: 'Iluminação forte para locais abandonados, becos, túneis e refúgios escuros.' },
+      { nome: 'Canivete multiuso', categoria: 'Ferramentas', quantidade: '1', descricao: 'Ferramenta versátil para cortes, reparos rápidos, improvisos e pequenos mecanismos.' },
+      { nome: 'Corda resistente', categoria: 'Ferramentas', quantidade: '15 m', descricao: 'Útil para escalada, contenção, fuga por janelas ou improvisos de investigação.' },
+      { nome: 'Maleta médica básica', categoria: 'Ferramentas', quantidade: '1', descricao: 'Curativos, luvas, antissépticos e instrumentos simples para primeiros socorros.' },
+      { nome: 'Carro comum', categoria: 'Veículos', quantidade: '1', descricao: 'Veículo discreto e funcional, ideal para deslocamento sem chamar muita atenção.' },
+      { nome: 'Moto rápida', categoria: 'Veículos', quantidade: '1', descricao: 'Boa para fugas, perseguições e deslocamentos em trânsito pesado.' },
+      { nome: 'Van sem identificação', categoria: 'Veículos', quantidade: '1', descricao: 'Espaço para transportar grupo, equipamento, carga ou alguém inconsciente.' },
+      { nome: 'Chaves de garagem', categoria: 'Refúgio', quantidade: '1 molho', descricao: 'Acesso a garagem, depósito ou entrada secundária de um refúgio.' },
+      { nome: 'Cofre pequeno', categoria: 'Refúgio', quantidade: '1', descricao: 'Guarda dinheiro, documentos, armas pequenas, sangue preservado ou lembranças.' },
+      { nome: 'Cortinas blackout', categoria: 'Refúgio', quantidade: '1 conjunto', descricao: 'Proteção essencial contra luz solar em quarto, escritório ou esconderijo.' },
+      { nome: 'Documentos falsos simples', categoria: 'Documentos', quantidade: '1 conjunto', descricao: 'Identidade alternativa frágil, útil para hotéis, entradas simples e deslocamentos locais.' },
+      { nome: 'Passe corporativo', categoria: 'Documentos', quantidade: '1', descricao: 'Credencial que permite circular em um prédio, hospital, empresa ou evento.' },
+      { nome: 'Cartão de visita influente', categoria: 'Documentos', quantidade: '1', descricao: 'Contato impresso que abre conversas, favores ou ameaças veladas.' },
+      { nome: 'Bolsa de sangue', categoria: 'Consumíveis', quantidade: '1', descricao: 'Reserva arriscada e valiosa; pode ser usada em emergência ou negociação.' },
+      { nome: 'Seringas descartáveis', categoria: 'Consumíveis', quantidade: '5', descricao: 'Material médico simples para coleta, transporte ou administração de líquidos.' },
+      { nome: 'Dinheiro vivo', categoria: 'Consumíveis', quantidade: 'R$ 500', descricao: 'Notas em espécie para subornos, táxis, entradas, gorjetas ou compras rápidas.' },
+      { nome: 'Cigarros caros', categoria: 'Consumíveis', quantidade: '1 maço', descricao: 'Item social útil para barganha, disfarce, cena ou vício mortal antigo.' },
+      { nome: 'Amuleto antigo', categoria: 'Oculto', quantidade: '1', descricao: 'Objeto simbólico, místico ou supersticioso; pode ter valor emocional ou ritualístico.' },
+      { nome: 'Livro esotérico', categoria: 'Oculto', quantidade: '1', descricao: 'Texto estranho com anotações, símbolos, genealogias, rituais ou pistas ocultistas.' },
+      { nome: 'Frasco lacrado', categoria: 'Oculto', quantidade: '1', descricao: 'Recipiente misterioso para sangue, cinzas, terra de túmulo ou componente ritual.' },
+      { nome: 'Roupa social reserva', categoria: 'Diversos', quantidade: '1 conjunto', descricao: 'Troca elegante para aparições públicas, reuniões da corte ou emergências.' },
+      { nome: 'Mochila discreta', categoria: 'Diversos', quantidade: '1', descricao: 'Bolsa comum para carregar equipamentos sem chamar atenção.' },
+      { nome: 'Gravador de áudio', categoria: 'Diversos', quantidade: '1', descricao: 'Pequeno aparelho para registrar conversas, ameaças, confissões ou provas.' }
+    ];
+
+
     function clansDasDisciplinas() {
       return [...new Set(disciplinasV5.flatMap((disciplina) => disciplina.clas || []))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }
@@ -2189,6 +3639,7 @@ Anotações:"></textarea>
 
       listaDisciplinasFicha.innerHTML = disciplinasAdicionadas.map((disciplina, indice) => {
         const tags = Array.isArray(disciplina.clas) ? disciplina.clas : [];
+        const descricao = limparDescricaoDisciplina(disciplina.descricao);
         return `
           <article class="disciplina-ficha-card">
             <div class="disciplina-ficha-topo">
@@ -2200,7 +3651,7 @@ Anotações:"></textarea>
               </div>
               <button type="button" class="btn-remover-disciplina" data-remover-disciplina="${indice}" aria-label="Remover diciplina">×</button>
             </div>
-            <div class="disciplina-ficha-texto">${escapeHtml(disciplina.descricao || 'Sem descrição cadastrada.')}</div>
+            <div class="disciplina-ficha-texto">${escapeHtml(descricao || 'Sem descrição cadastrada.')}</div>
           </article>
         `;
       }).join('');
@@ -2214,7 +3665,7 @@ Anotações:"></textarea>
       disciplinasAdicionadas.push({
         nome: nomeLimpo,
         clas: Array.isArray(clas) ? clas : [],
-        descricao: String(descricao || '')
+        descricao: limparDescricaoDisciplina(descricao)
       });
 
       renderizarDisciplinasFicha();
@@ -2226,7 +3677,7 @@ Anotações:"></textarea>
         disciplinasAdicionadas = lista.map((item) => ({
           nome: item?.nome || 'Diciplina sem nome',
           clas: Array.isArray(item?.clas) ? item.clas : [],
-          descricao: item?.descricao || ''
+          descricao: limparDescricaoDisciplina(item?.descricao || '')
         }));
       } else if (String(textoAntigo || '').trim()) {
         disciplinasAdicionadas = [{
@@ -2309,7 +3760,7 @@ Anotações:"></textarea>
 
     function abrirNovaDisciplina() {
       if (novaDisciplinaNome) novaDisciplinaNome.value = '';
-      if (novaDisciplinaDescricao) novaDisciplinaDescricao.value = 'Nível: \nPoderes: \nAnotações: ';
+      if (novaDisciplinaDescricao) novaDisciplinaDescricao.value = '';
       abrirModal(modalNovaDisciplina);
       setTimeout(() => novaDisciplinaNome?.focus(), 50);
     }
@@ -2321,12 +3772,460 @@ Anotações:"></textarea>
         novaDisciplinaNome?.focus();
         return;
       }
-      const descricao = novaDisciplinaDescricao?.value?.trim() || 'Nível: \nPoderes: \nAnotações: ';
+      const descricao = limparDescricaoDisciplina(novaDisciplinaDescricao?.value?.trim() || '');
       adicionarDisciplinaNaFicha({ nome, clas: ['Personalizada'], descricao });
       fecharModal(modalNovaDisciplina);
       mostrarAviso('Nova diciplina criada.');
     }
 
+
+    function tipoVantagemLabel(tipo) {
+      return tipo === 'defeito' ? 'Defeito' : tipo === 'qualidade' ? 'Qualidade' : 'Personalizado';
+    }
+
+    function valoresPontosDaVantagem(pontos) {
+      const texto = String(pontos || '').replace(/[–—]/g, '-').trim();
+      const numeros = [...texto.matchAll(/[+-]?\d+/g)].map((item) => Number(item[0]));
+      if (!numeros.length) return [0];
+
+      if (numeros.length >= 2 && numeros[0] !== numeros[1]) {
+        const inicio = numeros[0];
+        const fim = numeros[1];
+        const passo = inicio < fim ? 1 : -1;
+        const valores = [];
+        for (let valor = inicio; passo > 0 ? valor <= fim : valor >= fim; valor += passo) {
+          valores.push(valor);
+        }
+        return valores;
+      }
+
+      return [numeros[0]];
+    }
+
+    function formatarPontos(valor) {
+      const numero = Number(valor || 0);
+      if (!Number.isFinite(numero) || numero === 0) return '0';
+      return numero > 0 ? `+${numero}` : String(numero);
+    }
+
+    function pontosSelecionados(item) {
+      if (Number.isFinite(Number(item?.pontosValor))) return Number(item.pontosValor);
+      return valoresPontosDaVantagem(item?.pontos || '')[0] || 0;
+    }
+
+    function atualizarPontosVantagensDefeitos() {
+      const campo = getCampo('pontosVantagensDefeitos');
+      if (!campo) return;
+
+      const totalQualidades = vantagensDefeitosAdicionados
+        .filter((item) => Number(item.pontosValor || 0) > 0)
+        .reduce((total, item) => total + Number(item.pontosValor || 0), 0);
+
+      const totalDefeitos = vantagensDefeitosAdicionados
+        .filter((item) => Number(item.pontosValor || 0) < 0)
+        .reduce((total, item) => total + Number(item.pontosValor || 0), 0);
+
+      const total = totalQualidades + totalDefeitos;
+      campo.value = `Qualidades ${formatarPontos(totalQualidades)} | Defeitos ${formatarPontos(totalDefeitos)} | Total ${formatarPontos(total)}`;
+      campo.dataset.valorAutomatico = String(total);
+    }
+
+    function textoVantagem(item) {
+      const linhas = [item.nome || 'Vantagem ou defeito sem nome'];
+      if (item.tipo) linhas.push(`Tipo: ${tipoVantagemLabel(item.tipo)}`);
+      linhas.push(`Pontos: ${item.pontosSelecionados || formatarPontos(pontosSelecionados(item))}`);
+      if (item.descricao) linhas.push(item.descricao);
+      return linhas.join('\n');
+    }
+
+    function sincronizarCampoVantagens() {
+      const campo = getCampo('vantagensDefeitosTexto');
+      if (!campo) return;
+      campo.value = vantagensDefeitosAdicionados.map(textoVantagem).join('\n\n');
+      atualizarPontosVantagensDefeitos();
+    }
+
+    function renderizarVantagensFicha() {
+      if (!listaVantagensFicha) return;
+
+      if (!vantagensDefeitosAdicionados.length) {
+        listaVantagensFicha.innerHTML = '<div class="vantagens-vazio">Nenhuma vantagem ou defeito adicionado ainda.</div>';
+        sincronizarCampoVantagens();
+        return;
+      }
+
+      listaVantagensFicha.innerHTML = vantagensDefeitosAdicionados.map((item, indice) => `
+        <article class="vantagem-ficha-card">
+          <div class="vantagem-ficha-topo">
+            <div>
+              <strong class="vantagem-ficha-nome">${escapeHtml(item.nome || 'Vantagem ou defeito sem nome')}</strong>
+              <div class="vantagem-meta">
+                <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
+                <span class="tag-vantagem-pontos">${escapeHtml(item.pontosSelecionados || formatarPontos(pontosSelecionados(item)))}</span>
+              </div>
+            </div>
+            <button type="button" class="btn-remover-vantagem" data-remover-vantagem="${indice}" aria-label="Remover vantagem ou defeito">×</button>
+          </div>
+          <div class="vantagem-ficha-texto">${escapeHtml(item.descricao || 'Sem descrição cadastrada.')}</div>
+        </article>
+      `).join('');
+      sincronizarCampoVantagens();
+    }
+
+    function adicionarVantagemNaFicha({ nome, tipo = 'qualidade', pontos = '', pontosValor = null, descricao = '' }) {
+      const nomeLimpo = String(nome || '').trim();
+      if (!nomeLimpo) return;
+
+      const valorEscolhido = Number.isFinite(Number(pontosValor))
+        ? Number(pontosValor)
+        : valoresPontosDaVantagem(pontos)[0] || 0;
+
+      vantagensDefeitosAdicionados.push({
+        nome: nomeLimpo,
+        tipo: String(tipo || 'qualidade'),
+        pontos: String(pontos || ''),
+        pontosValor: valorEscolhido,
+        pontosSelecionados: formatarPontos(valorEscolhido),
+        descricao: String(descricao || '').trim()
+      });
+
+      renderizarVantagensFicha();
+      salvarFicha(true);
+    }
+
+    function carregarVantagensAdicionadas(lista = [], textoAntigo = '') {
+      if (Array.isArray(lista) && lista.length) {
+        vantagensDefeitosAdicionados = lista.map((item) => {
+          const valorEscolhido = Number.isFinite(Number(item?.pontosValor))
+            ? Number(item.pontosValor)
+            : valoresPontosDaVantagem(item?.pontos || '')[0] || 0;
+
+          return {
+            nome: item?.nome || 'Vantagem ou defeito sem nome',
+            tipo: item?.tipo || 'personalizado',
+            pontos: item?.pontos || '',
+            pontosValor: valorEscolhido,
+            pontosSelecionados: item?.pontosSelecionados || formatarPontos(valorEscolhido),
+            descricao: item?.descricao || ''
+          };
+        });
+      } else if (String(textoAntigo || '').trim()) {
+        vantagensDefeitosAdicionados = [{
+          nome: 'Vantagens e defeitos antigos',
+          tipo: 'personalizado',
+          pontos: '',
+          pontosValor: 0,
+          pontosSelecionados: '0',
+          descricao: String(textoAntigo || '').trim()
+        }];
+      } else {
+        vantagensDefeitosAdicionados = [];
+      }
+      renderizarVantagensFicha();
+    }
+
+    function removerVantagem(indice) {
+      vantagensDefeitosAdicionados.splice(indice, 1);
+      renderizarVantagensFicha();
+      salvarFicha(true);
+      mostrarAviso('Vantagem ou defeito removido.');
+    }
+
+    function normalizarPesquisa(texto) {
+      return String(texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    function renderizarListaVantagens() {
+      if (!listaVantagensModal) return;
+      const filtro = filtroTipoVantagem?.value || 'todos';
+      const busca = normalizarPesquisa(pesquisaVantagem?.value || '');
+
+      const listaFiltrada = vantagensDefeitosV5.filter((item) => {
+        const tipoOk = filtro === 'todos' || item.tipo === filtro;
+        const buscaOk = !busca || normalizarPesquisa(item.nome).includes(busca);
+        return tipoOk && buscaOk;
+      });
+
+      if (!listaFiltrada.length) {
+        listaVantagensModal.innerHTML = '<div class="vantagens-vazio">Nenhuma vantagem ou defeito encontrado.</div>';
+        return;
+      }
+
+      listaVantagensModal.innerHTML = listaFiltrada.map((item) => {
+        const indice = vantagensDefeitosV5.indexOf(item);
+        const valoresPontos = valoresPontosDaVantagem(item.pontos);
+        const opcoesPontos = valoresPontos
+          .map((valor) => `<option value="${valor}">${escapeHtml(formatarPontos(valor))} ponto${Math.abs(valor) === 1 ? '' : 's'}</option>`)
+          .join('');
+        const escolhaPontos = valoresPontos.length > 1 ? `
+              <div class="vantagem-pontos-escolha">
+                <label for="pontosVantagem${indice}">Pontos aplicados</label>
+                <select id="pontosVantagem${indice}" class="vantagem-pontos-select" data-pontos-vantagem="${indice}">
+                  ${opcoesPontos}
+                </select>
+              </div>
+        ` : '';
+
+        return `
+          <article class="vantagem-card">
+            <div>
+              <strong class="vantagem-nome">${escapeHtml(item.nome)}</strong>
+              <div class="vantagem-tags">
+                <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
+                <span class="tag-vantagem-pontos">${escapeHtml(item.pontos)}</span>
+              </div>
+              <p class="vantagem-descricao">${escapeHtml(item.descricao)}</p>
+              ${escolhaPontos}
+            </div>
+            <button type="button" class="btn-modal-add" data-add-vantagem="${indice}">Adicionar</button>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function adicionarVantagemPadrao(item, pontosValor = null) {
+      if (!item) return;
+      adicionarVantagemNaFicha({ ...item, pontosValor });
+      mostrarAviso('Vantagem ou defeito adicionado.');
+    }
+
+    function abrirAdicionarVantagem() {
+      if (filtroTipoVantagem) filtroTipoVantagem.value = 'todos';
+      if (pesquisaVantagem) pesquisaVantagem.value = '';
+      renderizarListaVantagens();
+      abrirModal(modalVantagens);
+      setTimeout(() => pesquisaVantagem?.focus(), 50);
+    }
+
+
+
+    function abrirNovaVantagemDefeito() {
+      if (novaVantagemNome) novaVantagemNome.value = '';
+      if (novaVantagemTipo) novaVantagemTipo.value = 'qualidade';
+      if (novaVantagemPontos) novaVantagemPontos.value = '';
+      if (novaVantagemDescricao) novaVantagemDescricao.value = '';
+      abrirModal(modalNovaVantagem);
+      setTimeout(() => novaVantagemNome?.focus(), 50);
+    }
+
+    function salvarNovaVantagemDefeito() {
+      const nome = novaVantagemNome?.value?.trim();
+      if (!nome) {
+        mostrarAviso('Informe o nome da qualidade ou defeito.');
+        novaVantagemNome?.focus();
+        return;
+      }
+
+      const tipo = novaVantagemTipo?.value || 'qualidade';
+      const pontosInformados = Number(novaVantagemPontos?.value || 0);
+      if (!Number.isFinite(pontosInformados) || pontosInformados <= 0) {
+        mostrarAviso('Informe uma quantidade de pontos maior que zero.');
+        novaVantagemPontos?.focus();
+        return;
+      }
+
+      const pontosAbsolutos = Math.abs(Math.round(pontosInformados));
+      const pontosValor = tipo === 'defeito' ? -pontosAbsolutos : pontosAbsolutos;
+      const descricao = novaVantagemDescricao?.value?.trim() || '';
+
+      adicionarVantagemNaFicha({
+        nome,
+        tipo,
+        pontos: formatarPontos(pontosValor),
+        pontosValor,
+        descricao
+      });
+
+      fecharModal(modalNovaVantagem);
+      mostrarAviso('Nova van/def adicionada.');
+    }
+
+
+    function categoriaItemLabel(categoria) {
+      return categoria || 'Diversos';
+    }
+
+    function textoItemInventario(item) {
+      const linhas = [item.nome || 'Item sem nome'];
+      if (item.categoria) linhas.push(`Categoria: ${categoriaItemLabel(item.categoria)}`);
+      if (item.quantidade) linhas.push(`Quantidade: ${item.quantidade}`);
+      if (item.descricao) linhas.push(item.descricao);
+      return linhas.join('\n');
+    }
+
+    function sincronizarCampoItens() {
+      const campo = getCampo('equipamentosTexto');
+      if (!campo) return;
+      campo.value = itensInventarioAdicionados.map(textoItemInventario).join('\n\n');
+    }
+
+    function renderizarItensFicha() {
+      if (!listaItensFicha) return;
+
+      if (!itensInventarioAdicionados.length) {
+        listaItensFicha.innerHTML = '<div class="inventario-vazio">Nenhum item adicionado ainda.</div>';
+        sincronizarCampoItens();
+        return;
+      }
+
+      listaItensFicha.innerHTML = itensInventarioAdicionados.map((item, indice) => `
+        <article class="item-ficha-card">
+          <div class="item-ficha-topo">
+            <div>
+              <strong class="item-ficha-nome">${escapeHtml(item.nome || 'Item sem nome')}</strong>
+              <div class="item-meta">
+                <span class="tag-item-categoria">${escapeHtml(categoriaItemLabel(item.categoria))}</span>
+                ${item.quantidade ? `<span class="tag-item-quantidade">Qtd: ${escapeHtml(item.quantidade)}</span>` : ''}
+              </div>
+            </div>
+            <button type="button" class="btn-remover-item" data-remover-item="${indice}" aria-label="Remover item">×</button>
+          </div>
+          <div class="item-ficha-texto">${escapeHtml(item.descricao || 'Sem descrição cadastrada.')}</div>
+        </article>
+      `).join('');
+      sincronizarCampoItens();
+    }
+
+    function adicionarItemNaFicha({ nome, categoria = 'Diversos', quantidade = '1', descricao = '' }) {
+      const nomeLimpo = String(nome || '').trim();
+      if (!nomeLimpo) return;
+
+      itensInventarioAdicionados.push({
+        nome: nomeLimpo,
+        categoria: String(categoria || 'Diversos'),
+        quantidade: String(quantidade || '').trim(),
+        descricao: String(descricao || '').trim()
+      });
+
+      renderizarItensFicha();
+      salvarFicha(true);
+    }
+
+    function carregarItensAdicionados(lista = [], textoAntigo = '') {
+      if (Array.isArray(lista) && lista.length) {
+        itensInventarioAdicionados = lista.map((item) => ({
+          nome: item?.nome || 'Item sem nome',
+          categoria: item?.categoria || 'Diversos',
+          quantidade: item?.quantidade || '',
+          descricao: item?.descricao || ''
+        }));
+      } else if (String(textoAntigo || '').trim()) {
+        itensInventarioAdicionados = [{
+          nome: 'Inventário antigo',
+          categoria: 'Diversos',
+          quantidade: '',
+          descricao: String(textoAntigo || '').trim()
+        }];
+      } else {
+        itensInventarioAdicionados = [];
+      }
+      renderizarItensFicha();
+    }
+
+    function removerItem(indice) {
+      itensInventarioAdicionados.splice(indice, 1);
+      renderizarItensFicha();
+      salvarFicha(true);
+      mostrarAviso('Item removido.');
+    }
+
+    function renderizarAbasCategoriasItens() {
+      if (!abasCategoriasItens) return;
+      abasCategoriasItens.innerHTML = categoriasInventario.map((categoria) => `
+        <button type="button" class="inventario-categoria-btn ${categoriaItemAtual === categoria ? 'active' : ''}" data-categoria-item="${escapeHtml(categoria)}">
+          ${escapeHtml(categoria)}
+        </button>
+      `).join('');
+    }
+
+    function renderizarListaItens() {
+      if (!listaItensModal) return;
+      const busca = normalizarPesquisa(pesquisaItem?.value || '');
+
+      const listaFiltrada = itensBaseInventario.filter((item) => {
+        const categoriaOk = categoriaItemAtual === 'Todos' || item.categoria === categoriaItemAtual;
+        const buscaOk = !busca || normalizarPesquisa(item.nome).includes(busca) || normalizarPesquisa(item.descricao).includes(busca);
+        return categoriaOk && buscaOk;
+      });
+
+      if (!listaFiltrada.length) {
+        listaItensModal.innerHTML = '<div class="inventario-vazio">Nenhum item encontrado nessa categoria.</div>';
+        return;
+      }
+
+      listaItensModal.innerHTML = listaFiltrada.map((item) => {
+        const indice = itensBaseInventario.indexOf(item);
+        return `
+          <article class="item-card">
+            <div>
+              <strong class="item-nome">${escapeHtml(item.nome)}</strong>
+              <div class="item-tags">
+                <span class="tag-item-categoria">${escapeHtml(item.categoria)}</span>
+                ${item.quantidade ? `<span class="tag-item-quantidade">Qtd: ${escapeHtml(item.quantidade)}</span>` : ''}
+              </div>
+              <p class="item-descricao">${escapeHtml(item.descricao)}</p>
+            </div>
+            <button type="button" class="btn-modal-add" data-add-item="${indice}">Adicionar</button>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function adicionarItemPadrao(item) {
+      if (!item) return;
+      adicionarItemNaFicha({ ...item });
+      mostrarAviso('Item adicionado.');
+    }
+
+    function abrirAdicionarItem() {
+      categoriaItemAtual = 'Todos';
+      if (pesquisaItem) pesquisaItem.value = '';
+      renderizarAbasCategoriasItens();
+      renderizarListaItens();
+      abrirModal(modalItens);
+      setTimeout(() => pesquisaItem?.focus(), 50);
+    }
+
+    function preencherCategoriasNovoItem() {
+      if (!novoItemCategoria) return;
+      novoItemCategoria.innerHTML = categoriasInventario
+        .filter((categoria) => categoria !== 'Todos')
+        .map((categoria) => `<option value="${escapeHtml(categoria)}">${escapeHtml(categoria)}</option>`)
+        .join('');
+    }
+
+    function abrirNovoItem() {
+      preencherCategoriasNovoItem();
+      if (novoItemNome) novoItemNome.value = '';
+      if (novoItemCategoria) novoItemCategoria.value = 'Diversos';
+      if (novoItemQuantidade) novoItemQuantidade.value = '1';
+      if (novoItemDescricao) novoItemDescricao.value = '';
+      abrirModal(modalNovoItem);
+      setTimeout(() => novoItemNome?.focus(), 50);
+    }
+
+    function salvarNovoItem() {
+      const nome = novoItemNome?.value?.trim();
+      if (!nome) {
+        mostrarAviso('Informe o nome do item.');
+        novoItemNome?.focus();
+        return;
+      }
+
+      adicionarItemNaFicha({
+        nome,
+        categoria: novoItemCategoria?.value || 'Diversos',
+        quantidade: novoItemQuantidade?.value?.trim() || '1',
+        descricao: novoItemDescricao?.value?.trim() || ''
+      });
+
+      fecharModal(modalNovoItem);
+      mostrarAviso('Novo item adicionado.');
+    }
 
     function montarHabilidades() {
       listaHabilidades.innerHTML = habilidades.map(([nome, chave]) => `
@@ -2397,6 +4296,19 @@ Anotações:"></textarea>
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;');
+    }
+
+
+    function limparDescricaoDisciplina(texto) {
+      const descricao = String(texto || '').replace(/\r/g, '').trim();
+      const normalizada = descricao
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+
+      if (normalizada === 'nivel: poderes: anotacoes:') return '';
+      return descricao;
     }
 
     function getCampo(chave) {
@@ -2538,7 +4450,9 @@ Anotações:"></textarea>
         campos,
         listas: {
           ...(fichaAtual?.listas || {}),
-          disciplinasAdicionadas
+          disciplinasAdicionadas,
+          vantagensDefeitosAdicionados,
+          itensInventarioAdicionados
         },
         resumo: {
           nome: campos.nome || campos.nomeDescricao || 'Personagem sem nome',
@@ -2603,17 +4517,23 @@ Anotações:"></textarea>
       if (!salvo) {
         aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
         carregarDisciplinasAdicionadas([], '');
+        carregarVantagensAdicionadas([], '');
+        carregarItensAdicionados([], '');
         return;
       }
       try {
         fichaAtual = JSON.parse(salvo);
         aplicarCampos(fichaAtual.campos || {});
         carregarDisciplinasAdicionadas(fichaAtual.listas?.disciplinasAdicionadas || [], fichaAtual.campos?.disciplinasTexto || '');
+        carregarVantagensAdicionadas(fichaAtual.listas?.vantagensDefeitosAdicionados || [], fichaAtual.campos?.vantagensDefeitosTexto || '');
+        carregarItensAdicionados(fichaAtual.listas?.itensInventarioAdicionados || [], fichaAtual.campos?.equipamentosTexto || '');
         aplicarImagem(fichaAtual.imagem || '');
       } catch (erro) {
         console.warn('Não foi possível carregar a ficha:', erro);
         aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
         carregarDisciplinasAdicionadas([], '');
+        carregarVantagensAdicionadas([], '');
+        carregarItensAdicionados([], '');
       }
     }
 
@@ -2655,6 +4575,15 @@ Anotações:"></textarea>
     btnNovaDisciplina?.addEventListener('click', abrirNovaDisciplina);
     btnSalvarNovaDisciplina?.addEventListener('click', salvarNovaDisciplina);
     filtroClaDisciplina?.addEventListener('change', renderizarListaDisciplinas);
+    btnAdicionarVantagem?.addEventListener('click', abrirAdicionarVantagem);
+    btnNovaVantagemDefeito?.addEventListener('click', abrirNovaVantagemDefeito);
+    btnSalvarNovaVantagem?.addEventListener('click', salvarNovaVantagemDefeito);
+    filtroTipoVantagem?.addEventListener('change', renderizarListaVantagens);
+    pesquisaVantagem?.addEventListener('input', renderizarListaVantagens);
+    btnAdicionarItem?.addEventListener('click', abrirAdicionarItem);
+    btnNovoItem?.addEventListener('click', abrirNovoItem);
+    btnSalvarNovoItem?.addEventListener('click', salvarNovoItem);
+    pesquisaItem?.addEventListener('input', renderizarListaItens);
 
     document.addEventListener('click', (evento) => {
       const botaoAdicionar = evento.target.closest('[data-add-disciplina]');
@@ -2664,9 +4593,44 @@ Anotações:"></textarea>
         return;
       }
 
+      const botaoAdicionarVantagem = evento.target.closest('[data-add-vantagem]');
+      if (botaoAdicionarVantagem) {
+        const indice = Number(botaoAdicionarVantagem.dataset.addVantagem);
+        const seletorPontos = modalVantagens?.querySelector(`[data-pontos-vantagem="${indice}"]`);
+        adicionarVantagemPadrao(vantagensDefeitosV5[indice], seletorPontos?.value);
+        return;
+      }
+
+      const botaoCategoriaItem = evento.target.closest('[data-categoria-item]');
+      if (botaoCategoriaItem) {
+        categoriaItemAtual = botaoCategoriaItem.dataset.categoriaItem || 'Todos';
+        renderizarAbasCategoriasItens();
+        renderizarListaItens();
+        return;
+      }
+
+      const botaoAdicionarItem = evento.target.closest('[data-add-item]');
+      if (botaoAdicionarItem) {
+        const indice = Number(botaoAdicionarItem.dataset.addItem);
+        adicionarItemPadrao(itensBaseInventario[indice]);
+        return;
+      }
+
       const botaoRemover = evento.target.closest('[data-remover-disciplina]');
       if (botaoRemover) {
         removerDisciplina(Number(botaoRemover.dataset.removerDisciplina));
+        return;
+      }
+
+      const botaoRemoverVantagem = evento.target.closest('[data-remover-vantagem]');
+      if (botaoRemoverVantagem) {
+        removerVantagem(Number(botaoRemoverVantagem.dataset.removerVantagem));
+        return;
+      }
+
+      const botaoRemoverItem = evento.target.closest('[data-remover-item]');
+      if (botaoRemoverItem) {
+        removerItem(Number(botaoRemoverItem.dataset.removerItem));
         return;
       }
 
@@ -2675,17 +4639,29 @@ Anotações:"></textarea>
         const alvo = fechar.dataset.modalClose;
         if (alvo === 'disciplinas') fecharModal(modalDisciplinas);
         if (alvo === 'nova-disciplina') fecharModal(modalNovaDisciplina);
+        if (alvo === 'vantagens') fecharModal(modalVantagens);
+        if (alvo === 'nova-vantagem') fecharModal(modalNovaVantagem);
+        if (alvo === 'itens') fecharModal(modalItens);
+        if (alvo === 'novo-item') fecharModal(modalNovoItem);
         return;
       }
 
       if (evento.target === modalDisciplinas) fecharModal(modalDisciplinas);
       if (evento.target === modalNovaDisciplina) fecharModal(modalNovaDisciplina);
+      if (evento.target === modalVantagens) fecharModal(modalVantagens);
+      if (evento.target === modalNovaVantagem) fecharModal(modalNovaVantagem);
+      if (evento.target === modalItens) fecharModal(modalItens);
+      if (evento.target === modalNovoItem) fecharModal(modalNovoItem);
     });
 
     document.addEventListener('keydown', (evento) => {
       if (evento.key === 'Escape') {
         fecharModal(modalDisciplinas);
         fecharModal(modalNovaDisciplina);
+        fecharModal(modalVantagens);
+        fecharModal(modalNovaVantagem);
+        fecharModal(modalItens);
+        fecharModal(modalNovoItem);
       }
     });
 
