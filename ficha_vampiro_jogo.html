@@ -4975,7 +4975,13 @@
     }
 
     function getCampo(chave) {
-      return document.querySelector(`[data-campo="${chave}"]`);
+      if (!chave) return null;
+
+      // Os atributos e habilidades usam .rating[data-campo] como contêiner
+      // e um input hidden interno com o mesmo data-campo. Para carregar os
+      // pontos vindos da ficha de criação, precisamos alterar o input, não a div.
+      return document.querySelector(`input[data-campo="${chave}"], textarea[data-campo="${chave}"], select[data-campo="${chave}"]`)
+        || document.querySelector(`[data-campo="${chave}"]`);
     }
 
     function syncCamposEspelhados(origem) {
