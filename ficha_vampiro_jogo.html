@@ -1425,10 +1425,18 @@
     /* Aba Van. e Def.: pontos, lista adicionada e modal com filtros */
     .vantagens-topo {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr;
       gap: 8px;
-      align-items: end;
+      align-items: stretch;
       margin: 2px 0 12px;
+    }
+
+    .vantagens-acoes {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .vantagens-pontos {
@@ -1888,6 +1896,116 @@
 
     .novo-item-form textarea { min-height: 118px; }
 
+
+
+    /* Editor simples de foto: enquadramento, zoom e recorte */
+    .modal-caixa.modal-foto-editor {
+      width: min(620px, calc(100vw - 34px));
+    }
+
+    .foto-editor-layout {
+      display: grid;
+      gap: 14px;
+    }
+
+    .foto-editor-crop {
+      width: min(100%, 320px);
+      aspect-ratio: 16 / 19;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,.88);
+      background:
+        linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25% 75%, rgba(255,255,255,.08) 75%),
+        linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25% 75%, rgba(255,255,255,.08) 75%),
+        rgba(0,0,0,.78);
+      background-size: 22px 22px;
+      background-position: 0 0, 11px 11px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .foto-editor-crop:active {
+      cursor: grabbing;
+    }
+
+    .foto-editor-crop img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: none !important;
+      height: auto;
+      transform-origin: center center;
+      pointer-events: none;
+      user-select: none;
+      will-change: transform;
+    }
+
+    .foto-editor-mascara {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 9999px rgba(0,0,0,.08);
+      background:
+        linear-gradient(90deg, transparent calc(33.333% - .5px), rgba(255,255,255,.32) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), rgba(255,255,255,.32) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px)),
+        linear-gradient(0deg, transparent calc(33.333% - .5px), rgba(255,255,255,.32) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), rgba(255,255,255,.32) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px));
+    }
+
+    .foto-editor-ajuda {
+      color: #fff;
+      font-size: .74rem;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      opacity: .9;
+    }
+
+    .foto-editor-controles {
+      display: grid;
+      gap: 10px;
+    }
+
+    .foto-editor-controles label {
+      display: grid;
+      gap: 6px;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .foto-editor-controles input[type="range"] {
+      width: 100%;
+      accent-color: #fff;
+    }
+
+    .foto-editor-botoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .foto-editor-botoes .btn-modal-cancelar,
+    .foto-editor-botoes .btn-modal-salvar {
+      width: 100%;
+    }
+
+    .foto-editor-botoes .foto-editor-reset {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 620px) {
+      .foto-editor-crop {
+        width: min(100%, 280px);
+      }
+
+      .foto-editor-botoes {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* Ajuste final: todas as fontes cinza ficam brancas */
     body,
     label,
@@ -2278,7 +2396,8 @@
         grid-template-columns: 1fr;
       }
 
-      .inventario-topo {
+      .inventario-topo,
+      .vantagens-acoes {
         justify-content: stretch;
         flex-direction: column;
       }
@@ -2524,6 +2643,367 @@
     }
 
 
+
+    /* Botão Dado: rolagem manual de atributo + habilidade */
+    .acoes-dado-deslocamento {
+      grid-template-columns: minmax(150px, 1fr) minmax(170px, 1fr) !important;
+      gap: 10px !important;
+      align-items: center !important;
+      margin: 5px 0 18px !important;
+    }
+
+    .btn-dado-rolagem {
+      width: min(180px, 100%);
+      min-height: 38px;
+      justify-self: start;
+      border: 2px solid rgba(255,255,255,.9);
+      background: rgba(0,0,0,.34);
+      color: #fff;
+      cursor: pointer;
+      font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+      font-size: 1.65rem;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: .01em;
+      text-align: center;
+      text-shadow: 0 1px 0 #000, 0 0 4px #000;
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .btn-dado-rolagem:hover {
+      background: rgba(255,255,255,.08);
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(255,255,255,.16);
+    }
+
+    .rolagem-manual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .rolagem-manual-grid label {
+      display: grid;
+      gap: 5px;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .rolagem-manual-grid select {
+      min-height: 36px;
+      border: 1px solid rgba(255,255,255,.68);
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 0 8px;
+      font: inherit;
+      font-size: .86rem;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .rolagem-manual-total {
+      grid-column: 1 / -1;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(255,255,255,.045);
+      padding: 10px;
+      color: #fff;
+      font-size: .86rem;
+      font-weight: 900;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .rolagem-manual-total b {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .rolagem-extra-dados {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .rolagem-extra-dados button {
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.85);
+      background: rgba(0,0,0,.52);
+      color: #fff;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: .70rem;
+      font-weight: 1000;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      white-space: nowrap;
+      font-family: "Arial Narrow", Arial, Helvetica, sans-serif;
+    }
+
+    .rolagem-extra-dados button:hover {
+      background: rgba(255,255,255,.1);
+    }
+
+    .rolagem-extra-contador {
+      min-width: 62px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.62);
+      background: rgba(255,255,255,.045);
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 1000;
+      line-height: 1;
+      text-align: center;
+    }
+
+    @media (max-width: 620px) {
+      .acoes-dado-deslocamento {
+        grid-template-columns: 1fr !important;
+      }
+
+      .btn-dado-rolagem,
+      .deslocamento-box {
+        width: 100% !important;
+        justify-self: stretch !important;
+      }
+
+      .rolagem-manual-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rolagem-extra-dados {
+        grid-template-columns: 1fr;
+      }
+
+      .rolagem-extra-contador {
+        width: 100%;
+      }
+    }
+
+    /* Rolagem de atributos e habilidades: clique no nome para rolar dados */
+    .atributos-bloco .attr-row label,
+    .skill-row .skill-name {
+      cursor: pointer !important;
+      user-select: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .15s ease, text-shadow .15s ease, transform .15s ease;
+    }
+
+    .atributos-bloco .attr-row label:hover,
+    .skill-row .skill-name:hover {
+      border-bottom-color: rgba(255,255,255,.82);
+      text-shadow: 0 0 8px rgba(255,255,255,.35), 0 1px 0 #000 !important;
+      transform: translateY(-1px);
+    }
+
+    .rolagem-atributo-popup {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: min(420px, calc(100vw - 28px));
+      z-index: 120;
+      border: 2px solid rgba(255,255,255,.86);
+      background: rgba(2,2,2,.96);
+      color: #fff;
+      padding: 12px;
+      box-shadow: 0 0 24px rgba(255,255,255,.12), 0 0 42px rgba(138,43,226,.18);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .rolagem-atributo-popup.mostrar {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .rolagem-popup-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.55);
+      padding-bottom: 7px;
+      margin-bottom: 8px;
+    }
+
+    .rolagem-popup-topo strong {
+      display: block;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 1000;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .rolagem-popup-topo span {
+      display: block;
+      margin-top: 4px;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 800;
+      opacity: .9;
+    }
+
+    .rolagem-fechar {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(255,255,255,.72);
+      background: rgba(0,0,0,.34);
+      color: #fff;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 1000;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .rolagem-resumo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 9px;
+    }
+
+    .rolagem-resumo span {
+      border: 1px solid rgba(255,255,255,.38);
+      background: rgba(255,255,255,.045);
+      padding: 6px 5px;
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 900;
+      line-height: 1.05;
+      text-align: center;
+    }
+
+    .rolagem-resumo b {
+      display: block;
+      font-size: 1rem;
+      line-height: 1;
+      margin-top: 3px;
+    }
+
+    .rolagem-dados-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dado-rolado {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      border: 2px solid rgba(255,255,255,.85);
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 1000;
+      line-height: 1;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.22);
+    }
+
+    .dado-normal {
+      background: #f2f2f2;
+      color: #050505 !important;
+    }
+
+    .dado-fome {
+      background: #970f16;
+      border-color: #ffc7c7;
+      color: #fff !important;
+      box-shadow: 0 0 10px rgba(151,15,22,.42), inset 0 0 0 1px rgba(0,0,0,.32);
+    }
+
+    .dado-dez {
+      outline: 2px solid rgba(255,255,255,.55);
+      outline-offset: 2px;
+    }
+
+    .rolagem-sem-dados {
+      width: 100%;
+      border: 1px dashed rgba(255,255,255,.42);
+      padding: 10px;
+      color: #fff;
+      font-size: .76rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 620px) {
+      .rolagem-atributo-popup {
+        right: 9px;
+        bottom: 9px;
+        width: calc(100vw - 18px);
+      }
+
+      .rolagem-resumo {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+
+
+    /* Ajuste: Dado e Deslocamento com o mesmo tamanho de fonte */
+    .acoes-dado-deslocamento .btn-dado-rolagem,
+    .acoes-dado-deslocamento .deslocamento-box,
+    .acoes-dado-deslocamento .deslocamento-box span,
+    .acoes-dado-deslocamento .deslocamento-box input {
+      font-size: 1.1rem !important;
+      font-weight: 1000 !important;
+      line-height: 1 !important;
+    }
+
+    .acoes-dado-deslocamento .btn-dado-rolagem,
+    .acoes-dado-deslocamento .deslocamento-box {
+      min-height: 34px !important;
+      display: grid !important;
+      align-items: center !important;
+    }
+
+    .acoes-dado-deslocamento .btn-dado-rolagem {
+      place-items: center !important;
+    }
+
+
+    /* Correção: valor do Deslocamento editável sem sair da caixa */
+    .acoes-dado-deslocamento .deslocamento-box {
+      width: min(196px, 100%) !important;
+      grid-template-columns: auto minmax(42px, 1fr) !important;
+      gap: 6px !important;
+      padding: 0 8px !important;
+      overflow: hidden !important;
+    }
+
+    .acoes-dado-deslocamento .deslocamento-box span {
+      min-width: 0 !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+
+    .acoes-dado-deslocamento .deslocamento-box input {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      justify-self: stretch !important;
+      text-align: right !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      text-overflow: clip !important;
+    }
+
   </style>
 </head>
 
@@ -2580,8 +3060,9 @@
           </div>
         </div>
 
-        <div class="dupla-caixas somente-deslocamento">
-          <div class="boxed-line deslocamento-box"><span>Deslocamento</span><input data-campo="deslocamento" type="text" placeholder="9m" /></div>
+        <div class="dupla-caixas acoes-dado-deslocamento">
+          <button type="button" id="btnAbrirDado" class="btn-dado-rolagem">Dado</button>
+          <div class="boxed-line deslocamento-box"><span>Deslocamento</span><input data-campo="deslocamento" type="text" value="9m" placeholder="9m" autocomplete="off" /></div>
         </div>
 
         <div class="tracker tracker-experiencia">
@@ -2665,8 +3146,10 @@
             <label class="vantagens-pontos">Pontos para gastar
               <input data-campo="pontosVantagensDefeitos" type="text" autocomplete="off" placeholder="Calculado automaticamente" />
             </label>
-            <button type="button" id="btnAdicionarVantagem" class="btn-disciplina btn-vantagem">Adicionar</button>
-            <button type="button" id="btnNovaVantagemDefeito" class="btn-disciplina btn-vantagem">Nova van/def</button>
+            <div class="vantagens-acoes" aria-label="Ações de vantagens e defeitos">
+              <button type="button" id="btnAdicionarVantagem" class="btn-disciplina btn-vantagem">Adicionar</button>
+              <button type="button" id="btnNovaVantagemDefeito" class="btn-disciplina btn-vantagem">Nova van/def</button>
+            </div>
           </div>
 
           <div class="vantagens-ficha-area">
@@ -2887,6 +3370,63 @@
   </div>
 
 
+  <div id="modalEditorFoto" class="modal-ficha" hidden>
+    <div class="modal-caixa modal-foto-editor" role="dialog" aria-modal="true" aria-labelledby="tituloModalEditorFoto">
+      <div class="modal-topo">
+        <h2 id="tituloModalEditorFoto">Ajustar foto</h2>
+        <button type="button" class="modal-fechar" data-modal-close="foto-editor" aria-label="Fechar">×</button>
+      </div>
+      <p class="modal-descricao">Arraste a imagem para enquadrar o rosto ou corpo dentro da moldura. Use o zoom para aproximar ou afastar antes de aplicar o recorte.</p>
+      <div class="foto-editor-layout">
+        <div id="fotoEditorCrop" class="foto-editor-crop" aria-label="Área de recorte da foto">
+          <img id="fotoEditorImg" alt="Prévia da foto para recorte" />
+          <span class="foto-editor-mascara" aria-hidden="true"></span>
+        </div>
+        <p class="foto-editor-ajuda">A área visível será salva como imagem da ficha.</p>
+        <div class="foto-editor-controles">
+          <label for="fotoEditorZoom">Zoom
+            <input id="fotoEditorZoom" type="range" min="1" max="4" step="0.01" value="1" />
+          </label>
+          <div class="foto-editor-botoes">
+            <button type="button" id="btnFotoEditorReset" class="btn-modal-cancelar foto-editor-reset">Centralizar</button>
+            <button type="button" class="btn-modal-cancelar" data-modal-close="foto-editor">Cancelar</button>
+            <button type="button" id="btnAplicarRecorteFoto" class="btn-modal-salvar">Aplicar recorte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="modalDado" class="modal-ficha" hidden>
+    <div class="modal-caixa modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="tituloModalDado">
+      <div class="modal-topo">
+        <h2 id="tituloModalDado">Rolar dado</h2>
+        <button type="button" class="modal-fechar" data-modal-close="dado" aria-label="Fechar">×</button>
+      </div>
+      <p class="modal-descricao">Selecione um atributo e uma habilidade. Os dois valores serão somados para formar a parada de dados. A Fome atual vira dados vermelhos.</p>
+      <div class="rolagem-manual-grid">
+        <label>Atributo
+          <select id="dadoAtributo"></select>
+        </label>
+        <label>Habilidade
+          <select id="dadoHabilidade"></select>
+        </label>
+        <div id="dadoTotalPreview" class="rolagem-manual-total">Total de dados<b>0</b></div>
+        <div class="rolagem-extra-dados" aria-label="Ajustar quantidade de dados extras">
+          <button type="button" id="btnRemoverDadoManual">Remover dado</button>
+          <span id="dadoExtraPreview" class="rolagem-extra-contador">+0</span>
+          <button type="button" id="btnAdicionarDadoManual">Adicionar dado</button>
+        </div>
+        <div class="modal-acoes">
+          <button type="button" class="btn-modal-cancelar" data-modal-close="dado">Cancelar</button>
+          <button type="button" id="btnRolarDadoManual" class="btn-modal-salvar">Rolar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
     const btnSair = document.getElementById('btnSair');
@@ -2895,6 +3435,12 @@
     const imagemPersonagem = document.getElementById('imagemPersonagem');
     const fotoPreview = document.getElementById('fotoPreview');
     const miniFotoTopo = document.getElementById('miniFotoTopo');
+    const modalEditorFoto = document.getElementById('modalEditorFoto');
+    const fotoEditorCrop = document.getElementById('fotoEditorCrop');
+    const fotoEditorImg = document.getElementById('fotoEditorImg');
+    const fotoEditorZoom = document.getElementById('fotoEditorZoom');
+    const btnFotoEditorReset = document.getElementById('btnFotoEditorReset');
+    const btnAplicarRecorteFoto = document.getElementById('btnAplicarRecorteFoto');
     const listaHabilidades = document.getElementById('listaHabilidades');
     const btnAdicionarDisciplina = document.getElementById('btnAdicionarDisciplina');
     const btnNovaDisciplina = document.getElementById('btnNovaDisciplina');
@@ -2932,12 +3478,36 @@
     const novoItemQuantidade = document.getElementById('novoItemQuantidade');
     const novoItemDescricao = document.getElementById('novoItemDescricao');
     const btnSalvarNovoItem = document.getElementById('btnSalvarNovoItem');
+    const btnAbrirDado = document.getElementById('btnAbrirDado');
+    const modalDado = document.getElementById('modalDado');
+    const dadoAtributo = document.getElementById('dadoAtributo');
+    const dadoHabilidade = document.getElementById('dadoHabilidade');
+    const dadoTotalPreview = document.getElementById('dadoTotalPreview');
+    const dadoExtraPreview = document.getElementById('dadoExtraPreview');
+    const btnAdicionarDadoManual = document.getElementById('btnAdicionarDadoManual');
+    const btnRemoverDadoManual = document.getElementById('btnRemoverDadoManual');
+    const btnRolarDadoManual = document.getElementById('btnRolarDadoManual');
     let imagemBase64 = '';
     let fichaAtual = null;
     let disciplinasAdicionadas = [];
     let vantagensDefeitosAdicionados = [];
     let itensInventarioAdicionados = [];
     let categoriaItemAtual = 'Todos';
+    let fotoEditorEstado = null;
+    let rolagemAtributoTimer = null;
+    let dadosExtrasManual = 0;
+
+    const atributosRolagem = [
+      ['FOR', 'atributo_forca'],
+      ['DES', 'atributo_destreza'],
+      ['VIG', 'atributo_vigor'],
+      ['CAR', 'atributo_carisma'],
+      ['MANI', 'atributo_manipulacao'],
+      ['AUTC.', 'atributo_autocontrole'],
+      ['INT', 'atributo_inteligencia'],
+      ['RAC.', 'atributo_raciocinio'],
+      ['DET.', 'atributo_determinacao']
+    ];
 
     const habilidades = [
       ['Armas Brancas', 'habilidade_armasBrancas'],
@@ -3808,9 +4378,23 @@
       return numero > 0 ? `+${numero}` : String(numero);
     }
 
+    function valorPontosSeguro(pontosValor, pontos = '', tipo = '') {
+      const valorDireto = Number(pontosValor);
+      const temValorDireto = pontosValor !== null
+        && pontosValor !== undefined
+        && String(pontosValor).trim() !== ''
+        && Number.isFinite(valorDireto);
+
+      let valorTexto = valoresPontosDaVantagem(pontos)[0] || 0;
+      if (valorTexto !== 0 && tipo === 'defeito' && valorTexto > 0) valorTexto *= -1;
+
+      // Corrige vantagens/defeitos salvos com 0 por versões anteriores.
+      if (temValorDireto && !(valorDireto === 0 && valorTexto !== 0)) return valorDireto;
+      return valorTexto;
+    }
+
     function pontosSelecionados(item) {
-      if (Number.isFinite(Number(item?.pontosValor))) return Number(item.pontosValor);
-      return valoresPontosDaVantagem(item?.pontos || '')[0] || 0;
+      return valorPontosSeguro(item?.pontosValor, item?.pontos || item?.nome || '', item?.tipo || '');
     }
 
     function atualizarPontosVantagensDefeitos() {
@@ -3818,12 +4402,14 @@
       if (!campo) return;
 
       const totalQualidades = vantagensDefeitosAdicionados
-        .filter((item) => Number(item.pontosValor || 0) > 0)
-        .reduce((total, item) => total + Number(item.pontosValor || 0), 0);
+        .map((item) => pontosSelecionados(item))
+        .filter((valor) => valor > 0)
+        .reduce((total, valor) => total + valor, 0);
 
       const totalDefeitos = vantagensDefeitosAdicionados
-        .filter((item) => Number(item.pontosValor || 0) < 0)
-        .reduce((total, item) => total + Number(item.pontosValor || 0), 0);
+        .map((item) => pontosSelecionados(item))
+        .filter((valor) => valor < 0)
+        .reduce((total, valor) => total + valor, 0);
 
       const total = totalQualidades + totalDefeitos;
       campo.value = `Qualidades ${formatarPontos(totalQualidades)} | Defeitos ${formatarPontos(totalDefeitos)} | Total ${formatarPontos(total)}`;
@@ -3833,7 +4419,7 @@
     function textoVantagem(item) {
       const linhas = [item.nome || 'Vantagem ou defeito sem nome'];
       if (item.tipo) linhas.push(`Tipo: ${tipoVantagemLabel(item.tipo)}`);
-      linhas.push(`Pontos: ${item.pontosSelecionados || formatarPontos(pontosSelecionados(item))}`);
+      linhas.push(`Pontos: ${formatarPontos(pontosSelecionados(item))}`);
       if (item.descricao) linhas.push(item.descricao);
       return linhas.join('\n');
     }
@@ -3861,7 +4447,7 @@
               <strong class="vantagem-ficha-nome">${escapeHtml(item.nome || 'Vantagem ou defeito sem nome')}</strong>
               <div class="vantagem-meta">
                 <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
-                <span class="tag-vantagem-pontos">${escapeHtml(item.pontosSelecionados || formatarPontos(pontosSelecionados(item)))}</span>
+                <span class="tag-vantagem-pontos">${escapeHtml(formatarPontos(pontosSelecionados(item)))}</span>
               </div>
             </div>
             <button type="button" class="btn-remover-vantagem" data-remover-vantagem="${indice}" aria-label="Remover vantagem ou defeito">×</button>
@@ -3876,9 +4462,7 @@
       const nomeLimpo = String(nome || '').trim();
       if (!nomeLimpo) return;
 
-      const valorEscolhido = Number.isFinite(Number(pontosValor))
-        ? Number(pontosValor)
-        : valoresPontosDaVantagem(pontos)[0] || 0;
+      const valorEscolhido = valorPontosSeguro(pontosValor, pontos, tipo);
 
       vantagensDefeitosAdicionados.push({
         nome: nomeLimpo,
@@ -3896,16 +4480,14 @@
     function carregarVantagensAdicionadas(lista = [], textoAntigo = '') {
       if (Array.isArray(lista) && lista.length) {
         vantagensDefeitosAdicionados = lista.map((item) => {
-          const valorEscolhido = Number.isFinite(Number(item?.pontosValor))
-            ? Number(item.pontosValor)
-            : valoresPontosDaVantagem(item?.pontos || '')[0] || 0;
+          const valorEscolhido = valorPontosSeguro(item?.pontosValor, item?.pontos || item?.nome || '', item?.tipo || '');
 
           return {
             nome: item?.nome || 'Vantagem ou defeito sem nome',
             tipo: item?.tipo || 'personalizado',
             pontos: item?.pontos || '',
             pontosValor: valorEscolhido,
-            pontosSelecionados: item?.pontosSelecionados || formatarPontos(valorEscolhido),
+            pontosSelecionados: formatarPontos(valorEscolhido),
             descricao: item?.descricao || ''
           };
         });
@@ -4355,6 +4937,7 @@
             const valorAtual = Number(input.value || 0);
             input.value = valorAtual === i ? 0 : i;
             atualizarRating(rating);
+            atualizarTotalDadoManual();
             salvarFicha(true);
           });
           rating.appendChild(dot);
@@ -4374,6 +4957,212 @@
     function atualizarRatings() {
       document.querySelectorAll('.rating').forEach(atualizarRating);
     }
+
+
+
+    function getRolagemAtributoPopup() {
+      let popup = document.getElementById('rolagemAtributoPopup');
+      if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'rolagemAtributoPopup';
+        popup.className = 'rolagem-atributo-popup';
+        popup.setAttribute('role', 'status');
+        popup.setAttribute('aria-live', 'polite');
+        document.body.appendChild(popup);
+      }
+      return popup;
+    }
+
+    function valorFomeParaRolagem() {
+      const campo = getCampo('fome');
+      const texto = String(campo?.value || '').trim();
+      const numeros = numerosDaBarra(texto);
+      if (!numeros.length) return 0;
+      return Math.max(0, Math.floor(numeros[0]));
+    }
+
+    function contarSucessosV5(resultados) {
+      const sucessosBase = resultados.filter((dado) => dado.valor >= 6).length;
+      const dezenas = resultados.filter((dado) => dado.valor === 10).length;
+      const bonusCritico = Math.floor(dezenas / 2) * 2;
+      return sucessosBase + bonusCritico;
+    }
+
+    function mostrarRolagemAtributo(nome, totalDados, dadosFome, resultados) {
+      const popup = getRolagemAtributoPopup();
+      const dadosNormais = Math.max(0, totalDados - dadosFome);
+      const sucessos = contarSucessosV5(resultados);
+      const dadosHtml = resultados.length
+        ? resultados.map((dado) => `
+          <span class="dado-rolado ${dado.fome ? 'dado-fome' : 'dado-normal'} ${dado.valor === 10 ? 'dado-dez' : ''}" title="${dado.fome ? 'Dado de fome' : 'Dado normal'}">${dado.valor}</span>
+        `).join('')
+        : '<span class="rolagem-sem-dados">Nenhum dado marcado para esta rolagem.</span>';
+
+      popup.innerHTML = `
+        <div class="rolagem-popup-topo">
+          <div>
+            <strong>${escapeHtml(nome)}</strong>
+            <span>Clique no nome para rolar novamente.</span>
+          </div>
+          <button type="button" class="rolagem-fechar" aria-label="Fechar rolagem">×</button>
+        </div>
+        <div class="rolagem-resumo">
+          <span>Total de dados<b>${totalDados}</b></span>
+          <span>Dados vermelhos<b>${dadosFome}</b></span>
+          <span>Sucessos<b>${sucessos}</b></span>
+        </div>
+        <div class="rolagem-dados-lista" aria-label="Resultado dos dados. Normais: ${dadosNormais}. Fome: ${dadosFome}.">
+          ${dadosHtml}
+        </div>
+      `;
+
+      popup.querySelector('.rolagem-fechar')?.addEventListener('click', () => {
+        popup.classList.remove('mostrar');
+      });
+
+      popup.classList.add('mostrar');
+      clearTimeout(rolagemAtributoTimer);
+      rolagemAtributoTimer = setTimeout(() => popup.classList.remove('mostrar'), 8000);
+    }
+
+    function rolarRating(nome, rating) {
+      const totalDados = Math.max(0, Math.floor(Number(rating?.querySelector('input')?.value || 0)));
+      const fomeAtual = valorFomeParaRolagem();
+      const dadosFome = Math.min(totalDados, fomeAtual);
+      const dadosNormais = Math.max(0, totalDados - dadosFome);
+      const resultados = [];
+
+      for (let i = 0; i < dadosFome; i++) {
+        resultados.push({ valor: Math.floor(Math.random() * 10) + 1, fome: true });
+      }
+
+      for (let i = 0; i < dadosNormais; i++) {
+        resultados.push({ valor: Math.floor(Math.random() * 10) + 1, fome: false });
+      }
+
+      mostrarRolagemAtributo(nome, totalDados, dadosFome, resultados);
+    }
+
+    function rolarAtributo(linha) {
+      const nome = linha?.querySelector('label')?.textContent?.trim() || 'Atributo';
+      rolarRating(nome, linha?.querySelector('.rating'));
+    }
+
+    function rolarHabilidade(linha) {
+      const nome = linha?.querySelector('.skill-name')?.textContent?.trim() || 'Habilidade';
+      rolarRating(nome, linha?.querySelector('.rating'));
+    }
+
+    function popularSeletoresDado() {
+      if (!dadoAtributo || !dadoHabilidade) return;
+
+      if (dadoAtributo.dataset.preenchido !== 'true') {
+        dadoAtributo.innerHTML = atributosRolagem
+          .map(([nome, chave]) => `<option value="${escapeHtml(chave)}">${escapeHtml(nome)}</option>`)
+          .join('');
+        dadoAtributo.dataset.preenchido = 'true';
+      }
+
+      if (dadoHabilidade.dataset.preenchido !== 'true') {
+        dadoHabilidade.innerHTML = habilidades
+          .map(([nome, chave]) => `<option value="${escapeHtml(chave)}">${escapeHtml(nome)}</option>`)
+          .join('');
+        dadoHabilidade.dataset.preenchido = 'true';
+      }
+    }
+
+    function valorRatingPorCampo(chave) {
+      const rating = document.querySelector(`.rating[data-campo="${chave}"]`);
+      return Math.max(0, Math.floor(Number(rating?.querySelector('input')?.value || 0)));
+    }
+
+    function textoSelecionado(select) {
+      return select?.selectedOptions?.[0]?.textContent?.trim() || '';
+    }
+
+    function totalDadoManual() {
+      if (!dadoAtributo || !dadoHabilidade) return { valorAtributo: 0, valorHabilidade: 0, total: 0 };
+      const valorAtributo = valorRatingPorCampo(dadoAtributo.value);
+      const valorHabilidade = valorRatingPorCampo(dadoHabilidade.value);
+      const total = Math.max(0, valorAtributo + valorHabilidade + dadosExtrasManual);
+      return { valorAtributo, valorHabilidade, total };
+    }
+
+    function textoDadosExtrasManual() {
+      if (dadosExtrasManual === 0) return '+0';
+      return dadosExtrasManual > 0 ? `+${dadosExtrasManual}` : String(dadosExtrasManual);
+    }
+
+    function atualizarTotalDadoManual() {
+      if (!dadoAtributo || !dadoHabilidade || !dadoTotalPreview) return;
+      const { valorAtributo, valorHabilidade, total } = totalDadoManual();
+      const fomeAtual = valorFomeParaRolagem();
+      const dadosFome = Math.min(total, fomeAtual);
+      const extraTexto = textoDadosExtrasManual();
+      const extraLinha = dadosExtrasManual !== 0 ? ` | Ajuste ${extraTexto}` : '';
+
+      if (dadoExtraPreview) dadoExtraPreview.textContent = extraTexto;
+
+      dadoTotalPreview.innerHTML = `
+        ${escapeHtml(textoSelecionado(dadoAtributo))} ${valorAtributo} + ${escapeHtml(textoSelecionado(dadoHabilidade))} ${valorHabilidade}${extraLinha}
+        <b>${total} dados</b>
+        <span>${dadosFome} dado${dadosFome === 1 ? '' : 's'} vermelho${dadosFome === 1 ? '' : 's'} pela Fome</span>
+      `;
+    }
+
+    function alterarDadoManualExtra(delta) {
+      dadosExtrasManual = Math.max(-30, Math.min(30, dadosExtrasManual + delta));
+      atualizarTotalDadoManual();
+    }
+
+    function abrirModalDado() {
+      dadosExtrasManual = 0;
+      popularSeletoresDado();
+      atualizarTotalDadoManual();
+      abrirModal(modalDado);
+    }
+
+    function rolarDadoManual() {
+      if (!dadoAtributo || !dadoHabilidade) return;
+      const { total: totalDados } = totalDadoManual();
+      const fomeAtual = valorFomeParaRolagem();
+      const dadosFome = Math.min(totalDados, fomeAtual);
+      const dadosNormais = Math.max(0, totalDados - dadosFome);
+      const resultados = [];
+
+      for (let i = 0; i < dadosFome; i++) {
+        resultados.push({ valor: Math.floor(Math.random() * 10) + 1, fome: true });
+      }
+
+      for (let i = 0; i < dadosNormais; i++) {
+        resultados.push({ valor: Math.floor(Math.random() * 10) + 1, fome: false });
+      }
+
+      const ajusteTexto = dadosExtrasManual !== 0 ? ` ${textoDadosExtrasManual()}` : '';
+      mostrarRolagemAtributo(`${textoSelecionado(dadoAtributo)} + ${textoSelecionado(dadoHabilidade)}${ajusteTexto}`, totalDados, dadosFome, resultados);
+      fecharModal(modalDado);
+    }
+
+    function initRolagemAtributos() {
+      document.querySelectorAll('.atributos-bloco .attr-row label').forEach((label) => {
+        label.title = 'Clique para rolar este atributo';
+        label.addEventListener('click', (evento) => {
+          evento.preventDefault();
+          rolarAtributo(label.closest('.attr-row'));
+        });
+      });
+    }
+
+    function initRolagemHabilidades() {
+      document.querySelectorAll('.skill-row .skill-name').forEach((nomeHabilidade) => {
+        nomeHabilidade.title = 'Clique para rolar esta habilidade';
+        nomeHabilidade.addEventListener('click', (evento) => {
+          evento.preventDefault();
+          rolarHabilidade(nomeHabilidade.closest('.skill-row'));
+        });
+      });
+    }
+
 
     function numerosDaBarra(texto) {
       return String(texto || '').match(/-?\d+/g)?.map(Number) || [];
@@ -4440,6 +5229,8 @@
         campos[campo.dataset.campo] = campo.value || '';
       });
 
+      campos.deslocamento = String(campos.deslocamento || '').trim() || '9m';
+
       const id = fichaAtual?.id || localStorage.getItem('personagemVampiroIdAtual') || crypto.randomUUID();
       return {
         id,
@@ -4490,6 +5281,7 @@
       mapa.nomeDescricao = mapa.nomeDescricao || mapa.nome || '';
       mapa.vantagensDefeitosTexto = mapa.vantagensDefeitosTexto || [mapa.vantagensTexto, mapa.defeitosTexto].filter(Boolean).join('\n\n');
       mapa.perdicaoCla = mapa.perdicaoCla || mapa.maldicaoCla || '';
+      mapa.deslocamento = String(mapa.deslocamento || '').trim() || '9m';
 
       Object.entries(mapa).forEach(([chave, valor]) => {
         const campo = getCampo(chave);
@@ -4510,6 +5302,128 @@
       const imgHtml = `<img src="${escapeHtml(src)}" alt="Imagem do personagem" />`;
       fotoPreview.innerHTML = imgHtml;
       miniFotoTopo.innerHTML = imgHtml;
+    }
+
+    function criarEstadoEditorFoto(src) {
+      return {
+        src,
+        carregada: false,
+        baseScale: 1,
+        zoom: 1,
+        x: 0,
+        y: 0,
+        arrastando: false,
+        inicioX: 0,
+        inicioY: 0,
+        baseX: 0,
+        baseY: 0
+      };
+    }
+
+    function dimensoesCropFoto() {
+      const rect = fotoEditorCrop?.getBoundingClientRect();
+      return {
+        largura: Math.max(1, rect?.width || 320),
+        altura: Math.max(1, rect?.height || 380)
+      };
+    }
+
+    function limitarEditorFoto() {
+      if (!fotoEditorEstado || !fotoEditorImg?.naturalWidth || !fotoEditorImg?.naturalHeight) return;
+
+      const { largura, altura } = dimensoesCropFoto();
+      const escalaFinal = fotoEditorEstado.baseScale * fotoEditorEstado.zoom;
+      const larguraImagem = fotoEditorImg.naturalWidth * escalaFinal;
+      const alturaImagem = fotoEditorImg.naturalHeight * escalaFinal;
+      const limiteX = Math.max(0, (larguraImagem - largura) / 2);
+      const limiteY = Math.max(0, (alturaImagem - altura) / 2);
+
+      fotoEditorEstado.x = Math.max(-limiteX, Math.min(limiteX, fotoEditorEstado.x));
+      fotoEditorEstado.y = Math.max(-limiteY, Math.min(limiteY, fotoEditorEstado.y));
+    }
+
+    function atualizarEditorFoto() {
+      if (!fotoEditorEstado || !fotoEditorImg) return;
+      limitarEditorFoto();
+      const escalaFinal = fotoEditorEstado.baseScale * fotoEditorEstado.zoom;
+      fotoEditorImg.style.transform = `translate(-50%, -50%) translate(${fotoEditorEstado.x}px, ${fotoEditorEstado.y}px) scale(${escalaFinal})`;
+      if (fotoEditorZoom) fotoEditorZoom.value = String(fotoEditorEstado.zoom);
+    }
+
+    function resetarEditorFoto() {
+      if (!fotoEditorEstado || !fotoEditorImg?.naturalWidth || !fotoEditorImg?.naturalHeight) return;
+      const { largura, altura } = dimensoesCropFoto();
+      fotoEditorEstado.baseScale = Math.max(largura / fotoEditorImg.naturalWidth, altura / fotoEditorImg.naturalHeight);
+      fotoEditorEstado.zoom = 1;
+      fotoEditorEstado.x = 0;
+      fotoEditorEstado.y = 0;
+      fotoEditorImg.style.width = `${fotoEditorImg.naturalWidth}px`;
+      fotoEditorImg.style.height = `${fotoEditorImg.naturalHeight}px`;
+      atualizarEditorFoto();
+    }
+
+    function abrirEditorFoto(src) {
+      if (!src || !modalEditorFoto || !fotoEditorImg) return;
+      fotoEditorEstado = criarEstadoEditorFoto(src);
+      fotoEditorImg.removeAttribute('src');
+      fotoEditorImg.onload = () => {
+        if (!fotoEditorEstado) return;
+        fotoEditorEstado.carregada = true;
+        requestAnimationFrame(resetarEditorFoto);
+      };
+      fotoEditorImg.src = src;
+      abrirModal(modalEditorFoto);
+    }
+
+    function fecharEditorFoto() {
+      fecharModal(modalEditorFoto);
+      fotoEditorEstado = null;
+      if (fotoEditorImg) {
+        fotoEditorImg.onload = null;
+        fotoEditorImg.removeAttribute('src');
+        fotoEditorImg.removeAttribute('style');
+      }
+    }
+
+    function aplicarRecorteFoto() {
+      if (!fotoEditorEstado || !fotoEditorImg?.naturalWidth || !fotoEditorImg?.naturalHeight) return;
+
+      const { largura, altura } = dimensoesCropFoto();
+      const larguraFinal = 800;
+      const alturaFinal = Math.round(larguraFinal * (altura / largura));
+      const escalaSaida = larguraFinal / largura;
+      const escalaImagem = fotoEditorEstado.baseScale * fotoEditorEstado.zoom;
+      const canvas = document.createElement('canvas');
+      canvas.width = larguraFinal;
+      canvas.height = alturaFinal;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, larguraFinal, alturaFinal);
+
+      const destinoLargura = fotoEditorImg.naturalWidth * escalaImagem * escalaSaida;
+      const destinoAltura = fotoEditorImg.naturalHeight * escalaImagem * escalaSaida;
+      const destinoX = ((largura / 2) + fotoEditorEstado.x) * escalaSaida - (destinoLargura / 2);
+      const destinoY = ((altura / 2) + fotoEditorEstado.y) * escalaSaida - (destinoAltura / 2);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(fotoEditorImg, destinoX, destinoY, destinoLargura, destinoAltura);
+
+      const imagemRecortada = canvas.toDataURL('image/jpeg', 0.92);
+      aplicarImagem(imagemRecortada);
+      salvarFicha(true);
+      fecharEditorFoto();
+      mostrarAviso('Imagem recortada e salva.');
+    }
+
+    function moverEditorFoto(clientX, clientY) {
+      if (!fotoEditorEstado?.arrastando) return;
+      fotoEditorEstado.x = fotoEditorEstado.baseX + (clientX - fotoEditorEstado.inicioX);
+      fotoEditorEstado.y = fotoEditorEstado.baseY + (clientY - fotoEditorEstado.inicioY);
+      atualizarEditorFoto();
     }
 
     function carregarFicha() {
@@ -4546,11 +5460,48 @@
       if (!arquivo) return;
       const leitor = new FileReader();
       leitor.onload = () => {
-        aplicarImagem(leitor.result);
-        salvarFicha(true);
-        mostrarAviso('Imagem atualizada.');
+        abrirEditorFoto(leitor.result);
+        imagemPersonagem.value = '';
       };
       leitor.readAsDataURL(arquivo);
+    });
+
+    fotoEditorZoom?.addEventListener('input', () => {
+      if (!fotoEditorEstado) return;
+      fotoEditorEstado.zoom = Number(fotoEditorZoom.value || 1);
+      atualizarEditorFoto();
+    });
+
+    btnFotoEditorReset?.addEventListener('click', resetarEditorFoto);
+    btnAplicarRecorteFoto?.addEventListener('click', aplicarRecorteFoto);
+
+    fotoEditorCrop?.addEventListener('pointerdown', (evento) => {
+      if (!fotoEditorEstado?.carregada) return;
+      evento.preventDefault();
+      fotoEditorEstado.arrastando = true;
+      fotoEditorEstado.inicioX = evento.clientX;
+      fotoEditorEstado.inicioY = evento.clientY;
+      fotoEditorEstado.baseX = fotoEditorEstado.x;
+      fotoEditorEstado.baseY = fotoEditorEstado.y;
+      fotoEditorCrop.setPointerCapture?.(evento.pointerId);
+    });
+
+    fotoEditorCrop?.addEventListener('pointermove', (evento) => {
+      moverEditorFoto(evento.clientX, evento.clientY);
+    });
+
+    fotoEditorCrop?.addEventListener('pointerup', (evento) => {
+      if (!fotoEditorEstado) return;
+      fotoEditorEstado.arrastando = false;
+      fotoEditorCrop.releasePointerCapture?.(evento.pointerId);
+    });
+
+    fotoEditorCrop?.addEventListener('pointercancel', () => {
+      if (fotoEditorEstado) fotoEditorEstado.arrastando = false;
+    });
+
+    window.addEventListener('resize', () => {
+      if (fotoEditorEstado?.carregada && !modalEditorFoto?.hidden) resetarEditorFoto();
     });
 
     fotoPreview.addEventListener('click', abrirUploadImagem);
@@ -4560,6 +5511,7 @@
       if (evento.target.matches('[data-campo]')) {
         syncCamposEspelhados(evento.target);
         atualizarBarra(evento.target);
+        atualizarTotalDadoManual();
         salvarFicha(true);
       }
     });
@@ -4571,6 +5523,12 @@
       });
     });
 
+    btnAbrirDado?.addEventListener('click', abrirModalDado);
+    dadoAtributo?.addEventListener('change', atualizarTotalDadoManual);
+    dadoHabilidade?.addEventListener('change', atualizarTotalDadoManual);
+    btnAdicionarDadoManual?.addEventListener('click', () => alterarDadoManualExtra(1));
+    btnRemoverDadoManual?.addEventListener('click', () => alterarDadoManualExtra(-1));
+    btnRolarDadoManual?.addEventListener('click', rolarDadoManual);
     btnAdicionarDisciplina?.addEventListener('click', abrirAdicionarDisciplina);
     btnNovaDisciplina?.addEventListener('click', abrirNovaDisciplina);
     btnSalvarNovaDisciplina?.addEventListener('click', salvarNovaDisciplina);
@@ -4643,6 +5601,8 @@
         if (alvo === 'nova-vantagem') fecharModal(modalNovaVantagem);
         if (alvo === 'itens') fecharModal(modalItens);
         if (alvo === 'novo-item') fecharModal(modalNovoItem);
+        if (alvo === 'foto-editor') fecharEditorFoto();
+        if (alvo === 'dado') fecharModal(modalDado);
         return;
       }
 
@@ -4652,6 +5612,8 @@
       if (evento.target === modalNovaVantagem) fecharModal(modalNovaVantagem);
       if (evento.target === modalItens) fecharModal(modalItens);
       if (evento.target === modalNovoItem) fecharModal(modalNovoItem);
+      if (evento.target === modalEditorFoto) fecharEditorFoto();
+      if (evento.target === modalDado) fecharModal(modalDado);
     });
 
     document.addEventListener('keydown', (evento) => {
@@ -4662,6 +5624,8 @@
         fecharModal(modalNovaVantagem);
         fecharModal(modalItens);
         fecharModal(modalNovoItem);
+        fecharEditorFoto();
+        fecharModal(modalDado);
       }
     });
 
@@ -4685,6 +5649,8 @@
 
     montarHabilidades();
     initRatings();
+    initRolagemAtributos();
+    initRolagemHabilidades();
     initAbasDaFicha();
     carregarUsuario();
     carregarFicha();

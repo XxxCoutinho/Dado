@@ -636,6 +636,311 @@
       }
     }
 
+
+    /* =========================================================
+       Botão flutuante e janela de etapas
+       ========================================================= */
+    .guia-grid {
+      grid-template-columns: 1fr;
+    }
+
+    body.modal-etapas-aberta {
+      overflow: hidden;
+    }
+
+    .fundo-etapas {
+      position: fixed;
+      inset: 0;
+      z-index: 84;
+      background: rgba(0, 0, 0, .62);
+      backdrop-filter: blur(7px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+
+    .fundo-etapas.aberto {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sumario {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      width: min(430px, calc(100vw - 32px));
+      max-height: min(78vh, 620px);
+      overflow-y: auto;
+      z-index: 85;
+      padding: 22px;
+      opacity: 0;
+      transform: translate(-50%, -45%) scale(.94);
+      pointer-events: none;
+      transform-origin: center;
+      transition: opacity .22s ease, transform .22s ease;
+      box-shadow: 0 0 34px rgba(255,0,120,.2), 0 0 58px rgba(0,200,255,.14), inset 0 0 32px rgba(255,255,255,.04);
+    }
+
+    .sumario.aberto {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .janela-etapas-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .sumario .janela-etapas-cabecalho h2 {
+      margin: 0;
+    }
+
+    .btn-fechar-etapas {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 13px;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: .22s ease;
+    }
+
+    .btn-fechar-etapas:hover {
+      background: rgba(255,255,255,.13);
+      border-color: rgba(255,255,255,.36);
+      transform: translateY(-1px);
+    }
+
+    .sumario a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      margin-top: 8px;
+      padding: 12px 13px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.045);
+    }
+
+    .sumario a:hover {
+      border-color: rgba(255,255,255,.24);
+      background: linear-gradient(90deg, rgba(255,0,120,.26), rgba(0,200,255,.16), rgba(138,43,226,.22));
+    }
+
+    .btn-etapas-flutuante {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 90;
+      min-width: 132px;
+      min-height: 54px;
+      border: 1px solid rgba(255,255,255,.26);
+      border-radius: 18px;
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255,0,120,.82), rgba(0,200,255,.7), rgba(138,43,226,.82));
+      background-size: 220% 220%;
+      box-shadow: 0 0 22px rgba(255,0,120,.28), 0 0 34px rgba(0,200,255,.18), inset 0 0 22px rgba(255,255,255,.06);
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: .78rem;
+      font-weight: 900;
+      cursor: pointer;
+      animation: moverCores 5s linear infinite;
+      transition: transform .22s ease, border-color .22s ease, filter .22s ease;
+    }
+
+    .btn-etapas-flutuante:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.42);
+      filter: brightness(1.08);
+    }
+
+    .btn-etapas-flutuante:active {
+      transform: translateY(0) scale(.98);
+    }
+
+    @media (max-width: 680px) {
+      .sumario {
+        width: calc(100vw - 28px);
+        max-height: 76vh;
+        padding: 18px;
+      }
+
+      .btn-etapas-flutuante {
+        right: 14px;
+        bottom: 14px;
+        min-width: 120px;
+        min-height: 50px;
+        border-radius: 16px;
+      }
+    }
+
+
+    /* =========================================================
+       Campos de orientação, bolinhas e listas dinâmicas
+       ========================================================= */
+    .orientacao-etapa {
+      grid-column: 1 / -1;
+      border: 1px solid rgba(255, 221, 85, .18);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,221,85,.08), rgba(255,0,120,.055), rgba(0,200,255,.055));
+      padding: 14px 16px;
+      color: rgba(244,240,255,.78);
+      line-height: 1.55;
+      font-size: .9rem;
+      box-shadow: inset 0 0 22px rgba(255,255,255,.025);
+    }
+
+    .orientacao-etapa strong {
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .76rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .grupo-titulo {
+      grid-column: 1 / -1;
+      margin: 4px 0 0;
+      color: #fff;
+      font-size: .86rem;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      border-left: 3px solid rgba(255,0,120,.75);
+      padding-left: 10px;
+    }
+
+    .mini-card .dica {
+      margin-top: 8px;
+      font-size: .76rem;
+    }
+
+    .bolinhas {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .bolinha {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 2px solid rgba(244,240,255,.72);
+      background: rgba(0,0,0,.24);
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      box-shadow: inset 0 0 8px rgba(0,0,0,.35);
+    }
+
+    .bolinha:hover {
+      transform: translateY(-1px) scale(1.06);
+      border-color: #fff;
+      box-shadow: 0 0 12px rgba(0,200,255,.18), inset 0 0 8px rgba(0,0,0,.35);
+    }
+
+    .bolinha.ativa {
+      background: radial-gradient(circle at 35% 30%, #fff 0 16%, #ffdd55 17% 34%, #ff0078 35% 70%, #5b0c46 71% 100%);
+      border-color: rgba(255,255,255,.96);
+      box-shadow: 0 0 10px rgba(255,0,120,.32), 0 0 18px rgba(255,221,85,.16);
+    }
+
+    .valor-bolinhas {
+      min-width: 24px;
+      color: rgba(244,240,255,.78);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .controle-lista {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1.2fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .lista-dinamica {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .item-lista {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 12px 12px 12px 14px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .item-lista strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .78rem;
+    }
+
+    .item-lista span {
+      color: rgba(244,240,255,.68);
+      line-height: 1.45;
+      font-size: .88rem;
+    }
+
+    .btn-remover-item {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(244,240,255,.82);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: .2s ease;
+    }
+
+    .btn-remover-item:hover {
+      color: #fff;
+      background: rgba(255,0,120,.22);
+      border-color: rgba(255,255,255,.32);
+    }
+
+    .campo-oculto {
+      display: none !important;
+    }
+
+    @media (max-width: 780px) {
+      .controle-lista {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .bolinha {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
   </style>
 </head>
 
@@ -669,27 +974,30 @@
       <aside class="painel resumo-guia">
         <h2>Resumo do guia</h2>
         <ol>
-          <li>Defina conceito, nome e imagem.</li>
-          <li>Escolha clã, predador e identidade social.</li>
-          <li>Preencha atributos e habilidades.</li>
-          <li>Adicione disciplinas, vantagens e defeitos.</li>
-          <li>Finalize para abrir a ficha jogável.</li>
+          <li>Preencha identidade, aparência e história.</li>
+          <li>Escolha clã, predador, geração e perdição.</li>
+          <li>Conecte o personagem à crônica.</li>
+          <li>Marque atributos e habilidades com bolinhas.</li>
+          <li>Adicione disciplinas, vantagens, desvantagens e valores de jogo.</li>
         </ol>
       </aside>
     </section>
 
     <section class="guia-grid">
-      <aside class="painel sumario">
-        <h2>Etapas</h2>
-        <a href="#identidade">1. Identidade</a>
-        <a href="#maldicao">2. Clã e maldição</a>
+      <div id="fundoEtapas" class="fundo-etapas" aria-hidden="true"></div>
+      <aside id="sumarioEtapas" class="painel sumario" role="dialog" aria-modal="true" aria-labelledby="tituloEtapas" aria-hidden="true" tabindex="-1">
+        <div class="janela-etapas-cabecalho">
+          <h2 id="tituloEtapas">Etapas da criação</h2>
+          <button type="button" id="btnFecharEtapas" class="btn-fechar-etapas" aria-label="Fechar etapas">×</button>
+        </div>
+        <a href="#identidade">1. Identidade e história</a>
+        <a href="#maldicao">2. Clã, predador e perdição</a>
         <a href="#cronica">3. Crônica e vínculos</a>
         <a href="#atributos">4. Atributos</a>
         <a href="#habilidades">5. Habilidades</a>
         <a href="#disciplinas">6. Disciplinas</a>
-        <a href="#vantagens">7. Vantagens e defeitos</a>
+        <a href="#vantagens">7. Vantagens e desvantagens</a>
         <a href="#jogo">8. Valores de jogo</a>
-        <a href="#notas">9. Notas finais</a>
       </aside>
 
       <form id="formFicha" class="formulario">
@@ -697,12 +1005,17 @@
           <div class="bloco-cabecalho">
             <div class="bloco-numero">1</div>
             <div class="bloco-titulo-area">
-              <h2>Identidade do personagem</h2>
-              <p>Comece pela ideia central: quem era essa pessoa antes do Abraço e quem ela tenta ser agora.</p>
+              <h2>Identidade, aparência e história</h2>
+              <p>Defina quem o personagem era em vida, como ele aparenta ser agora e quais marcas tornam ele memorável.</p>
             </div>
           </div>
 
           <div class="campos">
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Use esta etapa para criar a identidade narrativa. A idade verdadeira é a idade real contando desde o nascimento; a idade aparente é a idade que o corpo demonstra depois da morte. A história pode ser curta, mas deve explicar vida mortal, Abraço, perda e motivação atual.
+            </div>
+
             <div class="campo full foto-area">
               <div id="fotoPreview" class="foto-preview">Imagem do personagem</div>
               <div class="campo">
@@ -723,18 +1036,38 @@
             </div>
 
             <div class="campo">
-              <label for="conceito">Conceito</label>
-              <input id="conceito" data-campo="conceito" type="text" placeholder="Ex.: herdeira arruinada, investigador noturno" />
+              <label for="idadeVerdadeira">Idade verdadeira</label>
+              <input id="idadeVerdadeira" data-campo="idadeVerdadeira" type="text" placeholder="Ex.: 92 anos" />
             </div>
 
             <div class="campo">
-              <label for="aparencia">Aparência</label>
-              <input id="aparencia" data-campo="aparencia" type="text" placeholder="Descrição curta do visual" />
+              <label for="idadeAparente">Idade aparente</label>
+              <input id="idadeAparente" data-campo="idadeAparente" type="text" placeholder="Ex.: 28 anos" />
+            </div>
+
+            <div class="campo">
+              <label for="dataNascimento">Data de nascimento</label>
+              <input id="dataNascimento" data-campo="dataNascimento" type="date" />
+            </div>
+
+            <div class="campo">
+              <label for="dataMorte">Data da morte</label>
+              <input id="dataMorte" data-campo="dataMorte" type="date" />
             </div>
 
             <div class="campo full">
-              <label for="historia">História breve</label>
-              <textarea id="historia" data-campo="historia" placeholder="Escreva um resumo da vida mortal, do Abraço e do conflito atual do personagem."></textarea>
+              <label for="aparencia">Aparência</label>
+              <textarea id="aparencia" data-campo="aparencia" placeholder="Descreva roupas, postura, rosto, voz, presença e como ele se comporta em cena."></textarea>
+            </div>
+
+            <div class="campo full">
+              <label for="tracoDistintivo">Traço distintivo</label>
+              <textarea id="tracoDistintivo" data-campo="tracoDistintivo" placeholder="Uma cicatriz, olhar, sotaque, cheiro, mania, joia, símbolo ou detalhe que chama atenção."></textarea>
+            </div>
+
+            <div class="campo full">
+              <label for="historia">História</label>
+              <textarea id="historia" data-campo="historia" placeholder="Resumo da vida mortal, transformação, relações importantes, culpa, perdas e conflito atual."></textarea>
             </div>
           </div>
         </section>
@@ -743,16 +1076,21 @@
           <div class="bloco-cabecalho">
             <div class="bloco-numero">2</div>
             <div class="bloco-titulo-area">
-              <h2>Clã, predador e natureza vampírica</h2>
-              <p>Você pode escolher uma opção do menu ou escrever livremente no campo personalizado.</p>
+              <h2>Clã, predador, geração e perdição</h2>
+              <p>Escolha a linhagem vampírica, o modo de caça e a maldição que acompanha o sangue do personagem.</p>
             </div>
           </div>
 
           <div class="campos">
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              O clã define tendências, disciplinas e perdição. O predador descreve como o personagem costuma se alimentar. A geração indica a distância até Caim na linhagem vampírica. A perdição do clã deve explicar o problema sobrenatural que sempre cobra um preço.
+            </div>
+
             <div class="campo">
               <label for="claSelect">Clã</label>
               <select id="claSelect" data-campo="claSelect">
-                <option value="">Selecione ou personalize</option>
+                <option value="">Selecione o clã</option>
                 <option>Brujah</option>
                 <option>Gangrel</option>
                 <option>Malkavian</option>
@@ -760,20 +1098,21 @@
                 <option>Toreador</option>
                 <option>Tremere</option>
                 <option>Ventrue</option>
+                <option>Banu Haqim</option>
+                <option>Lasombra</option>
+                <option>Ministry</option>
+                <option>Ravnos</option>
+                <option>Tzimisce</option>
+                <option>Hecata</option>
                 <option>Caitiff</option>
                 <option>Sangue-Fraco</option>
               </select>
             </div>
 
             <div class="campo">
-              <label for="claPersonalizado">Clã personalizado</label>
-              <input id="claPersonalizado" data-campo="claPersonalizado" type="text" placeholder="Escreva outro clã ou variação" />
-            </div>
-
-            <div class="campo">
-              <label for="predadorSelect">Tipo de predador</label>
+              <label for="predadorSelect">Predador</label>
               <select id="predadorSelect" data-campo="predadorSelect">
-                <option value="">Selecione ou personalize</option>
+                <option value="">Selecione o predador</option>
                 <option>Alleycat</option>
                 <option>Bagger</option>
                 <option>Blood Leech</option>
@@ -788,23 +1127,13 @@
             </div>
 
             <div class="campo">
-              <label for="predadorPersonalizado">Predador personalizado</label>
-              <input id="predadorPersonalizado" data-campo="predadorPersonalizado" type="text" placeholder="Escreva outro estilo de caça" />
-            </div>
-
-            <div class="campo">
               <label for="geracao">Geração</label>
               <input id="geracao" data-campo="geracao" type="text" placeholder="Ex.: 13ª" />
             </div>
 
-            <div class="campo">
-              <label for="potenciaSangue">Potência do sangue</label>
-              <input id="potenciaSangue" data-campo="potenciaSangue" type="text" placeholder="Ex.: 1" />
-            </div>
-
             <div class="campo full">
-              <label for="maldicaoCla">Maldição / fraqueza / compulsão</label>
-              <textarea id="maldicaoCla" data-campo="maldicaoCla" placeholder="Descreva a maldição do clã, a compulsão e qualquer regra personalizada da mesa."></textarea>
+              <label for="perdicaoCla">Perdição do clã</label>
+              <textarea id="perdicaoCla" data-campo="perdicaoCla" placeholder="Descreva a fraqueza sobrenatural do clã e como ela aparece na história."></textarea>
             </div>
           </div>
         </section>
@@ -813,35 +1142,45 @@
           <div class="bloco-cabecalho">
             <div class="bloco-numero">3</div>
             <div class="bloco-titulo-area">
-              <h2>Crônica, ambição e vínculos</h2>
-              <p>Use esta etapa para conectar o personagem ao cenário, aos outros personagens e aos seus desejos.</p>
+              <h2>Crônica, ambição, desejo e vínculos</h2>
+              <p>Conecte o personagem ao cenário, aos princípios da mesa e às pessoas que ainda importam para ele.</p>
             </div>
           </div>
 
           <div class="campos">
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              A crônica é a campanha. Ambição é um objetivo de longo prazo; desejo é algo imediato para a sessão. O senhor é quem criou o vampiro. Pilares e convicções mostram o que ainda segura a Humanidade. Os princípios da crônica são regras morais combinadas pelo grupo.
+            </div>
+
             <div class="campo">
               <label for="cronicaNome">Crônica</label>
               <input id="cronicaNome" data-campo="cronicaNome" type="text" placeholder="Nome da campanha" />
             </div>
-            <div class="campo">
-              <label for="sire">Sire / criador</label>
-              <input id="sire" data-campo="sire" type="text" placeholder="Quem transformou o personagem" />
-            </div>
+
             <div class="campo">
               <label for="ambicao">Ambição</label>
               <input id="ambicao" data-campo="ambicao" type="text" placeholder="Objetivo de longo prazo" />
             </div>
+
             <div class="campo">
               <label for="desejo">Desejo</label>
               <input id="desejo" data-campo="desejo" type="text" placeholder="Objetivo imediato" />
             </div>
-            <div class="campo full">
-              <label for="conviccoes">Convicções</label>
-              <textarea id="conviccoes" data-campo="conviccoes" placeholder="Princípios pessoais que ainda prendem o vampiro à humanidade."></textarea>
+
+            <div class="campo">
+              <label for="senhor">Senhor</label>
+              <input id="senhor" data-campo="senhor" type="text" placeholder="Quem transformou o personagem" />
             </div>
+
             <div class="campo full">
-              <label for="touchstones">Touchstones / laços humanos</label>
-              <textarea id="touchstones" data-campo="touchstones" placeholder="Pessoas, lugares ou memórias que representam as convicções do personagem."></textarea>
+              <label for="pilaresConviccoes">Pilares e convicções</label>
+              <textarea id="pilaresConviccoes" data-campo="pilaresConviccoes" placeholder="Liste os laços humanos, memórias, pessoas importantes e as convicções morais do personagem."></textarea>
+            </div>
+
+            <div class="campo full">
+              <label for="principiosCronica">Princípios da crônica</label>
+              <textarea id="principiosCronica" data-campo="principiosCronica" placeholder="Ex.: não matar inocentes, proteger a Máscara, nunca abandonar a coterie..."></textarea>
             </div>
           </div>
         </section>
@@ -851,20 +1190,135 @@
             <div class="bloco-numero">4</div>
             <div class="bloco-titulo-area">
               <h2>Atributos</h2>
-              <p>Preencha valores, bolinhas, números ou texto. O modelo não trava as escolhas para você adaptar à sua versão da ficha.</p>
+              <p>Marque as bolinhas de cada atributo. Elas representam a base física, social e mental do personagem.</p>
             </div>
           </div>
 
           <div class="grade-atributos" data-grupo="atributos">
-            <div class="mini-card"><h3>Força</h3><input data-campo="atributo_forca" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Destreza</h3><input data-campo="atributo_destreza" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Vigor</h3><input data-campo="atributo_vigor" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Carisma</h3><input data-campo="atributo_carisma" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Manipulação</h3><input data-campo="atributo_manipulacao" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Autocontrole</h3><input data-campo="atributo_autocontrole" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Inteligência</h3><input data-campo="atributo_inteligencia" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Raciocínio</h3><input data-campo="atributo_raciocinio" type="text" placeholder="Valor" /></div>
-            <div class="mini-card"><h3>Determinação</h3><input data-campo="atributo_determinacao" type="text" placeholder="Valor" /></div>
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Clique nas bolinhas para definir o valor de cada atributo. Use valores maiores nos pontos fortes do personagem e valores menores nas áreas em que ele é fraco. Os atributos costumam ser somados às habilidades em testes.
+            </div>
+            <h3 class="grupo-titulo">Físicos</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Força</h3>
+                <input type="hidden" data-campo="atributo_forca" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_forca" aria-label="Força">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Força 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Força 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Força 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Força 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Força 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Destreza</h3>
+                <input type="hidden" data-campo="atributo_destreza" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_destreza" aria-label="Destreza">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Destreza 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Destreza 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Destreza 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Destreza 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Destreza 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Vigor</h3>
+                <input type="hidden" data-campo="atributo_vigor" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_vigor" aria-label="Vigor">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Vigor 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Vigor 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Vigor 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Vigor 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Vigor 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+            <h3 class="grupo-titulo">Sociais</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Carisma</h3>
+                <input type="hidden" data-campo="atributo_carisma" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_carisma" aria-label="Carisma">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Carisma 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Carisma 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Carisma 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Carisma 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Carisma 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Manipulação</h3>
+                <input type="hidden" data-campo="atributo_manipulacao" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_manipulacao" aria-label="Manipulação">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Manipulação 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Manipulação 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Manipulação 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Manipulação 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Manipulação 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Autocontrole</h3>
+                <input type="hidden" data-campo="atributo_autocontrole" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_autocontrole" aria-label="Autocontrole">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Autocontrole 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Autocontrole 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Autocontrole 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Autocontrole 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Autocontrole 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+            <h3 class="grupo-titulo">Mentais</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Inteligência</h3>
+                <input type="hidden" data-campo="atributo_inteligencia" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_inteligencia" aria-label="Inteligência">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Inteligência 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Inteligência 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Inteligência 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Inteligência 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Inteligência 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Raciocínio</h3>
+                <input type="hidden" data-campo="atributo_raciocinio" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_raciocinio" aria-label="Raciocínio">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Raciocínio 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Raciocínio 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Raciocínio 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Raciocínio 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Raciocínio 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Determinação</h3>
+                <input type="hidden" data-campo="atributo_determinacao" value="0" />
+                <div class="bolinhas" data-bolinhas="atributo_determinacao" aria-label="Determinação">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Determinação 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Determinação 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Determinação 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Determinação 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Determinação 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
           </div>
         </section>
 
@@ -873,26 +1327,372 @@
             <div class="bloco-numero">5</div>
             <div class="bloco-titulo-area">
               <h2>Habilidades</h2>
-              <p>Liste as habilidades importantes do personagem. Você pode usar nomes oficiais ou campos personalizados.</p>
+              <p>Marque as bolinhas das habilidades. Elas mostram treino, experiência e áreas de especialidade.</p>
             </div>
           </div>
 
-          <div class="campos">
-            <div class="campo full">
-              <label for="habilidadesFisicas">Físicas</label>
-              <textarea id="habilidadesFisicas" data-campo="habilidadesFisicas" placeholder="Ex.: Atletismo 2, Briga 1, Furtividade 3..."></textarea>
+          <div class="grade-habilidades" data-grupo="habilidades">
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Clique nas bolinhas para indicar o quanto o personagem sabe fazer cada coisa. Zero significa sem treino relevante. Uma especialização pode ser anotada no campo abaixo e usada quando a mesa permitir.
             </div>
-            <div class="campo full">
-              <label for="habilidadesSociais">Sociais</label>
-              <textarea id="habilidadesSociais" data-campo="habilidadesSociais" placeholder="Ex.: Persuasão 3, Intimidação 2, Etiqueta 1..."></textarea>
-            </div>
-            <div class="campo full">
-              <label for="habilidadesMentais">Mentais</label>
-              <textarea id="habilidadesMentais" data-campo="habilidadesMentais" placeholder="Ex.: Investigação 2, Ocultismo 1, Tecnologia 2..."></textarea>
-            </div>
+            <h3 class="grupo-titulo">Físicas</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Atletismo</h3>
+                <input type="hidden" data-campo="habilidade_atletismo" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_atletismo" aria-label="Atletismo">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Atletismo 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Atletismo 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Atletismo 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Atletismo 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Atletismo 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Briga</h3>
+                <input type="hidden" data-campo="habilidade_briga" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_briga" aria-label="Briga">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Briga 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Briga 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Briga 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Briga 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Briga 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Ofícios</h3>
+                <input type="hidden" data-campo="habilidade_oficios" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_oficios" aria-label="Ofícios">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Ofícios 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Ofícios 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Ofícios 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Ofícios 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Ofícios 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Condução</h3>
+                <input type="hidden" data-campo="habilidade_conducao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_conducao" aria-label="Condução">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Condução 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Condução 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Condução 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Condução 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Condução 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Armas de Fogo</h3>
+                <input type="hidden" data-campo="habilidade_armas_fogo" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_armas_fogo" aria-label="Armas de Fogo">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Armas de Fogo 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Armas de Fogo 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Armas de Fogo 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Armas de Fogo 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Armas de Fogo 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Furto</h3>
+                <input type="hidden" data-campo="habilidade_furto" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_furto" aria-label="Furto">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Furto 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Furto 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Furto 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Furto 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Furto 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Armas Brancas</h3>
+                <input type="hidden" data-campo="habilidade_armas_brancas" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_armas_brancas" aria-label="Armas Brancas">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Armas Brancas 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Armas Brancas 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Armas Brancas 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Armas Brancas 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Armas Brancas 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Furtividade</h3>
+                <input type="hidden" data-campo="habilidade_furtividade" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_furtividade" aria-label="Furtividade">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Furtividade 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Furtividade 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Furtividade 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Furtividade 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Furtividade 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Sobrevivência</h3>
+                <input type="hidden" data-campo="habilidade_sobrevivencia" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_sobrevivencia" aria-label="Sobrevivência">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Sobrevivência 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Sobrevivência 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Sobrevivência 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Sobrevivência 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Sobrevivência 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+            <h3 class="grupo-titulo">Sociais</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Trato com Animais</h3>
+                <input type="hidden" data-campo="habilidade_trato_animais" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_trato_animais" aria-label="Trato com Animais">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Trato com Animais 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Trato com Animais 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Trato com Animais 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Trato com Animais 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Trato com Animais 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Etiqueta</h3>
+                <input type="hidden" data-campo="habilidade_etiqueta" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_etiqueta" aria-label="Etiqueta">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Etiqueta 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Etiqueta 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Etiqueta 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Etiqueta 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Etiqueta 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Intuição</h3>
+                <input type="hidden" data-campo="habilidade_intuicao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_intuicao" aria-label="Intuição">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Intuição 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Intuição 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Intuição 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Intuição 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Intuição 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Intimidação</h3>
+                <input type="hidden" data-campo="habilidade_intimidacao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_intimidacao" aria-label="Intimidação">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Intimidação 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Intimidação 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Intimidação 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Intimidação 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Intimidação 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Liderança</h3>
+                <input type="hidden" data-campo="habilidade_lideranca" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_lideranca" aria-label="Liderança">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Liderança 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Liderança 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Liderança 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Liderança 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Liderança 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Performance</h3>
+                <input type="hidden" data-campo="habilidade_performance" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_performance" aria-label="Performance">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Performance 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Performance 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Performance 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Performance 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Performance 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Persuasão</h3>
+                <input type="hidden" data-campo="habilidade_persuasao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_persuasao" aria-label="Persuasão">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Persuasão 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Persuasão 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Persuasão 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Persuasão 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Persuasão 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Manha</h3>
+                <input type="hidden" data-campo="habilidade_manha" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_manha" aria-label="Manha">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Manha 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Manha 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Manha 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Manha 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Manha 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Lábia</h3>
+                <input type="hidden" data-campo="habilidade_labia" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_labia" aria-label="Lábia">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Lábia 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Lábia 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Lábia 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Lábia 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Lábia 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+            <h3 class="grupo-titulo">Mentais</h3>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Acadêmicos</h3>
+                <input type="hidden" data-campo="habilidade_academicos" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_academicos" aria-label="Acadêmicos">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Acadêmicos 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Acadêmicos 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Acadêmicos 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Acadêmicos 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Acadêmicos 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Prontidão</h3>
+                <input type="hidden" data-campo="habilidade_prontidao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_prontidao" aria-label="Prontidão">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Prontidão 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Prontidão 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Prontidão 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Prontidão 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Prontidão 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Finanças</h3>
+                <input type="hidden" data-campo="habilidade_financas" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_financas" aria-label="Finanças">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Finanças 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Finanças 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Finanças 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Finanças 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Finanças 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Investigação</h3>
+                <input type="hidden" data-campo="habilidade_investigacao" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_investigacao" aria-label="Investigação">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Investigação 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Investigação 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Investigação 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Investigação 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Investigação 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Medicina</h3>
+                <input type="hidden" data-campo="habilidade_medicina" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_medicina" aria-label="Medicina">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Medicina 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Medicina 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Medicina 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Medicina 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Medicina 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Ocultismo</h3>
+                <input type="hidden" data-campo="habilidade_ocultismo" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_ocultismo" aria-label="Ocultismo">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Ocultismo 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Ocultismo 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Ocultismo 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Ocultismo 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Ocultismo 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Política</h3>
+                <input type="hidden" data-campo="habilidade_politica" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_politica" aria-label="Política">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Política 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Política 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Política 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Política 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Política 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Ciências</h3>
+                <input type="hidden" data-campo="habilidade_ciencias" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_ciencias" aria-label="Ciências">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Ciências 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Ciências 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Ciências 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Ciências 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Ciências 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
+              <div class="mini-card card-bolinhas" data-bolinhas-card>
+                <h3>Tecnologia</h3>
+                <input type="hidden" data-campo="habilidade_tecnologia" value="0" />
+                <div class="bolinhas" data-bolinhas="habilidade_tecnologia" aria-label="Tecnologia">
+                  <button type="button" class="bolinha" data-valor="1" aria-label="Tecnologia 1"></button>
+                  <button type="button" class="bolinha" data-valor="2" aria-label="Tecnologia 2"></button>
+                  <button type="button" class="bolinha" data-valor="3" aria-label="Tecnologia 3"></button>
+                  <button type="button" class="bolinha" data-valor="4" aria-label="Tecnologia 4"></button>
+                  <button type="button" class="bolinha" data-valor="5" aria-label="Tecnologia 5"></button>
+                  <span class="valor-bolinhas">0</span>
+                </div>
+                
+              </div>
             <div class="campo full">
               <label for="especializacoes">Especializações</label>
-              <textarea id="especializacoes" data-campo="especializacoes" placeholder="Adicione especializações, focos ou observações."></textarea>
+              <textarea id="especializacoes" data-campo="especializacoes" placeholder="Ex.: Armas de Fogo — pistolas; Persuasão — sedução; Tecnologia — invasão..."></textarea>
             </div>
           </div>
         </section>
@@ -901,19 +1701,44 @@
           <div class="bloco-cabecalho">
             <div class="bloco-numero">6</div>
             <div class="bloco-titulo-area">
-              <h2>Disciplinas e poderes</h2>
-              <p>Escreva as disciplinas, poderes, custos, testes e descrições do jeito que a sua mesa preferir.</p>
+              <h2>Disciplinas</h2>
+              <p>O menu mostra as disciplinas ligadas ao clã selecionado na etapa 2.</p>
             </div>
           </div>
 
           <div class="campos">
-            <div class="campo full">
-              <label for="disciplinasTexto">Disciplinas</label>
-              <textarea id="disciplinasTexto" data-campo="disciplinasTexto" placeholder="Ex.: Auspícios 2 — Sentidos Aguçados; Rapidez 1 — Reflexos Rápidos..."></textarea>
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Primeiro selecione o clã na etapa 2. Depois escolha uma disciplina disponível, informe pontos ou nível, descreva o poder escolhido e clique em adicionar. Para Caitiff aparecem todas as disciplinas; para Sangue-Fraco aparece Alquimia de Sangue-Fraco.
             </div>
+
+            <div class="controle-lista">
+              <div class="campo">
+                <label for="disciplinaSelect">Disciplina do clã</label>
+                <select id="disciplinaSelect">
+                  <option value="">Selecione um clã primeiro</option>
+                </select>
+              </div>
+
+              <div class="campo">
+                <label for="disciplinaNivel">Pontos</label>
+                <input id="disciplinaNivel" type="text" placeholder="Ex.: 1" />
+              </div>
+
+              <div class="campo">
+                <label for="disciplinaPoder">Poder / observação</label>
+                <input id="disciplinaPoder" type="text" placeholder="Ex.: Sentidos Aguçados" />
+              </div>
+
+              <button type="button" id="btnAdicionarDisciplina" class="btn-pequeno">Adicionar</button>
+            </div>
+
+            <textarea id="disciplinasSelecionadas" class="campo-oculto" data-campo="disciplinasSelecionadas"></textarea>
+            <div id="listaDisciplinas" class="lista-dinamica"></div>
+
             <div class="campo full">
               <label for="rituaisAlquimia">Rituais / alquimia / poderes especiais</label>
-              <textarea id="rituaisAlquimia" data-campo="rituaisAlquimia" placeholder="Campo livre para poderes fora do padrão, rituais, alquimia ou regras caseiras."></textarea>
+              <textarea id="rituaisAlquimia" data-campo="rituaisAlquimia" placeholder="Use este espaço para rituais, alquimia, poderes especiais ou regras caseiras."></textarea>
             </div>
           </div>
         </section>
@@ -922,24 +1747,77 @@
           <div class="bloco-cabecalho">
             <div class="bloco-numero">7</div>
             <div class="bloco-titulo-area">
-              <h2>Vantagens, defeitos e recursos</h2>
-              <p>Registre contatos, influência, refúgio, aliados, inimigos, recursos e problemas.</p>
+              <h2>Vantagens e desvantagens</h2>
+              <p>Adicione recursos, contatos, privilégios, problemas, inimigos e complicações da ficha.</p>
             </div>
           </div>
 
           <div class="campos">
-            <div class="campo full">
-              <label for="vantagensTexto">Vantagens</label>
-              <textarea id="vantagensTexto" data-campo="vantagensTexto" placeholder="Liste vantagens e descrições."></textarea>
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Escolha uma vantagem ou desvantagem na lista, informe pontos e descreva como ela aparece em jogo. Use vantagem para recursos positivos e desvantagem para problemas que podem gerar conflito, custo ou risco.
             </div>
-            <div class="campo full">
-              <label for="defeitosTexto">Defeitos</label>
-              <textarea id="defeitosTexto" data-campo="defeitosTexto" placeholder="Liste defeitos, inimigos, dívidas ou complicações."></textarea>
+
+            <h3 class="grupo-titulo">Vantagens</h3>
+            <div class="controle-lista">
+              <div class="campo">
+                <label for="vantagemSelect">Vantagem</label>
+                <select id="vantagemSelect">
+                  <option>Aliados</option>
+                  <option>Contatos</option>
+                  <option>Fama</option>
+                  <option>Influência</option>
+                  <option>Mawla</option>
+                  <option>Máscara</option>
+                  <option>Rebanho</option>
+                  <option>Recursos</option>
+                  <option>Refúgio</option>
+                  <option>Retentor</option>
+                  <option>Status</option>
+                  <option>Outra vantagem</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="vantagemPontos">Pontos</label>
+                <input id="vantagemPontos" type="text" placeholder="Ex.: 2" />
+              </div>
+              <div class="campo">
+                <label for="vantagemDescricao">Descrição</label>
+                <input id="vantagemDescricao" type="text" placeholder="Ex.: policial corrupto na zona norte" />
+              </div>
+              <button type="button" id="btnAdicionarVantagem" class="btn-pequeno">Adicionar</button>
             </div>
-            <div class="campo full">
-              <label for="equipamentosTexto">Equipamentos e recursos</label>
-              <textarea id="equipamentosTexto" data-campo="equipamentosTexto" placeholder="Itens, armas, documentos, dinheiro, refúgio, veículos etc."></textarea>
+            <textarea id="vantagensLista" class="campo-oculto" data-campo="vantagensLista"></textarea>
+            <div id="listaVantagens" class="lista-dinamica"></div>
+
+            <h3 class="grupo-titulo">Desvantagens</h3>
+            <div class="controle-lista">
+              <div class="campo">
+                <label for="desvantagemSelect">Desvantagem</label>
+                <select id="desvantagemSelect">
+                  <option>Inimigo</option>
+                  <option>Caçado</option>
+                  <option>Dívida</option>
+                  <option>Máscara comprometida</option>
+                  <option>Sem refúgio</option>
+                  <option>Segredo sombrio</option>
+                  <option>Dependência</option>
+                  <option>Perseguido</option>
+                  <option>Outra desvantagem</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="desvantagemPontos">Pontos</label>
+                <input id="desvantagemPontos" type="text" placeholder="Ex.: 1" />
+              </div>
+              <div class="campo">
+                <label for="desvantagemDescricao">Descrição</label>
+                <input id="desvantagemDescricao" type="text" placeholder="Ex.: credor sabe demais sobre você" />
+              </div>
+              <button type="button" id="btnAdicionarDesvantagem" class="btn-pequeno">Adicionar</button>
             </div>
+            <textarea id="desvantagensLista" class="campo-oculto" data-campo="desvantagensLista"></textarea>
+            <div id="listaDesvantagens" class="lista-dinamica"></div>
           </div>
         </section>
 
@@ -948,34 +1826,29 @@
             <div class="bloco-numero">8</div>
             <div class="bloco-titulo-area">
               <h2>Valores de jogo</h2>
-              <p>Preencha os marcadores principais. Todos são campos de texto para permitir personalização.</p>
+              <p>Preencha os marcadores principais usados durante a sessão.</p>
             </div>
           </div>
 
           <div class="grade-jogo">
-            <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" type="text" placeholder="Ex.: 7" /></div>
+            <div class="orientacao-etapa">
+              <strong>Como preencher</strong>
+              Use estes campos para os valores mecânicos da ficha. Vitalidade e Força de Vontade controlam dano e desgaste mental; Fome mede o risco da Besta; Humanidade acompanha a queda moral; Potência do Sangue altera testes e poderes; experiência total e gasta ajudam a controlar evolução.
+            </div>
+            <div class="mini-card"><h3>Vitalidade</h3><input data-campo="vitalidade" type="text" placeholder="Ex.: 5" /></div>
+            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="forcaVontade" type="text" placeholder="Ex.: 6" /></div>
             <div class="mini-card"><h3>Fome</h3><input data-campo="fome" type="text" placeholder="Ex.: 1" /></div>
-            <div class="mini-card"><h3>Saúde</h3><input data-campo="saude" type="text" placeholder="Ex.: 0/5" /></div>
-            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="vontade" type="text" placeholder="Ex.: 0/6" /></div>
-            <div class="mini-card"><h3>Experiência</h3><input data-campo="experiencia" type="text" placeholder="Ex.: 0" /></div>
-            <div class="mini-card"><h3>Manchas</h3><input data-campo="manchas" type="text" placeholder="Ex.: 0" /></div>
-          </div>
-        </section>
-
-        <section id="notas" class="painel bloco">
-          <div class="bloco-cabecalho">
-            <div class="bloco-numero">9</div>
-            <div class="bloco-titulo-area">
-              <h2>Notas finais</h2>
-              <p>Antes de finalizar, registre qualquer regra da mesa, lembrete ou informação narrativa.</p>
-            </div>
-          </div>
-
-          <div class="campos">
-            <div class="campo full">
-              <label for="anotacoesGerais">Anotações gerais</label>
-              <textarea id="anotacoesGerais" data-campo="anotacoesGerais" placeholder="Notas da criação, pendências, ideias de interpretação, segredos etc."></textarea>
-            </div>
+            <div class="mini-card"><h3>Ressonância</h3><input data-campo="ressonancia" type="text" placeholder="Ex.: colérica" /></div>
+            <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" type="text" placeholder="Ex.: 7" /></div>
+            <div class="mini-card"><h3>Potência do sangue</h3><input data-campo="potenciaSangue" type="text" placeholder="Ex.: 1" /></div>
+            <div class="mini-card"><h3>Surto de sangue</h3><input data-campo="surtoSangue" type="text" placeholder="Ex.: +1 dado" /></div>
+            <div class="mini-card"><h3>Quantidade recuperada</h3><input data-campo="quantidadeRecuperada" type="text" placeholder="Ex.: 1 superficial" /></div>
+            <div class="mini-card"><h3>Bônus de poder</h3><input data-campo="bonusPoder" type="text" placeholder="Ex.: +1" /></div>
+            <div class="mini-card"><h3>Rolagem de sangue</h3><input data-campo="rolagemSangue" type="text" placeholder="Ex.: 1 dado" /></div>
+            <div class="mini-card"><h3>Penalidade de alimentação</h3><input data-campo="penalidadeAlimentacao" type="text" placeholder="Ex.: nenhuma" /></div>
+            <div class="mini-card"><h3>Gravidade da perdição</h3><input data-campo="gravidadePerdicao" type="text" placeholder="Ex.: 1" /></div>
+            <div class="mini-card"><h3>Experiência total</h3><input data-campo="experienciaTotal" type="text" placeholder="Ex.: 0" /></div>
+            <div class="mini-card"><h3>Experiência gasta</h3><input data-campo="experienciaGasta" type="text" placeholder="Ex.: 0" /></div>
           </div>
 
           <div class="toolbar">
@@ -987,6 +1860,8 @@
     </section>
   </main>
 
+  <button type="button" id="btnEtapasFlutuante" class="btn-etapas-flutuante" aria-controls="sumarioEtapas" aria-expanded="false">Etapas</button>
+
   <div id="avisoSalvo" class="aviso-salvo">Ficha salva.</div>
 
   <script>
@@ -996,9 +1871,54 @@
     const avisoSalvo = document.getElementById('avisoSalvo');
     const imagemPersonagem = document.getElementById('imagemPersonagem');
     const fotoPreview = document.getElementById('fotoPreview');
-    const botoesSalvar = [document.getElementById('btnSalvarTopo'), document.getElementById('btnSalvarFinal')];
-    const botoesFinalizar = [document.getElementById('btnFinalizarTopo'), document.getElementById('btnFinalizarFinal')];
+    const botoesSalvar = [document.getElementById('btnSalvarTopo'), document.getElementById('btnSalvarFinal')].filter(Boolean);
+    const botoesFinalizar = [document.getElementById('btnFinalizarTopo'), document.getElementById('btnFinalizarFinal')].filter(Boolean);
+    const btnEtapasFlutuante = document.getElementById('btnEtapasFlutuante');
+    const fundoEtapas = document.getElementById('fundoEtapas');
+    const sumarioEtapas = document.getElementById('sumarioEtapas');
+    const btnFecharEtapas = document.getElementById('btnFecharEtapas');
+    const claSelect = document.getElementById('claSelect');
+    const disciplinaSelect = document.getElementById('disciplinaSelect');
+    const disciplinaNivel = document.getElementById('disciplinaNivel');
+    const disciplinaPoder = document.getElementById('disciplinaPoder');
+    const btnAdicionarDisciplina = document.getElementById('btnAdicionarDisciplina');
+    const disciplinasSelecionadas = document.getElementById('disciplinasSelecionadas');
+    const listaDisciplinas = document.getElementById('listaDisciplinas');
+    const vantagemSelect = document.getElementById('vantagemSelect');
+    const vantagemPontos = document.getElementById('vantagemPontos');
+    const vantagemDescricao = document.getElementById('vantagemDescricao');
+    const btnAdicionarVantagem = document.getElementById('btnAdicionarVantagem');
+    const vantagensLista = document.getElementById('vantagensLista');
+    const listaVantagens = document.getElementById('listaVantagens');
+    const desvantagemSelect = document.getElementById('desvantagemSelect');
+    const desvantagemPontos = document.getElementById('desvantagemPontos');
+    const desvantagemDescricao = document.getElementById('desvantagemDescricao');
+    const btnAdicionarDesvantagem = document.getElementById('btnAdicionarDesvantagem');
+    const desvantagensLista = document.getElementById('desvantagensLista');
+    const listaDesvantagens = document.getElementById('listaDesvantagens');
     let imagemBase64 = '';
+
+    const disciplinasPorCla = {
+      'Brujah': ['Potência', 'Rapidez', 'Presença'],
+      'Gangrel': ['Animalismo', 'Fortitude', 'Metamorfose'],
+      'Malkavian': ['Auspícios', 'Dominação', 'Ofuscação'],
+      'Nosferatu': ['Animalismo', 'Ofuscação', 'Potência'],
+      'Toreador': ['Auspícios', 'Rapidez', 'Presença'],
+      'Tremere': ['Auspícios', 'Feitiçaria de Sangue', 'Dominação'],
+      'Ventrue': ['Dominação', 'Fortitude', 'Presença'],
+      'Banu Haqim': ['Feitiçaria de Sangue', 'Ofuscação', 'Rapidez'],
+      'Lasombra': ['Dominação', 'Oblívio', 'Potência'],
+      'Ministry': ['Metamorfose', 'Ofuscação', 'Presença'],
+      'Ravnos': ['Animalismo', 'Ofuscação', 'Presença'],
+      'Tzimisce': ['Animalismo', 'Dominação', 'Metamorfose'],
+      'Hecata': ['Auspícios', 'Fortitude', 'Oblívio'],
+      'Caitiff': ['Animalismo', 'Auspícios', 'Dominação', 'Feitiçaria de Sangue', 'Fortitude', 'Metamorfose', 'Ofuscação', 'Oblívio', 'Potência', 'Presença', 'Rapidez'],
+      'Sangue-Fraco': ['Alquimia de Sangue-Fraco']
+    };
+
+    let listaDisc = [];
+    let listaVant = [];
+    let listaDesvant = [];
 
     function carregarUsuario() {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
@@ -1032,13 +1952,27 @@
       setTimeout(() => avisoSalvo.classList.remove('mostrar'), 2200);
     }
 
+    function alternarEtapas(forcarEstado) {
+      const abrir = typeof forcarEstado === 'boolean' ? forcarEstado : !sumarioEtapas.classList.contains('aberto');
+      sumarioEtapas.classList.toggle('aberto', abrir);
+      fundoEtapas.classList.toggle('aberto', abrir);
+      document.body.classList.toggle('modal-etapas-aberta', abrir);
+      sumarioEtapas.setAttribute('aria-hidden', String(!abrir));
+      fundoEtapas.setAttribute('aria-hidden', String(!abrir));
+      btnEtapasFlutuante.setAttribute('aria-expanded', String(abrir));
+      if (abrir) setTimeout(() => sumarioEtapas.focus(), 40);
+    }
+
+    function valorCampo(nome) {
+      const campo = document.querySelector(`[data-campo="${nome}"]`);
+      return campo ? campo.value : '';
+    }
+
     function coletarFicha() {
       const campos = {};
       document.querySelectorAll('[data-campo]').forEach((campo) => {
         campos[campo.dataset.campo] = campo.value || '';
       });
-      const claFinal = campos.claPersonalizado || campos.claSelect || '';
-      const predadorFinal = campos.predadorPersonalizado || campos.predadorSelect || '';
       return {
         id: localStorage.getItem('personagemVampiroIdAtual') || crypto.randomUUID(),
         modelo: 'Vampiro: A Máscara',
@@ -1049,14 +1983,15 @@
         resumo: {
           nome: campos.nome || 'Personagem sem nome',
           jogador: campos.jogador || '',
-          cla: claFinal,
-          predador: predadorFinal,
-          conceito: campos.conceito || ''
+          cla: campos.claSelect || '',
+          predador: campos.predadorSelect || '',
+          cronica: campos.cronicaNome || ''
         }
       };
     }
 
     function salvarFicha(silencioso = false) {
+      sincronizarListasOcultas();
       const ficha = coletarFicha();
       localStorage.setItem('personagemVampiroIdAtual', ficha.id);
       localStorage.setItem('personagemVampiroAtual', JSON.stringify(ficha));
@@ -1094,6 +2029,171 @@
       }
     }
 
+    function iniciarBolinhas() {
+      document.querySelectorAll('[data-bolinhas]').forEach((grupo) => {
+        grupo.querySelectorAll('.bolinha').forEach((botao) => {
+          botao.addEventListener('click', () => {
+            const campoNome = grupo.dataset.bolinhas;
+            const campo = document.querySelector(`[data-campo="${campoNome}"]`);
+            const valorClicado = Number(botao.dataset.valor || 0);
+            const valorAtual = Number(campo.value || 0);
+            campo.value = valorAtual === valorClicado ? 0 : valorClicado;
+            atualizarGrupoBolinhas(grupo);
+            campo.dispatchEvent(new Event('input', { bubbles: true }));
+          });
+        });
+        atualizarGrupoBolinhas(grupo);
+      });
+    }
+
+    function atualizarGrupoBolinhas(grupo) {
+      const campoNome = grupo.dataset.bolinhas;
+      const campo = document.querySelector(`[data-campo="${campoNome}"]`);
+      const valor = Number(campo && campo.value ? campo.value : 0);
+      grupo.querySelectorAll('.bolinha').forEach((botao) => {
+        botao.classList.toggle('ativa', Number(botao.dataset.valor) <= valor);
+      });
+      const marcador = grupo.querySelector('.valor-bolinhas');
+      if (marcador) marcador.textContent = String(valor);
+    }
+
+    function atualizarTodasBolinhas() {
+      document.querySelectorAll('[data-bolinhas]').forEach(atualizarGrupoBolinhas);
+    }
+
+    function atualizarDisciplinasPorCla() {
+      const cla = claSelect.value;
+      const opcoes = disciplinasPorCla[cla] || [];
+      disciplinaSelect.innerHTML = '';
+      const inicial = document.createElement('option');
+      inicial.value = '';
+      inicial.textContent = opcoes.length ? 'Selecione a disciplina' : 'Selecione um clã primeiro';
+      disciplinaSelect.appendChild(inicial);
+      opcoes.forEach((disciplina) => {
+        const option = document.createElement('option');
+        option.value = disciplina;
+        option.textContent = disciplina;
+        disciplinaSelect.appendChild(option);
+      });
+      disciplinaSelect.disabled = opcoes.length === 0;
+    }
+
+    function parseLista(valor) {
+      if (!valor) return [];
+      try {
+        const lista = JSON.parse(valor);
+        return Array.isArray(lista) ? lista : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function sincronizarListasOcultas() {
+      disciplinasSelecionadas.value = JSON.stringify(listaDisc);
+      vantagensLista.value = JSON.stringify(listaVant);
+      desvantagensLista.value = JSON.stringify(listaDesvant);
+    }
+
+    function renderizarLista(container, lista, tipo) {
+      container.innerHTML = '';
+      if (!lista.length) {
+        const vazio = document.createElement('p');
+        vazio.className = 'dica';
+        vazio.textContent = 'Nenhum item adicionado ainda.';
+        container.appendChild(vazio);
+        return;
+      }
+      lista.forEach((item, indice) => {
+        const card = document.createElement('div');
+        card.className = 'item-lista';
+        const info = document.createElement('div');
+        const titulo = document.createElement('strong');
+        titulo.textContent = item.nome || 'Item';
+        const detalhe = document.createElement('span');
+        const pontos = item.pontos ? `${item.pontos} ponto(s)` : 'sem pontos definidos';
+        const descricao = item.descricao ? ` — ${item.descricao}` : '';
+        detalhe.textContent = `${pontos}${descricao}`;
+        info.appendChild(titulo);
+        info.appendChild(detalhe);
+        const remover = document.createElement('button');
+        remover.type = 'button';
+        remover.className = 'btn-remover-item';
+        remover.textContent = '×';
+        remover.setAttribute('aria-label', 'Remover item');
+        remover.addEventListener('click', () => removerItem(tipo, indice));
+        card.appendChild(info);
+        card.appendChild(remover);
+        container.appendChild(card);
+      });
+    }
+
+    function renderizarListas() {
+      renderizarLista(listaDisciplinas, listaDisc, 'disciplina');
+      renderizarLista(listaVantagens, listaVant, 'vantagem');
+      renderizarLista(listaDesvantagens, listaDesvant, 'desvantagem');
+      sincronizarListasOcultas();
+    }
+
+    function removerItem(tipo, indice) {
+      if (tipo === 'disciplina') listaDisc.splice(indice, 1);
+      if (tipo === 'vantagem') listaVant.splice(indice, 1);
+      if (tipo === 'desvantagem') listaDesvant.splice(indice, 1);
+      renderizarListas();
+      salvarFicha(true);
+    }
+
+    function adicionarDisciplina() {
+      const nome = disciplinaSelect.value;
+      if (!nome) {
+        mostrarAviso('Selecione uma disciplina.');
+        return;
+      }
+      listaDisc.push({
+        nome,
+        pontos: disciplinaNivel.value.trim(),
+        descricao: disciplinaPoder.value.trim()
+      });
+      disciplinaNivel.value = '';
+      disciplinaPoder.value = '';
+      disciplinaSelect.value = '';
+      renderizarListas();
+      salvarFicha(true);
+      mostrarAviso('Disciplina adicionada.');
+    }
+
+    function adicionarVantagem() {
+      listaVant.push({
+        nome: vantagemSelect.value,
+        pontos: vantagemPontos.value.trim(),
+        descricao: vantagemDescricao.value.trim()
+      });
+      vantagemPontos.value = '';
+      vantagemDescricao.value = '';
+      renderizarListas();
+      salvarFicha(true);
+      mostrarAviso('Vantagem adicionada.');
+    }
+
+    function adicionarDesvantagem() {
+      listaDesvant.push({
+        nome: desvantagemSelect.value,
+        pontos: desvantagemPontos.value.trim(),
+        descricao: desvantagemDescricao.value.trim()
+      });
+      desvantagemPontos.value = '';
+      desvantagemDescricao.value = '';
+      renderizarListas();
+      salvarFicha(true);
+      mostrarAviso('Desvantagem adicionada.');
+    }
+
+    function restaurarListasDinamicas() {
+      listaDisc = parseLista(disciplinasSelecionadas.value);
+      listaVant = parseLista(vantagensLista.value);
+      listaDesvant = parseLista(desvantagensLista.value);
+      renderizarListas();
+    }
+
     imagemPersonagem.addEventListener('change', () => {
       const arquivo = imagemPersonagem.files && imagemPersonagem.files[0];
       if (!arquivo) return;
@@ -1117,21 +2217,53 @@
       });
     });
 
+    btnAdicionarDisciplina.addEventListener('click', adicionarDisciplina);
+    btnAdicionarVantagem.addEventListener('click', adicionarVantagem);
+    btnAdicionarDesvantagem.addEventListener('click', adicionarDesvantagem);
+    claSelect.addEventListener('change', () => {
+      atualizarDisciplinasPorCla();
+      salvarFicha(true);
+    });
+
+    btnEtapasFlutuante.addEventListener('click', (evento) => {
+      evento.stopPropagation();
+      alternarEtapas();
+    });
+
+    btnFecharEtapas.addEventListener('click', () => alternarEtapas(false));
+    fundoEtapas.addEventListener('click', () => alternarEtapas(false));
+
+    sumarioEtapas.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => alternarEtapas(false));
+    });
+
+    document.addEventListener('click', (evento) => {
+      const clicouNoMenu = sumarioEtapas.contains(evento.target);
+      const clicouNoBotao = btnEtapasFlutuante.contains(evento.target);
+      if (!clicouNoMenu && !clicouNoBotao) alternarEtapas(false);
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape') alternarEtapas(false);
+    });
+
     btnSair.addEventListener('click', () => {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
-
       if (usuarioSalvo) {
         localStorage.removeItem('usuarioLogado');
         usuarioNome.textContent = 'Visitante';
         btnSair.textContent = 'Login';
         return;
       }
-
       window.location.href = 'login.html';
     });
 
     carregarUsuario();
     restaurarRascunho();
+    iniciarBolinhas();
+    atualizarTodasBolinhas();
+    atualizarDisciplinasPorCla();
+    restaurarListasDinamicas();
   </script>
 </body>
 </html>
