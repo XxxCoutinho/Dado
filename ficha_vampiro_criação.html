@@ -1264,7 +1264,7 @@
         </p>
         <div class="toolbar">
           <button type="button" id="btnSalvarTopo" class="btn-fantasma">Salvar rascunho</button>
-          <button type="button" id="btnFinalizarTopo" class="btn-principal">Finalizar ficha</button>
+          <a href="ficha_vampiro_jogo.html" id="btnFinalizarTopo" class="btn-principal" onclick="if (window.finalizarFichaDireta) return window.finalizarFichaDireta(event);">Finalizar ficha</a>
           <a href="personagens.html" class="btn-fantasma">Voltar</a>
         </div>
       </div>
@@ -1298,7 +1298,7 @@
         <a href="#jogo">8. Valores de jogo</a>
       </aside>
 
-      <form id="formFicha" class="formulario">
+      <form id="formFicha" class="formulario" action="ficha_vampiro_jogo.html" method="get">
         <section id="identidade" class="painel bloco">
           <div class="bloco-cabecalho">
             <div class="bloco-numero">1</div>
@@ -2128,7 +2128,7 @@
 
           <div class="toolbar">
             <button type="button" id="btnSalvarFinal" class="btn-fantasma">Salvar rascunho</button>
-            <button type="button" id="btnFinalizarFinal" class="btn-principal">Finalizar e abrir ficha jogável</button>
+            <a href="ficha_vampiro_jogo.html" id="btnFinalizarFinal" class="btn-principal" onclick="if (window.finalizarFichaDireta) return window.finalizarFichaDireta(event);">Finalizar e abrir ficha jogável</a>
           </div>
         </section>
       </form>
@@ -2567,6 +2567,47 @@
       }
     }
 
+    function gerarIdSeguro() {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+      return `vampiro-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function redirecionarParaFichaJogavel() {
+      const destinoFichaJogavel = 'ficha_vampiro_jogo.html';
+      try {
+        window.location.href = destinoFichaJogavel;
+      } catch (erroHref) {
+        try {
+          window.location.assign(destinoFichaJogavel);
+        } catch (erroAssign) {
+          console.warn('Não foi possível redirecionar automaticamente:', erroAssign);
+        }
+      }
+
+      setTimeout(() => {
+        if (!/ficha_vampiro_jogo\.html(?:$|[?#])/i.test(window.location.href)) {
+          window.location.replace(destinoFichaJogavel);
+        }
+      }, 80);
+    }
+
+    function finalizarFicha(evento) {
+      if (evento && typeof evento.preventDefault === 'function') evento.preventDefault();
+      try {
+        salvarFicha(true);
+      } catch (erro) {
+        console.warn('Não foi possível salvar antes de abrir a ficha jogável:', erro);
+      }
+      redirecionarParaFichaJogavel();
+    }
+
+    window.finalizarFichaDireta = function(evento) {
+      finalizarFicha(evento);
+      return false;
+    };
+
     function coletarFicha() {
       const campos = {};
       document.querySelectorAll('[data-campo]').forEach((campo) => {
@@ -2583,7 +2624,7 @@
       };
 
       return {
-        id: localStorage.getItem('personagemVampiroIdAtual') || fichaAnterior?.id || crypto.randomUUID(),
+        id: localStorage.getItem('personagemVampiroIdAtual') || fichaAnterior?.id || gerarIdSeguro(),
         modelo: 'Vampiro: A Máscara',
         criadoEm: fichaAnterior?.criadoEm || new Date().toISOString(),
         atualizadoEm: new Date().toISOString(),
@@ -3144,11 +3185,9 @@
 
     botoesSalvar.forEach((botao) => botao.addEventListener('click', () => salvarFicha(false)));
     botoesFinalizar.forEach((botao) => {
-      botao.addEventListener('click', () => {
-        salvarFicha(true);
-        window.location.href = 'ficha_vampiro_jogo.html';
-      });
+      botao.addEventListener('click', finalizarFicha);
     });
+    formFicha.addEventListener('submit', finalizarFicha);
 
     btnAdicionarDisciplina.addEventListener('click', adicionarDisciplina);
     btnAbrirVantagens.addEventListener('click', () => alternarModalVantagens(true));
