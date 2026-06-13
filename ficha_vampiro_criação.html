@@ -387,6 +387,13 @@
       box-shadow: 0 0 0 3px rgba(0,200,255,.1), 0 0 18px rgba(0,200,255,.12);
     }
 
+    input[readonly] {
+      cursor: default;
+      color: rgba(255,255,255,.92);
+      border-color: rgba(255,221,85,.22);
+      background: rgba(255,221,85,.065);
+    }
+
     .dica {
       color: rgba(244,240,255,.58);
       font-size: .82rem;
@@ -906,6 +913,60 @@
       font-size: .88rem;
     }
 
+    .disciplinas-controle {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) auto;
+    }
+
+    .item-lista.disciplina-item {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: start;
+    }
+
+    .disciplina-pontos-area {
+      display: grid;
+      gap: 7px;
+      justify-items: end;
+      min-width: 170px;
+    }
+
+    .disciplina-pontos-area label {
+      font-size: .68rem;
+      color: rgba(244,240,255,.72);
+      text-align: right;
+    }
+
+    .disciplina-pontos-area .bolinhas {
+      margin-top: 0;
+      justify-content: flex-end;
+    }
+
+    .disciplina-descricao {
+      color: rgba(244,240,255,.70);
+      line-height: 1.45;
+      font-size: .86rem;
+      margin-top: 5px;
+    }
+
+    .disciplina-observacao {
+      display: block;
+      color: rgba(244,240,255,.58);
+      line-height: 1.45;
+      font-size: .82rem;
+      margin-top: 6px;
+    }
+
+    .disciplina-regra {
+      grid-column: 1 / -1;
+      color: rgba(244,240,255,.62);
+      font-size: .8rem;
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    .disciplina-regra.incompleta {
+      color: #ffdd55;
+    }
+
     .btn-remover-item {
       width: 34px;
       height: 34px;
@@ -932,12 +993,249 @@
       .controle-lista {
         grid-template-columns: 1fr;
       }
+
+      .item-lista.disciplina-item {
+        grid-template-columns: 1fr;
+      }
+
+      .disciplina-pontos-area {
+        justify-items: start;
+        min-width: 0;
+      }
+
+      .disciplina-pontos-area label {
+        text-align: left;
+      }
+
+      .disciplina-pontos-area .bolinhas {
+        justify-content: flex-start;
+      }
     }
 
     @media (max-width: 620px) {
       .bolinha {
         width: 30px;
         height: 30px;
+      }
+    }
+
+
+    /* =========================================================
+       Modal e contador de vantagens/defeitos
+       ========================================================= */
+    body.modal-vantagens-aberta {
+      overflow: hidden;
+    }
+
+    .contador-vantagens {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .contador-vantagens-card {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,.045);
+      padding: 14px;
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .contador-vantagens-card span {
+      color: rgba(244,240,255,.66);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .contador-vantagens-card strong {
+      color: #fff;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1;
+      text-shadow: 0 0 12px rgba(255,0,120,.24), 0 0 18px rgba(0,200,255,.16);
+    }
+
+    .contador-vantagens-card small {
+      color: rgba(244,240,255,.58);
+      line-height: 1.35;
+    }
+
+    .listas-vd-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .lista-vd-coluna {
+      display: grid;
+      gap: 10px;
+    }
+
+    .lista-vd-coluna .grupo-titulo {
+      grid-column: auto;
+      margin-bottom: 0;
+    }
+
+    .modal-vd-fundo {
+      position: fixed;
+      inset: 0;
+      z-index: 92;
+      background: rgba(0,0,0,.66);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+
+    .modal-vd-fundo.aberto {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-vd {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 93;
+      width: min(920px, calc(100vw - 28px));
+      max-height: min(84vh, 760px);
+      transform: translate(-50%, -46%) scale(.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 24px;
+      background: rgba(9, 7, 18, .96);
+      box-shadow: 0 0 34px rgba(255,0,120,.22), 0 0 60px rgba(0,200,255,.14), inset 0 0 30px rgba(255,255,255,.04);
+      overflow: hidden;
+    }
+
+    .modal-vd.aberto {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-vd-cabecalho {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .modal-vd-cabecalho h2 {
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-vd-cabecalho p {
+      color: rgba(244,240,255,.64);
+      line-height: 1.45;
+      font-size: .9rem;
+    }
+
+    .modal-vd-corpo {
+      padding: 18px 22px 22px;
+      overflow-y: auto;
+      max-height: calc(min(84vh, 760px) - 94px);
+    }
+
+    .filtros-vd {
+      display: grid;
+      grid-template-columns: 160px 210px 1fr;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .catalogo-vd {
+      display: grid;
+      gap: 10px;
+    }
+
+    .catalogo-vd-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 132px auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 13px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .catalogo-vd-card h3 {
+      color: #fff;
+      font-size: .86rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 5px;
+    }
+
+    .catalogo-vd-card p {
+      color: rgba(244,240,255,.66);
+      font-size: .84rem;
+      line-height: 1.4;
+    }
+
+    .catalogo-vd-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag-vd {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: rgba(244,240,255,.72);
+      background: rgba(0,0,0,.18);
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .catalogo-vd-pontos label {
+      font-size: .68rem;
+    }
+
+    .catalogo-vd-pontos select {
+      padding: 10px 11px;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .contador-vantagens,
+      .listas-vd-grid,
+      .filtros-vd,
+      .catalogo-vd-card {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-vd-cabecalho {
+        padding: 18px;
+      }
+
+      .modal-vd-corpo {
+        padding: 16px 18px 18px;
       }
     }
 
@@ -1113,17 +1411,18 @@
               <label for="predadorSelect">Predador</label>
               <select id="predadorSelect" data-campo="predadorSelect">
                 <option value="">Selecione o predador</option>
-                <option>Alleycat</option>
-                <option>Bagger</option>
-                <option>Blood Leech</option>
-                <option>Cleaver</option>
-                <option>Consensualist</option>
-                <option>Farmer</option>
-                <option>Osiris</option>
-                <option>Sandman</option>
-                <option>Scene Queen</option>
-                <option>Siren</option>
+                <option value="Alleycat">Alleycat — caça pela força nas ruas</option>
+                <option value="Bagger">Bagger — consome sangue armazenado em bolsas</option>
+                <option value="Blood Leech">Blood Leech — alimenta-se de outros vampiros</option>
+                <option value="Cleaver">Cleaver — caça dentro da própria vida familiar ou doméstica</option>
+                <option value="Consensualist">Consensualist — alimenta-se com consentimento da vítima</option>
+                <option value="Farmer">Farmer — evita humanos e bebe de animais</option>
+                <option value="Osiris">Osiris — usa seguidores, culto ou fama para se alimentar</option>
+                <option value="Sandman">Sandman — alimenta-se de vítimas adormecidas</option>
+                <option value="Scene Queen">Scene Queen — caça dentro de uma cena social específica</option>
+                <option value="Siren">Siren — usa sedução e intimidade para caçar</option>
               </select>
+              <p id="predadorDescricaoTexto" class="dica">Selecione um predador para ver uma breve descrição.</p>
             </div>
 
             <div class="campo">
@@ -1133,7 +1432,8 @@
 
             <div class="campo full">
               <label for="perdicaoCla">Perdição do clã</label>
-              <textarea id="perdicaoCla" data-campo="perdicaoCla" placeholder="Descreva a fraqueza sobrenatural do clã e como ela aparece na história."></textarea>
+              <textarea id="perdicaoCla" data-campo="perdicaoCla" placeholder="A perdição será preenchida automaticamente ao selecionar o clã."></textarea>
+              <p class="dica">Este campo é preenchido automaticamente pelo clã selecionado, mas continua editável.</p>
             </div>
           </div>
         </section>
@@ -1197,7 +1497,7 @@
           <div class="grade-atributos" data-grupo="atributos">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Clique nas bolinhas para definir o valor de cada atributo. Use valores maiores nos pontos fortes do personagem e valores menores nas áreas em que ele é fraco. Os atributos costumam ser somados às habilidades em testes.
+              Clique nas bolinhas para definir o valor de cada atributo. Os atributos devem ser preenchidos da seguinte forma: 1 atributo com 4 pontos, 3 atributos com 3 pontos, 4 atributos com 2 pontos e 1 atributo com 1 ponto. Use valores maiores nos pontos fortes do personagem e valores menores nas áreas em que ele é fraco. Os atributos costumam ser somados às habilidades em testes.
             </div>
             <h3 class="grupo-titulo">Físicos</h3>
               <div class="mini-card card-bolinhas" data-bolinhas-card>
@@ -1334,7 +1634,12 @@
           <div class="grade-habilidades" data-grupo="habilidades">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Clique nas bolinhas para indicar o quanto o personagem sabe fazer cada coisa. Zero significa sem treino relevante. Uma especialização pode ser anotada no campo abaixo e usada quando a mesa permitir.
+              Clique nas bolinhas para indicar o quanto o personagem sabe fazer cada coisa. As habilidades podem ser preenchidas de duas formas:
+              <ul>
+                <li><strong>Especialista</strong> — 1 habilidade com 4 pontos, 3 habilidades com 3 pontos, 3 habilidades com 3 pontos e 3 habilidades com 1 ponto;</li>
+                <li><strong>Equilibrado</strong> — 3 habilidades com 3 pontos, 5 habilidades com 2 pontos e 7 habilidades com 1 ponto.</li>
+              </ul>
+              Zero significa sem treino relevante. Uma especialização pode ser anotada no campo abaixo e usada quando a mesa permitir.
             </div>
             <h3 class="grupo-titulo">Físicas</h3>
               <div class="mini-card card-bolinhas" data-bolinhas-card>
@@ -1709,20 +2014,15 @@
           <div class="campos">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Primeiro selecione o clã na etapa 2. Depois escolha uma disciplina disponível, informe pontos ou nível, descreva o poder escolhido e clique em adicionar. Para Caitiff aparecem todas as disciplinas; para Sangue-Fraco aparece Alquimia de Sangue-Fraco.
+              Primeiro selecione o clã na etapa 2. Depois adicione as disciplinas disponíveis para esse clã. Escolha duas diciplinas e coloque 2 pontos em 1, 1 ponto na outra.
             </div>
 
-            <div class="controle-lista">
+            <div class="controle-lista disciplinas-controle">
               <div class="campo">
                 <label for="disciplinaSelect">Disciplina do clã</label>
                 <select id="disciplinaSelect">
                   <option value="">Selecione um clã primeiro</option>
                 </select>
-              </div>
-
-              <div class="campo">
-                <label for="disciplinaNivel">Pontos</label>
-                <input id="disciplinaNivel" type="text" placeholder="Ex.: 1" />
               </div>
 
               <div class="campo">
@@ -1758,66 +2058,41 @@
               Escolha uma vantagem ou desvantagem na lista, informe pontos e descreva como ela aparece em jogo. Use vantagem para recursos positivos e desvantagem para problemas que podem gerar conflito, custo ou risco.
             </div>
 
-            <h3 class="grupo-titulo">Vantagens</h3>
-            <div class="controle-lista">
-              <div class="campo">
-                <label for="vantagemSelect">Vantagem</label>
-                <select id="vantagemSelect">
-                  <option>Aliados</option>
-                  <option>Contatos</option>
-                  <option>Fama</option>
-                  <option>Influência</option>
-                  <option>Mawla</option>
-                  <option>Máscara</option>
-                  <option>Rebanho</option>
-                  <option>Recursos</option>
-                  <option>Refúgio</option>
-                  <option>Retentor</option>
-                  <option>Status</option>
-                  <option>Outra vantagem</option>
-                </select>
+            <div class="contador-vantagens" aria-label="Contador de vantagens e defeitos">
+              <div class="contador-vantagens-card">
+                <span>Vantagens</span>
+                <strong id="contadorVantagens">0 / 7</strong>
+                <small id="contadorVantagensRestante">7 pontos restantes</small>
               </div>
-              <div class="campo">
-                <label for="vantagemPontos">Pontos</label>
-                <input id="vantagemPontos" type="text" placeholder="Ex.: 2" />
+              <div class="contador-vantagens-card">
+                <span>Defeitos</span>
+                <strong id="contadorDefeitos">0 / 2</strong>
+                <small id="contadorDefeitosRestante">2 pontos restantes</small>
               </div>
-              <div class="campo">
-                <label for="vantagemDescricao">Descrição</label>
-                <input id="vantagemDescricao" type="text" placeholder="Ex.: policial corrupto na zona norte" />
+              <div class="contador-vantagens-card">
+                <span>Saldo</span>
+                <strong id="contadorSaldo">+0</strong>
+                <small>Vantagens disponíveis + defeitos escolhidos - vantagens usadas.</small>
               </div>
-              <button type="button" id="btnAdicionarVantagem" class="btn-pequeno">Adicionar</button>
             </div>
-            <textarea id="vantagensLista" class="campo-oculto" data-campo="vantagensLista"></textarea>
-            <div id="listaVantagens" class="lista-dinamica"></div>
 
-            <h3 class="grupo-titulo">Desvantagens</h3>
-            <div class="controle-lista">
-              <div class="campo">
-                <label for="desvantagemSelect">Desvantagem</label>
-                <select id="desvantagemSelect">
-                  <option>Inimigo</option>
-                  <option>Caçado</option>
-                  <option>Dívida</option>
-                  <option>Máscara comprometida</option>
-                  <option>Sem refúgio</option>
-                  <option>Segredo sombrio</option>
-                  <option>Dependência</option>
-                  <option>Perseguido</option>
-                  <option>Outra desvantagem</option>
-                </select>
-              </div>
-              <div class="campo">
-                <label for="desvantagemPontos">Pontos</label>
-                <input id="desvantagemPontos" type="text" placeholder="Ex.: 1" />
-              </div>
-              <div class="campo">
-                <label for="desvantagemDescricao">Descrição</label>
-                <input id="desvantagemDescricao" type="text" placeholder="Ex.: credor sabe demais sobre você" />
-              </div>
-              <button type="button" id="btnAdicionarDesvantagem" class="btn-pequeno">Adicionar</button>
+            <div class="toolbar campo full">
+              <button type="button" id="btnAbrirVantagens" class="btn-principal">Adicionar</button>
             </div>
+
+            <textarea id="vantagensLista" class="campo-oculto" data-campo="vantagensLista"></textarea>
             <textarea id="desvantagensLista" class="campo-oculto" data-campo="desvantagensLista"></textarea>
-            <div id="listaDesvantagens" class="lista-dinamica"></div>
+
+            <div class="listas-vd-grid">
+              <div class="lista-vd-coluna">
+                <h3 class="grupo-titulo">Vantagens escolhidas</h3>
+                <div id="listaVantagens" class="lista-dinamica"></div>
+              </div>
+              <div class="lista-vd-coluna">
+                <h3 class="grupo-titulo">Defeitos escolhidos</h3>
+                <div id="listaDesvantagens" class="lista-dinamica"></div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1833,14 +2108,14 @@
           <div class="grade-jogo">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Use estes campos para os valores mecânicos da ficha. Vitalidade e Força de Vontade controlam dano e desgaste mental; Fome mede o risco da Besta; Humanidade acompanha a queda moral; Potência do Sangue altera testes e poderes; experiência total e gasta ajudam a controlar evolução.
+              Estes campos são calculados automaticamente pela ficha: Vitalidade = Vigor + 3; Força de Vontade = Autocontrole + Determinação; Fome começa em 1/5; Humanidade começa em 7/10; Potência do Sangue começa em 1/10. Altere as bolinhas dos atributos para atualizar os valores.
             </div>
-            <div class="mini-card"><h3>Vitalidade</h3><input data-campo="vitalidade" type="text" placeholder="Ex.: 5" /></div>
-            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="forcaVontade" type="text" placeholder="Ex.: 6" /></div>
-            <div class="mini-card"><h3>Fome</h3><input data-campo="fome" type="text" placeholder="Ex.: 1" /></div>
+            <div class="mini-card"><h3>Vitalidade</h3><input data-campo="vitalidade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Vigor + 3</p></div>
+            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="forcaVontade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Autocontrole + Determinação</p></div>
+            <div class="mini-card"><h3>Fome</h3><input data-campo="fome" data-auto-jogo="true" type="text" readonly value="1/5" /></div>
             <div class="mini-card"><h3>Ressonância</h3><input data-campo="ressonancia" type="text" placeholder="Ex.: colérica" /></div>
-            <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" type="text" placeholder="Ex.: 7" /></div>
-            <div class="mini-card"><h3>Potência do sangue</h3><input data-campo="potenciaSangue" type="text" placeholder="Ex.: 1" /></div>
+            <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" data-auto-jogo="true" type="text" readonly value="7/10" /></div>
+            <div class="mini-card"><h3>Potência do sangue</h3><input data-campo="potenciaSangue" data-auto-jogo="true" type="text" readonly value="1/10" /></div>
             <div class="mini-card"><h3>Surto de sangue</h3><input data-campo="surtoSangue" type="text" placeholder="Ex.: +1 dado" /></div>
             <div class="mini-card"><h3>Quantidade recuperada</h3><input data-campo="quantidadeRecuperada" type="text" placeholder="Ex.: 1 superficial" /></div>
             <div class="mini-card"><h3>Bônus de poder</h3><input data-campo="bonusPoder" type="text" placeholder="Ex.: +1" /></div>
@@ -1862,6 +2137,41 @@
 
   <button type="button" id="btnEtapasFlutuante" class="btn-etapas-flutuante" aria-controls="sumarioEtapas" aria-expanded="false">Etapas</button>
 
+
+  <div id="fundoVantagens" class="modal-vd-fundo" aria-hidden="true"></div>
+  <section id="modalVantagens" class="modal-vd" role="dialog" aria-modal="true" aria-labelledby="tituloModalVantagens" aria-hidden="true" tabindex="-1">
+    <div class="modal-vd-cabecalho">
+      <div>
+        <h2 id="tituloModalVantagens">Adicionar vantagens e defeitos</h2>
+        <p>Filtre, escolha a quantidade de pontos quando houver variação e adicione à ficha.</p>
+      </div>
+      <button type="button" id="btnFecharVantagens" class="btn-fechar-etapas" aria-label="Fechar vantagens e defeitos">×</button>
+    </div>
+    <div class="modal-vd-corpo">
+      <div class="filtros-vd">
+        <div class="campo">
+          <label for="filtroTipoVantagem">Filtro</label>
+          <select id="filtroTipoVantagem">
+            <option value="todos">Todos</option>
+            <option value="vantagem">Vantagens</option>
+            <option value="defeito">Defeitos</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtroCategoriaVantagem">Categoria</label>
+          <select id="filtroCategoriaVantagem">
+            <option value="todas">Todas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="buscaVantagem">Buscar</label>
+          <input id="buscaVantagem" type="search" placeholder="Ex.: Aliados, Refúgio, Inimigo..." />
+        </div>
+      </div>
+      <div id="catalogoVantagens" class="catalogo-vd"></div>
+    </div>
+  </section>
+
   <div id="avisoSalvo" class="aviso-salvo">Ficha salva.</div>
 
   <script>
@@ -1878,22 +2188,30 @@
     const sumarioEtapas = document.getElementById('sumarioEtapas');
     const btnFecharEtapas = document.getElementById('btnFecharEtapas');
     const claSelect = document.getElementById('claSelect');
+    const perdicaoCla = document.getElementById('perdicaoCla');
+    const predadorSelect = document.getElementById('predadorSelect');
+    const predadorDescricaoTexto = document.getElementById('predadorDescricaoTexto');
     const disciplinaSelect = document.getElementById('disciplinaSelect');
     const disciplinaNivel = document.getElementById('disciplinaNivel');
     const disciplinaPoder = document.getElementById('disciplinaPoder');
     const btnAdicionarDisciplina = document.getElementById('btnAdicionarDisciplina');
     const disciplinasSelecionadas = document.getElementById('disciplinasSelecionadas');
     const listaDisciplinas = document.getElementById('listaDisciplinas');
-    const vantagemSelect = document.getElementById('vantagemSelect');
-    const vantagemPontos = document.getElementById('vantagemPontos');
-    const vantagemDescricao = document.getElementById('vantagemDescricao');
-    const btnAdicionarVantagem = document.getElementById('btnAdicionarVantagem');
+    const btnAbrirVantagens = document.getElementById('btnAbrirVantagens');
+    const fundoVantagens = document.getElementById('fundoVantagens');
+    const modalVantagens = document.getElementById('modalVantagens');
+    const btnFecharVantagens = document.getElementById('btnFecharVantagens');
+    const filtroTipoVantagem = document.getElementById('filtroTipoVantagem');
+    const filtroCategoriaVantagem = document.getElementById('filtroCategoriaVantagem');
+    const buscaVantagem = document.getElementById('buscaVantagem');
+    const catalogoVantagens = document.getElementById('catalogoVantagens');
+    const contadorVantagens = document.getElementById('contadorVantagens');
+    const contadorDefeitos = document.getElementById('contadorDefeitos');
+    const contadorSaldo = document.getElementById('contadorSaldo');
+    const contadorVantagensRestante = document.getElementById('contadorVantagensRestante');
+    const contadorDefeitosRestante = document.getElementById('contadorDefeitosRestante');
     const vantagensLista = document.getElementById('vantagensLista');
     const listaVantagens = document.getElementById('listaVantagens');
-    const desvantagemSelect = document.getElementById('desvantagemSelect');
-    const desvantagemPontos = document.getElementById('desvantagemPontos');
-    const desvantagemDescricao = document.getElementById('desvantagemDescricao');
-    const btnAdicionarDesvantagem = document.getElementById('btnAdicionarDesvantagem');
     const desvantagensLista = document.getElementById('desvantagensLista');
     const listaDesvantagens = document.getElementById('listaDesvantagens');
     let imagemBase64 = '';
@@ -1915,6 +2233,131 @@
       'Caitiff': ['Animalismo', 'Auspícios', 'Dominação', 'Feitiçaria de Sangue', 'Fortitude', 'Metamorfose', 'Ofuscação', 'Oblívio', 'Potência', 'Presença', 'Rapidez'],
       'Sangue-Fraco': ['Alquimia de Sangue-Fraco']
     };
+
+    const descricoesDisciplinas = {
+      'Animalismo': 'Comunicação, comando e conexão sobrenatural com animais e com a Besta interior.',
+      'Auspícios': 'Sentidos ampliados, percepção sobrenatural, leitura de auras e visões ocultas.',
+      'Dominação': 'Comandos mentais, controle de ações e manipulação de lembranças.',
+      'Feitiçaria de Sangue': 'Magia do sangue, rituais e efeitos místicos ligados ao vitae.',
+      'Fortitude': 'Resistência sobrenatural, corpo endurecido e capacidade de suportar dor e dano.',
+      'Metamorfose': 'Transformações físicas, traços bestiais, garras, sentidos e formas predatórias.',
+      'Ofuscação': 'Ocultação sobrenatural, desaparecimento, disfarce e presença ignorada.',
+      'Oblívio': 'Manipulação de sombras, morte, vazio e forças sobrenaturais sombrias.',
+      'Potência': 'Força vampírica brutal, golpes devastadores e feitos físicos impossíveis.',
+      'Presença': 'Magnetismo sobrenatural, fascínio, medo, comando emocional e influência social.',
+      'Rapidez': 'Velocidade impossível, reflexos ampliados e movimentos quase invisíveis.',
+      'Alquimia de Sangue-Fraco': 'Fórmulas instáveis feitas com sangue-fraco, ressonância e ingredientes especiais.'
+    };
+
+    const perdicoesPorCla = {
+      'Brujah': 'Brujah — Sangue colérico: a Besta reage com fúria com mais facilidade. Aplique a Gravidade da Perdição como penalidade em testes para resistir ao frenesi de raiva ou quando o personagem tenta conter explosões violentas.',
+      'Gangrel': 'Gangrel — Traços da Besta: depois de perder o controle para o frenesi, marcas animalescas podem surgir no corpo ou no comportamento. Use a Gravidade da Perdição para definir o peso social ou narrativo desses traços.',
+      'Malkavian': 'Malkavian — Mente fraturada: a maldição toca percepção, emoção e pensamento. Em momentos de pressão, visão, paranoia, compulsão ou delírio podem distorcer a cena conforme a Gravidade da Perdição.',
+      'Nosferatu': 'Nosferatu — Aparência monstruosa: o corpo carrega uma deformidade impossível de ignorar. A Gravidade da Perdição dificulta disfarces, interações sociais e tentativas de parecer uma pessoa comum.',
+      'Toreador': 'Toreador — Obsessão pela beleza: arte, prazer, perfeição ou horror estético podem capturar completamente a atenção do personagem. A Gravidade da Perdição mede o quanto é difícil resistir a esse fascínio.',
+      'Tremere': 'Tremere — Sangue enfraquecido: o vitae Tremere é marcado por uma falha mística e tem dificuldade para criar laços de sangue completos. Use a Gravidade da Perdição em efeitos ligados a vínculo, sangue e dominação ritual.',
+      'Ventrue': 'Ventrue — Paladar seletivo: o personagem só consegue se alimentar de um tipo específico de vítima. Sangue fora desse padrão é rejeitado ou não sustenta de verdade, conforme a Gravidade da Perdição.',
+      'Banu Haqim': 'Banu Haqim — Sede por julgamento: o sangue vampírico desperta tentação perigosa, especialmente diante de culpa, punição e vitae de outros Membros. A Gravidade da Perdição aumenta o risco de perder o controle.',
+      'Lasombra': 'Lasombra — Imagem distorcida: reflexos, gravações e transmissões não mostram o personagem corretamente. A Gravidade da Perdição afeta interações por tecnologia, registros visuais e tentativas de manter aparência normal.',
+      'Ministry': 'Ministry — Repulsa à luz: luz intensa, exposição e símbolos de revelação incomodam profundamente o personagem. A Gravidade da Perdição indica a penalidade ou desconforto nessas situações.',
+      'Ravnos': 'Ravnos — Destino inquieto: ficar parado por tempo demais atrai a ruína. O personagem precisa mudar de refúgio, rota ou rotina; a Gravidade da Perdição mede o risco de insistir no mesmo lugar.',
+      'Tzimisce': 'Tzimisce — Posse territorial: o personagem precisa manter ligação com algo seu, como solo, propriedade, linhagem ou domínio. A Gravidade da Perdição define o custo de dormir ou agir longe desse vínculo.',
+      'Hecata': 'Hecata — Beijo doloroso: alimentar-se não é êxtase para a vítima; é dor, medo e trauma. A Gravidade da Perdição torna a alimentação mais chamativa, cruel ou difícil de esconder.',
+      'Caitiff': 'Caitiff — Sem perdição de clã fixa: por não pertencer a uma linhagem reconhecida, o personagem não recebe uma perdição tradicional. O Narrador pode criar uma maldição personalizada ou deixar este campo como marca social.',
+      'Sangue-Fraco': 'Sangue-Fraco — Sangue instável: o personagem está entre mortal e vampiro, com limitações próprias, poderes instáveis e dependência de alquimia, ressonância ou circunstâncias especiais. A Gravidade da Perdição pode representar essa fragilidade.'
+    };
+
+    const descricoesPredadores = {
+      'Alleycat': 'Alleycat — caça pela força, intimidação ou violência direta, normalmente nas ruas.',
+      'Bagger': 'Bagger — alimenta-se de sangue armazenado em bolsas, bancos de sangue, hospitais ou contatos médicos.',
+      'Blood Leech': 'Blood Leech — busca vitae de outros vampiros, uma prática poderosa, perigosa e socialmente condenada.',
+      'Cleaver': 'Cleaver — mantém uma fachada de vida familiar ou doméstica e se alimenta dentro desse círculo íntimo.',
+      'Consensualist': 'Consensualist — só se alimenta de vítimas que aceitam, entendem ou acreditam consentir com o ato.',
+      'Farmer': 'Farmer — evita beber de humanos e tenta sobreviver com sangue animal, mesmo que isso seja menos satisfatório.',
+      'Osiris': 'Osiris — usa fama, seguidores, culto, devoção ou influência pública para atrair vítimas.',
+      'Sandman': 'Sandman — invade espaços privados e se alimenta de pessoas adormecidas ou indefesas sem acordá-las.',
+      'Scene Queen': 'Scene Queen — caça dentro de uma subcultura, grupo social, festa, cena artística ou círculo específico.',
+      'Siren': 'Siren — seduz, flerta ou usa intimidade e desejo para aproximar suas vítimas.'
+    };
+
+
+
+    const catalogoVantagensDefeitos = [
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Aliados', min: 1, max: 5, descricao: 'Mortais ou grupos confiáveis que podem ajudar o personagem.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Inimigo', min: 1, max: 5, descricao: 'Pessoa ou grupo mortal que quer prejudicar o personagem.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Contatos', min: 1, max: 3, descricao: 'Fontes de informação, serviços ou favores em áreas específicas.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Fama', min: 1, max: 5, descricao: 'Reconhecimento público entre mortais ou dentro de uma cena social.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Infâmia', min: 1, max: 5, descricao: 'Reputação negativa por algo vergonhoso, cruel ou perigoso.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Segredo sombrio', min: 1, max: 2, descricao: 'Um segredo que precisa permanecer escondido.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Influência', min: 1, max: 5, descricao: 'Poder social, político, criminoso, financeiro ou institucional.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Desprezado', min: 2, max: 2, descricao: 'Um grupo ou região da cidade trabalha contra você.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Malvisto', min: 1, max: 1, descricao: 'Você é amplamente rejeitado ou pouco aceito em certo círculo.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Refúgio', min: 1, max: 3, descricao: 'Lugar seguro para dormir durante o dia.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Arsenal oculto', min: 1, max: 1, descricao: 'O refúgio possui armas ou equipamentos escondidos.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Cela', min: 1, max: 1, descricao: 'O refúgio tem espaço seguro para manter prisioneiros.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Vigias', min: 1, max: 1, descricao: 'Guardas, criminosos ou segurança privada protegem o local.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Laboratório', min: 1, max: 1, descricao: 'Espaço equipado para experimentos, ciência ou análise.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Biblioteca', min: 1, max: 1, descricao: 'Acervo especializado em ocultismo, história ou assuntos úteis.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Localização privilegiada', min: 1, max: 1, descricao: 'O refúgio fica em uma área valiosa, discreta ou estratégica.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Luxo', min: 1, max: 1, descricao: 'O refúgio tem conforto, riqueza e aparência refinada.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Saída secreta', min: 1, max: 1, descricao: 'Existe uma rota discreta de fuga.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Sistema de segurança', min: 1, max: 1, descricao: 'Alarmes, câmeras ou proteção acima do comum.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Sala cirúrgica', min: 1, max: 1, descricao: 'Espaço apropriado para atendimento médico ou procedimentos.' },
+      { tipo: 'vantagem', categoria: 'Refúgio', nome: 'Proteção mística', min: 1, max: 1, descricao: 'O refúgio tem alguma defesa sobrenatural.' },
+      { tipo: 'defeito', categoria: 'Refúgio', nome: 'Comprometido', min: 2, max: 2, descricao: 'O refúgio já foi invadido, marcado ou exposto.' },
+      { tipo: 'defeito', categoria: 'Refúgio', nome: 'Assustador', min: 1, max: 1, descricao: 'O refúgio chama atenção por parecer perigoso ou grotesco.' },
+      { tipo: 'defeito', categoria: 'Refúgio', nome: 'Assombrado', min: 1, max: 1, descricao: 'Há uma manifestação sobrenatural problemática no local.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Sem refúgio', min: 1, max: 1, descricao: 'O personagem não possui um local seguro próprio.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Rebanho', min: 1, max: 5, descricao: 'Grupo de mortais dos quais o personagem consegue se alimentar.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Predador óbvio', min: 2, max: 2, descricao: 'A presença predatória dificulta manter um rebanho estável.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Máscara', min: 1, max: 2, descricao: 'Identidade falsa ou cobertura mortal que protege o personagem.' },
+      { tipo: 'vantagem', categoria: 'Máscara', nome: 'Registro apagado', min: 1, max: 1, descricao: 'A identidade real foi apagada ou é quase impossível de rastrear.' },
+      { tipo: 'vantagem', categoria: 'Máscara', nome: 'Falsificador', min: 1, max: 1, descricao: 'Capacidade de conseguir ou criar novas identidades falsas.' },
+      { tipo: 'defeito', categoria: 'Máscara', nome: 'Blankbody conhecido', min: 2, max: 2, descricao: 'Autoridades ou caçadores podem reconhecer você como morto-vivo.' },
+      { tipo: 'defeito', categoria: 'Máscara', nome: 'Cadáver conhecido', min: 1, max: 1, descricao: 'Pessoas sabem que você morreu recentemente.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Mawla', min: 1, max: 5, descricao: 'Mentor, patrono ou vampiro influente que oferece orientação.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Adversário', min: 1, max: 5, descricao: 'Membro ou figura sobrenatural que deseja prejudicar você.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Recursos', min: 1, max: 5, descricao: 'Dinheiro, bens, acesso material e estabilidade econômica.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Miserável', min: 1, max: 1, descricao: 'Você não tem dinheiro, bens ou estabilidade material.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Retentor', min: 1, max: 3, descricao: 'Servo, assistente ou protegido leal.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Perseguidores', min: 1, max: 1, descricao: 'Você atrai pessoas obcecadas ou perigosamente apegadas.' },
+      { tipo: 'vantagem', categoria: 'Antecedentes', nome: 'Status', min: 1, max: 5, descricao: 'Reputação, respeito ou posição em uma comunidade dos Membros.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Repudiado', min: 2, max: 2, descricao: 'Você é odiado por uma seita, corte ou comunidade vampírica.' },
+      { tipo: 'defeito', categoria: 'Antecedentes', nome: 'Suspeito', min: 1, max: 1, descricao: 'Você é visto com desconfiança dentro de uma seita ou grupo.' },
+      { tipo: 'vantagem', categoria: 'Aparência', nome: 'Belo', min: 2, max: 2, descricao: 'Aparência marcante que ajuda em interações sociais.' },
+      { tipo: 'vantagem', categoria: 'Aparência', nome: 'Deslumbrante', min: 4, max: 4, descricao: 'Beleza extraordinária e quase impossível de ignorar.' },
+      { tipo: 'defeito', categoria: 'Aparência', nome: 'Feio', min: 1, max: 1, descricao: 'Aparência desagradável que atrapalha interações.' },
+      { tipo: 'defeito', categoria: 'Aparência', nome: 'Repulsivo', min: 2, max: 2, descricao: 'Aparência monstruosa ou profundamente perturbadora.' },
+      { tipo: 'vantagem', categoria: 'Linguística', nome: 'Linguística', min: 1, max: 3, descricao: 'Idiomas adicionais que o personagem fala, lê ou escreve.' },
+      { tipo: 'defeito', categoria: 'Linguística', nome: 'Analfabeto', min: 1, max: 1, descricao: 'O personagem não sabe ler ou escrever.' },
+      { tipo: 'defeito', categoria: 'Arcaico', nome: 'Arcaico', min: 2, max: 2, descricao: 'Dificuldade séria com tecnologia, costumes e mundo moderno.' },
+      { tipo: 'defeito', categoria: 'Arcaico', nome: 'Vivendo no passado', min: 1, max: 1, descricao: 'Convicções ou hábitos antigos atrapalham a adaptação.' },
+      { tipo: 'vantagem', categoria: 'Laço de sangue', nome: 'Resistência ao laço', min: 1, max: 1, descricao: 'Mais facilidade para resistir aos efeitos de laço de sangue.' },
+      { tipo: 'vantagem', categoria: 'Laço de sangue', nome: 'Laço curto', min: 2, max: 2, descricao: 'Laços de sangue sobre você enfraquecem mais rapidamente.' },
+      { tipo: 'vantagem', categoria: 'Laço de sangue', nome: 'Inlaçável', min: 5, max: 5, descricao: 'Você não pode ser preso por laço de sangue comum.' },
+      { tipo: 'defeito', categoria: 'Laço de sangue', nome: 'Escravo do laço', min: 2, max: 2, descricao: 'Um gole de vitae já é suficiente para criar laço.' },
+      { tipo: 'defeito', categoria: 'Laço de sangue', nome: 'Viciado em laço', min: 1, max: 1, descricao: 'O laço é especialmente sedutor e difícil de resistir.' },
+      { tipo: 'defeito', categoria: 'Laço de sangue', nome: 'Laço longo', min: 1, max: 1, descricao: 'Laços de sangue sobre você demoram mais para enfraquecer.' },
+      { tipo: 'vantagem', categoria: 'Alimentação', nome: 'Faro de sangue', min: 1, max: 1, descricao: 'Consegue perceber ressonância ou qualidade do sangue pelo cheiro.' },
+      { tipo: 'vantagem', categoria: 'Alimentação', nome: 'Estômago de ferro', min: 3, max: 3, descricao: 'Consegue consumir sangue ruim, armazenado ou processado.' },
+      { tipo: 'defeito', categoria: 'Alimentação', nome: 'Fazendeiro', min: 2, max: 2, descricao: 'Alimenta-se exclusivamente de animais.' },
+      { tipo: 'defeito', categoria: 'Alimentação', nome: 'Organívoro', min: 2, max: 2, descricao: 'Só sacia a fome consumindo carne humana.' },
+      { tipo: 'defeito', categoria: 'Alimentação', nome: 'Sede de Matusalém', min: 1, max: 1, descricao: 'A fome só é realmente saciada por sangue sobrenatural.' },
+      { tipo: 'defeito', categoria: 'Alimentação', nome: 'Exclusão de presa', min: 1, max: 1, descricao: 'Recusa-se ou não consegue se alimentar de um tipo de vítima.' },
+      { tipo: 'vantagem', categoria: 'Místico', nome: 'Comer comida', min: 2, max: 2, descricao: 'Consegue ingerir comida, ainda que ela não alimente o vampiro.' },
+      { tipo: 'defeito', categoria: 'Místico', nome: 'Isca de estaca', min: 2, max: 2, descricao: 'Ser estaqueado é muito mais perigoso para você.' },
+      { tipo: 'defeito', categoria: 'Místico', nome: 'Fraqueza folclórica', min: 1, max: 1, descricao: 'Sofre com uma fraqueza mística ou folclórica específica.' },
+      { tipo: 'defeito', categoria: 'Místico', nome: 'Bloqueio folclórico', min: 1, max: 1, descricao: 'Uma crença, objeto ou condição folclórica bloqueia você.' },
+      { tipo: 'defeito', categoria: 'Místico', nome: 'Estigmas', min: 1, max: 1, descricao: 'A fome intensa causa sinais físicos sobrenaturais visíveis.' },
+      { tipo: 'defeito', categoria: 'Psicológico', nome: 'Vivendo no limite', min: 2, max: 2, descricao: 'Impulso constante por experiências novas e perigosas.' },
+      { tipo: 'defeito', categoria: 'Psicológico', nome: 'Vontade fraca', min: 3, max: 3, descricao: 'Dificuldade para resistir à vontade e pressão dos outros.' },
+      { tipo: 'vantagem', categoria: 'Dependência', nome: 'Viciado funcional', min: 1, max: 1, descricao: 'O vício existe, mas o personagem ainda consegue funcionar.' },
+      { tipo: 'defeito', categoria: 'Dependência', nome: 'Dependência', min: 1, max: 1, descricao: 'Vício que atrapalha quando a substância falta.' },
+      { tipo: 'defeito', categoria: 'Dependência', nome: 'Dependência desesperada', min: 2, max: 2, descricao: 'Vício forte e destrutivo, difícil de controlar.' },
+      { tipo: 'vantagem', categoria: 'Especial', nome: 'Loresheet', min: 1, max: 5, descricao: 'Ligação com uma linhagem, lenda, facção ou metaplot. Detalhe qual no campo de descrição da ficha.' },
+      { tipo: 'vantagem', categoria: 'Especial', nome: 'Outra vantagem', min: 1, max: 5, descricao: 'Espaço para vantagem personalizada da mesa.' },
+      { tipo: 'defeito', categoria: 'Especial', nome: 'Outro defeito', min: 1, max: 5, descricao: 'Espaço para defeito personalizado da mesa.' }
+    ];
 
     let listaDisc = [];
     let listaVant = [];
@@ -1968,29 +2411,197 @@
       return campo ? campo.value : '';
     }
 
+    function primeiroValor(...valores) {
+      for (const valor of valores) {
+        const texto = String(valor || '').trim();
+        if (texto) return texto;
+      }
+      return '';
+    }
+
+    function copiarCampoCompatibilidade(campos, destino, ...origens) {
+      const atual = String(campos[destino] || '').trim();
+      if (atual) return;
+      const valor = primeiroValor(...origens.map((origem) => campos[origem]));
+      if (valor) campos[destino] = valor;
+    }
+
+    function experienciaParaFichaJogo(campos) {
+      if (String(campos.experiencia || '').trim()) return;
+      const total = String(campos.experienciaTotal || '').trim();
+      const gasta = String(campos.experienciaGasta || '').trim();
+      if (total && gasta) campos.experiencia = `${gasta}/${total}`;
+      else if (total) campos.experiencia = total;
+      else if (gasta) campos.experiencia = gasta;
+    }
+
+    function textoListaCompatibilidade(lista, tipo) {
+      return (Array.isArray(lista) ? lista : [])
+        .map((item) => {
+          const nome = String(item?.nome || '').trim();
+          const pontos = String(item?.pontos || '').trim();
+          const descricao = String(item?.descricao || '').trim();
+          return [tipo, nome, pontos ? `${pontos} ponto(s)` : '', descricao]
+            .filter(Boolean)
+            .join(' — ');
+        })
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    function pontosDisciplinaValor(pontos) {
+      const numero = Number(pontos || 0);
+      if (!Number.isFinite(numero)) return 0;
+      return Math.max(0, Math.min(5, numero));
+    }
+
+    function descricaoDisciplina(nome) {
+      return descricoesDisciplinas[nome] || 'Disciplina vampírica com efeitos sobrenaturais definidos pela mesa e pelos poderes escolhidos.';
+    }
+
+    function normalizarDisciplinasParaJogo(campos) {
+      const cla = primeiroValor(campos.claSelect, campos.claFinal, campos.claDescricao);
+      return (Array.isArray(listaDisc) ? listaDisc : []).map((item) => {
+        const pontos = pontosDisciplinaValor(item?.pontos);
+        const descricaoBase = String(item?.resumo || descricaoDisciplina(item?.nome || '')).trim();
+        const observacao = String(item?.descricao || item?.observacao || '').trim();
+        const descricao = [descricaoBase, observacao ? `Observação: ${observacao}` : ''].filter(Boolean).join('\n');
+        return {
+          nome: item?.nome || 'Disciplina sem nome',
+          clas: cla ? [cla] : [],
+          pontos: String(pontos || ''),
+          pontosSelecionados: pontos,
+          valor: pontos,
+          nivel: pontos,
+          resumo: descricaoBase,
+          observacao,
+          descricao
+        };
+      });
+    }
+
+    function normalizarVantagensParaJogo() {
+      const vantagens = (Array.isArray(listaVant) ? listaVant : []).map((item) => ({
+        nome: item?.nome || 'Vantagem sem nome',
+        tipo: 'qualidade',
+        pontos: item?.pontos || '',
+        pontosValor: Math.abs(Number(item?.pontos || 0)) || 0,
+        descricao: item?.descricao || ''
+      }));
+      const desvantagens = (Array.isArray(listaDesvant) ? listaDesvant : []).map((item) => ({
+        nome: item?.nome || 'Desvantagem sem nome',
+        tipo: 'defeito',
+        pontos: item?.pontos || '',
+        pontosValor: -(Math.abs(Number(item?.pontos || 0)) || 0),
+        descricao: item?.descricao || ''
+      }));
+      return [...vantagens, ...desvantagens];
+    }
+
+    function aplicarCompatibilidadeFichaJogo(campos) {
+      copiarCampoCompatibilidade(campos, 'claFinal', 'claSelect', 'claDescricao');
+      copiarCampoCompatibilidade(campos, 'claDescricao', 'claFinal', 'claSelect');
+      copiarCampoCompatibilidade(campos, 'predadorFinal', 'predadorSelect', 'predadorDescricao');
+      copiarCampoCompatibilidade(campos, 'predadorDescricao', 'predadorFinal', 'predadorSelect');
+      copiarCampoCompatibilidade(campos, 'cronicaDescricao', 'cronicaNome');
+      copiarCampoCompatibilidade(campos, 'nomeDescricao', 'nome');
+      copiarCampoCompatibilidade(campos, 'sire', 'senhor');
+      copiarCampoCompatibilidade(campos, 'conviccoes', 'pilaresConviccoes');
+      copiarCampoCompatibilidade(campos, 'touchstones', 'pilaresConviccoes');
+      copiarCampoCompatibilidade(campos, 'tracosDistintivos', 'tracoDistintivo');
+      copiarCampoCompatibilidade(campos, 'vontade', 'forcaVontade');
+
+      const habilidadesCompatibilidade = {
+        habilidade_armasBrancas: 'habilidade_armas_brancas',
+        habilidade_armasFogo: 'habilidade_armas_fogo',
+        habilidade_ladroagem: 'habilidade_furto',
+        habilidade_empatiaAnimais: 'habilidade_trato_animais',
+        habilidade_sagacidade: 'habilidade_intuicao',
+        habilidade_subterfugio: 'habilidade_labia',
+        habilidade_ciencia: 'habilidade_ciencias',
+        habilidade_erudicao: 'habilidade_academicos',
+        habilidade_percepcao: 'habilidade_prontidao'
+      };
+      Object.entries(habilidadesCompatibilidade).forEach(([destino, origem]) => {
+        copiarCampoCompatibilidade(campos, destino, origem);
+      });
+
+      experienciaParaFichaJogo(campos);
+      campos.disciplinasTexto = campos.disciplinasTexto || textoListaCompatibilidade(listaDisc, 'Disciplina');
+      campos.vantagensDefeitosTexto = campos.vantagensDefeitosTexto || [
+        textoListaCompatibilidade(listaVant, 'Vantagem'),
+        textoListaCompatibilidade(listaDesvant, 'Desvantagem')
+      ].filter(Boolean).join('\n\n');
+      return campos;
+    }
+
+    function aplicarCompatibilidadeFichaCriacao(campos) {
+      copiarCampoCompatibilidade(campos, 'claSelect', 'claFinal', 'claDescricao');
+      copiarCampoCompatibilidade(campos, 'predadorSelect', 'predadorFinal', 'predadorDescricao');
+      copiarCampoCompatibilidade(campos, 'senhor', 'sire');
+      copiarCampoCompatibilidade(campos, 'pilaresConviccoes', 'conviccoes', 'touchstones');
+      copiarCampoCompatibilidade(campos, 'tracoDistintivo', 'tracosDistintivos');
+      copiarCampoCompatibilidade(campos, 'forcaVontade', 'vontade');
+      const habilidadesCompatibilidade = {
+        habilidade_armas_brancas: 'habilidade_armasBrancas',
+        habilidade_armas_fogo: 'habilidade_armasFogo',
+        habilidade_furto: 'habilidade_ladroagem',
+        habilidade_trato_animais: 'habilidade_empatiaAnimais',
+        habilidade_intuicao: 'habilidade_sagacidade',
+        habilidade_labia: 'habilidade_subterfugio',
+        habilidade_ciencias: 'habilidade_ciencia',
+        habilidade_academicos: 'habilidade_erudicao',
+        habilidade_prontidao: 'habilidade_percepcao'
+      };
+      Object.entries(habilidadesCompatibilidade).forEach(([destino, origem]) => {
+        copiarCampoCompatibilidade(campos, destino, origem);
+      });
+      return campos;
+    }
+
+    function fichaSalvaAtual() {
+      try {
+        return JSON.parse(localStorage.getItem('personagemVampiroAtual') || 'null') || null;
+      } catch (erro) {
+        return null;
+      }
+    }
+
     function coletarFicha() {
       const campos = {};
       document.querySelectorAll('[data-campo]').forEach((campo) => {
         campos[campo.dataset.campo] = campo.value || '';
       });
+      aplicarCompatibilidadeFichaJogo(campos);
+
+      const fichaAnterior = fichaSalvaAtual();
+      const listasAnteriores = fichaAnterior?.listas || {};
+      const listas = {
+        disciplinasAdicionadas: normalizarDisciplinasParaJogo(campos),
+        vantagensDefeitosAdicionados: normalizarVantagensParaJogo(),
+        itensInventarioAdicionados: Array.isArray(listasAnteriores.itensInventarioAdicionados) ? listasAnteriores.itensInventarioAdicionados : []
+      };
+
       return {
-        id: localStorage.getItem('personagemVampiroIdAtual') || crypto.randomUUID(),
+        id: localStorage.getItem('personagemVampiroIdAtual') || fichaAnterior?.id || crypto.randomUUID(),
         modelo: 'Vampiro: A Máscara',
-        criadoEm: new Date().toISOString(),
+        criadoEm: fichaAnterior?.criadoEm || new Date().toISOString(),
         atualizadoEm: new Date().toISOString(),
         imagem: imagemBase64,
         campos,
+        listas,
         resumo: {
           nome: campos.nome || 'Personagem sem nome',
           jogador: campos.jogador || '',
-          cla: campos.claSelect || '',
-          predador: campos.predadorSelect || '',
+          cla: campos.claFinal || campos.claSelect || '',
+          predador: campos.predadorFinal || campos.predadorSelect || '',
           cronica: campos.cronicaNome || ''
         }
       };
     }
 
     function salvarFicha(silencioso = false) {
+      atualizarValoresJogoAutomaticos();
       sincronizarListasOcultas();
       const ficha = coletarFicha();
       localStorage.setItem('personagemVampiroIdAtual', ficha.id);
@@ -2014,7 +2625,25 @@
       try {
         const ficha = JSON.parse(salvo);
         if (ficha && ficha.campos) {
-          Object.entries(ficha.campos).forEach(([chave, valor]) => {
+          const campos = aplicarCompatibilidadeFichaCriacao({ ...ficha.campos });
+          if (!campos.disciplinasSelecionadas && Array.isArray(ficha.listas?.disciplinasAdicionadas)) {
+            campos.disciplinasSelecionadas = JSON.stringify(ficha.listas.disciplinasAdicionadas.map((item) => ({
+              nome: item?.nome || '',
+              pontos: item?.pontos || item?.pontosSelecionados || '',
+              descricao: item?.descricao || ''
+            })));
+          }
+          if (!campos.vantagensLista && Array.isArray(ficha.listas?.vantagensDefeitosAdicionados)) {
+            campos.vantagensLista = JSON.stringify(ficha.listas.vantagensDefeitosAdicionados
+              .filter((item) => item?.tipo !== 'defeito')
+              .map((item) => ({ nome: item?.nome || '', pontos: item?.pontosSelecionados || item?.pontos || '', descricao: item?.descricao || '' })));
+          }
+          if (!campos.desvantagensLista && Array.isArray(ficha.listas?.vantagensDefeitosAdicionados)) {
+            campos.desvantagensLista = JSON.stringify(ficha.listas.vantagensDefeitosAdicionados
+              .filter((item) => item?.tipo === 'defeito')
+              .map((item) => ({ nome: item?.nome || '', pontos: item?.pontosSelecionados || item?.pontos || '', descricao: item?.descricao || '' })));
+          }
+          Object.entries(campos).forEach(([chave, valor]) => {
             const campo = document.querySelector(`[data-campo="${chave}"]`);
             if (campo) campo.value = valor;
           });
@@ -2039,6 +2668,7 @@
             const valorAtual = Number(campo.value || 0);
             campo.value = valorAtual === valorClicado ? 0 : valorClicado;
             atualizarGrupoBolinhas(grupo);
+            atualizarValoresJogoAutomaticos();
             campo.dispatchEvent(new Event('input', { bubbles: true }));
           });
         });
@@ -2061,6 +2691,30 @@
       document.querySelectorAll('[data-bolinhas]').forEach(atualizarGrupoBolinhas);
     }
 
+    function numeroCampoFicha(nome) {
+      const valor = Number(String(valorCampo(nome) || '').replace(',', '.'));
+      return Number.isFinite(valor) ? valor : 0;
+    }
+
+    function definirValorAutomatico(nome, valor) {
+      const campo = document.querySelector(`[data-campo="${nome}"]`);
+      if (!campo) return;
+      const texto = String(valor);
+      if (campo.value !== texto) campo.value = texto;
+    }
+
+    function atualizarValoresJogoAutomaticos() {
+      const vigor = numeroCampoFicha('atributo_vigor');
+      const autocontrole = numeroCampoFicha('atributo_autocontrole');
+      const determinacao = numeroCampoFicha('atributo_determinacao');
+
+      definirValorAutomatico('vitalidade', vigor + 3);
+      definirValorAutomatico('forcaVontade', autocontrole + determinacao);
+      definirValorAutomatico('fome', '1/5');
+      definirValorAutomatico('humanidade', '7/10');
+      definirValorAutomatico('potenciaSangue', '1/10');
+    }
+
     function atualizarDisciplinasPorCla() {
       const cla = claSelect.value;
       const opcoes = disciplinasPorCla[cla] || [];
@@ -2072,10 +2726,40 @@
       opcoes.forEach((disciplina) => {
         const option = document.createElement('option');
         option.value = disciplina;
-        option.textContent = disciplina;
+        const descricao = descricaoDisciplina(disciplina);
+        option.textContent = `${disciplina} — ${descricao}`;
+        option.title = descricao;
         disciplinaSelect.appendChild(option);
       });
       disciplinaSelect.disabled = opcoes.length === 0;
+    }
+
+    function atualizarPerdicaoPorCla(forcar = false) {
+      if (!perdicaoCla) return;
+      const cla = claSelect.value;
+      const texto = perdicoesPorCla[cla] || '';
+      const valorAtual = perdicaoCla.value.trim();
+      const ultimoTextoAutomatico = perdicaoCla.dataset.textoAutomatico || '';
+      const devePreencher = forcar || !valorAtual || valorAtual === ultimoTextoAutomatico;
+
+      if (!texto) {
+        if (devePreencher) {
+          perdicaoCla.value = '';
+          perdicaoCla.dataset.textoAutomatico = '';
+        }
+        return;
+      }
+
+      if (devePreencher) {
+        perdicaoCla.value = texto;
+        perdicaoCla.dataset.textoAutomatico = texto;
+      }
+    }
+
+    function atualizarDescricaoPredador() {
+      if (!predadorSelect || !predadorDescricaoTexto) return;
+      const predador = predadorSelect.value;
+      predadorDescricaoTexto.textContent = descricoesPredadores[predador] || 'Selecione um predador para ver uma breve descrição.';
     }
 
     function parseLista(valor) {
@@ -2094,12 +2778,111 @@
       desvantagensLista.value = JSON.stringify(listaDesvant);
     }
 
+    function normalizarDistribuicaoDisciplinas() {
+      if (!Array.isArray(listaDisc)) listaDisc = [];
+      listaDisc.forEach((item) => {
+        item.pontos = String(pontosDisciplinaValor(item?.pontos) || '');
+        item.resumo = item.resumo || descricaoDisciplina(item?.nome || '');
+      });
+    }
+
+    function validarDisciplinasCriacao() {
+      return true;
+    }
+
+    function definirPontosDisciplina(indice, valorClicado) {
+      if (!listaDisc[indice]) return;
+      const valorAtual = pontosDisciplinaValor(listaDisc[indice].pontos);
+      const novoValor = valorAtual === valorClicado ? 0 : valorClicado;
+      listaDisc[indice].pontos = String(novoValor || '');
+      listaDisc[indice].resumo = listaDisc[indice].resumo || descricaoDisciplina(listaDisc[indice].nome || '');
+      renderizarListas();
+      salvarFicha(true);
+    }
+
+    function renderizarDisciplinas() {
+      listaDisciplinas.innerHTML = '';
+      normalizarDistribuicaoDisciplinas();
+
+
+      if (!listaDisc.length) {
+        const vazio = document.createElement('p');
+        vazio.className = 'dica';
+        vazio.textContent = 'Nenhuma disciplina adicionada ainda.';
+        listaDisciplinas.appendChild(vazio);
+        return;
+      }
+
+      listaDisc.forEach((item, indice) => {
+        const card = document.createElement('div');
+        card.className = 'item-lista disciplina-item';
+
+        const info = document.createElement('div');
+        const titulo = document.createElement('strong');
+        titulo.textContent = item.nome || 'Disciplina';
+
+        const resumo = document.createElement('p');
+        resumo.className = 'disciplina-descricao';
+        resumo.textContent = item.resumo || descricaoDisciplina(item.nome || '');
+
+        info.appendChild(titulo);
+        info.appendChild(resumo);
+
+        const observacaoTexto = String(item.descricao || item.observacao || '').trim();
+        if (observacaoTexto) {
+          const observacao = document.createElement('span');
+          observacao.className = 'disciplina-observacao';
+          observacao.textContent = `Poder / observação: ${observacaoTexto}`;
+          info.appendChild(observacao);
+        }
+
+        const pontosArea = document.createElement('div');
+        pontosArea.className = 'disciplina-pontos-area';
+        const label = document.createElement('label');
+        label.textContent = 'Pontos da disciplina';
+        const grupo = document.createElement('div');
+        grupo.className = 'bolinhas';
+        grupo.setAttribute('aria-label', `Pontos de ${item.nome || 'disciplina'}`);
+        const pontos = pontosDisciplinaValor(item.pontos);
+
+        [1, 2, 3, 4, 5].forEach((valor) => {
+          const botao = document.createElement('button');
+          botao.type = 'button';
+          botao.className = 'bolinha';
+          botao.dataset.valor = String(valor);
+          botao.setAttribute('aria-label', `${item.nome || 'Disciplina'} ${valor}`);
+          botao.classList.toggle('ativa', valor <= pontos);
+          botao.addEventListener('click', () => definirPontosDisciplina(indice, valor));
+          grupo.appendChild(botao);
+        });
+
+        const marcador = document.createElement('span');
+        marcador.className = 'valor-bolinhas';
+        marcador.textContent = String(pontos);
+        grupo.appendChild(marcador);
+        pontosArea.appendChild(label);
+        pontosArea.appendChild(grupo);
+
+        const remover = document.createElement('button');
+        remover.type = 'button';
+        remover.className = 'btn-remover-item';
+        remover.textContent = '×';
+        remover.setAttribute('aria-label', 'Remover disciplina');
+        remover.addEventListener('click', () => removerItem('disciplina', indice));
+
+        card.appendChild(info);
+        card.appendChild(pontosArea);
+        card.appendChild(remover);
+        listaDisciplinas.appendChild(card);
+      });
+    }
+
     function renderizarLista(container, lista, tipo) {
       container.innerHTML = '';
       if (!lista.length) {
         const vazio = document.createElement('p');
         vazio.className = 'dica';
-        vazio.textContent = 'Nenhum item adicionado ainda.';
+        vazio.textContent = tipo === 'vantagem' ? 'Nenhuma vantagem adicionada ainda.' : 'Nenhum defeito adicionado ainda.';
         container.appendChild(vazio);
         return;
       }
@@ -2110,7 +2893,8 @@
         const titulo = document.createElement('strong');
         titulo.textContent = item.nome || 'Item';
         const detalhe = document.createElement('span');
-        const pontos = item.pontos ? `${item.pontos} ponto(s)` : 'sem pontos definidos';
+        const pontosValor = Math.abs(Number(item.pontos || item.pontosValor || 0)) || 0;
+        const pontos = pontosValor ? `${pontosValor} ponto(s)` : 'sem pontos definidos';
         const descricao = item.descricao ? ` — ${item.descricao}` : '';
         detalhe.textContent = `${pontos}${descricao}`;
         info.appendChild(titulo);
@@ -2127,11 +2911,43 @@
       });
     }
 
+    function totalPontosLista(lista) {
+      return (Array.isArray(lista) ? lista : []).reduce((total, item) => {
+        const pontos = Math.abs(Number(item?.pontos || item?.pontosValor || 0)) || 0;
+        return total + pontos;
+      }, 0);
+    }
+
+    function atualizarContadorVantagens() {
+      const totalVantagens = totalPontosLista(listaVant);
+      const totalDefeitos = totalPontosLista(listaDesvant);
+      const vantagensBase = 7;
+      const defeitosBase = 2;
+      const vantagensRestantes = vantagensBase - totalVantagens;
+      const defeitosRestantes = defeitosBase - totalDefeitos;
+      const saldo = vantagensBase + totalDefeitos - totalVantagens;
+
+      if (contadorVantagens) contadorVantagens.textContent = `${totalVantagens} / ${vantagensBase}`;
+      if (contadorDefeitos) contadorDefeitos.textContent = `${totalDefeitos} / ${defeitosBase}`;
+      if (contadorSaldo) contadorSaldo.textContent = `${saldo >= 0 ? '+' : ''}${saldo}`;
+      if (contadorVantagensRestante) {
+        contadorVantagensRestante.textContent = vantagensRestantes >= 0
+          ? `${vantagensRestantes} ponto(s) restantes`
+          : `${Math.abs(vantagensRestantes)} ponto(s) acima do limite`;
+      }
+      if (contadorDefeitosRestante) {
+        contadorDefeitosRestante.textContent = defeitosRestantes >= 0
+          ? `${defeitosRestantes} ponto(s) para escolher`
+          : `${Math.abs(defeitosRestantes)} ponto(s) extras de defeitos`;
+      }
+    }
+
     function renderizarListas() {
-      renderizarLista(listaDisciplinas, listaDisc, 'disciplina');
+      renderizarDisciplinas();
       renderizarLista(listaVantagens, listaVant, 'vantagem');
       renderizarLista(listaDesvantagens, listaDesvant, 'desvantagem');
       sincronizarListasOcultas();
+      atualizarContadorVantagens();
     }
 
     function removerItem(tipo, indice) {
@@ -2142,49 +2958,163 @@
       salvarFicha(true);
     }
 
+    function pontosTextoCatalogo(item) {
+      if (!item) return '';
+      if (item.min === item.max) return `${item.min} ponto(s)`;
+      return `${item.min}–${item.max} ponto(s)`;
+    }
+
+    function categoriasCatalogo() {
+      return [...new Set(catalogoVantagensDefeitos.map((item) => item.categoria))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }
+
+    function preencherFiltroCategorias() {
+      if (!filtroCategoriaVantagem) return;
+      const valorAtual = filtroCategoriaVantagem.value || 'todas';
+      filtroCategoriaVantagem.innerHTML = '<option value="todas">Todas</option>';
+      categoriasCatalogo().forEach((categoria) => {
+        const option = document.createElement('option');
+        option.value = categoria;
+        option.textContent = categoria;
+        filtroCategoriaVantagem.appendChild(option);
+      });
+      filtroCategoriaVantagem.value = [...filtroCategoriaVantagem.options].some((option) => option.value === valorAtual) ? valorAtual : 'todas';
+    }
+
+    function renderizarCatalogoVantagens() {
+      if (!catalogoVantagens) return;
+      const tipoFiltro = filtroTipoVantagem?.value || 'todos';
+      const categoriaFiltro = filtroCategoriaVantagem?.value || 'todas';
+      const busca = String(buscaVantagem?.value || '').trim().toLowerCase();
+      const itens = catalogoVantagensDefeitos.filter((item) => {
+        const passaTipo = tipoFiltro === 'todos' || item.tipo === tipoFiltro;
+        const passaCategoria = categoriaFiltro === 'todas' || item.categoria === categoriaFiltro;
+        const texto = `${item.nome} ${item.categoria} ${item.descricao}`.toLowerCase();
+        const passaBusca = !busca || texto.includes(busca);
+        return passaTipo && passaCategoria && passaBusca;
+      });
+
+      catalogoVantagens.innerHTML = '';
+      if (!itens.length) {
+        const vazio = document.createElement('p');
+        vazio.className = 'dica';
+        vazio.textContent = 'Nenhum resultado encontrado.';
+        catalogoVantagens.appendChild(vazio);
+        return;
+      }
+
+      itens.forEach((item, indice) => {
+        const card = document.createElement('div');
+        card.className = 'catalogo-vd-card';
+
+        const info = document.createElement('div');
+        const titulo = document.createElement('h3');
+        titulo.textContent = item.nome;
+        const descricao = document.createElement('p');
+        descricao.textContent = item.descricao;
+        const tags = document.createElement('div');
+        tags.className = 'catalogo-vd-tags';
+        const tagTipo = document.createElement('span');
+        tagTipo.className = 'tag-vd';
+        tagTipo.textContent = item.tipo === 'vantagem' ? 'Vantagem' : 'Defeito';
+        const tagCategoria = document.createElement('span');
+        tagCategoria.className = 'tag-vd';
+        tagCategoria.textContent = item.categoria;
+        const tagPontos = document.createElement('span');
+        tagPontos.className = 'tag-vd';
+        tagPontos.textContent = pontosTextoCatalogo(item);
+        tags.appendChild(tagTipo);
+        tags.appendChild(tagCategoria);
+        tags.appendChild(tagPontos);
+        info.appendChild(titulo);
+        info.appendChild(descricao);
+        info.appendChild(tags);
+
+        const pontosArea = document.createElement('div');
+        pontosArea.className = 'campo catalogo-vd-pontos';
+        const label = document.createElement('label');
+        label.setAttribute('for', `catalogoPontos${indice}`);
+        label.textContent = 'Pontos';
+        const select = document.createElement('select');
+        select.id = `catalogoPontos${indice}`;
+        for (let valor = item.min; valor <= item.max; valor += 1) {
+          const option = document.createElement('option');
+          option.value = String(valor);
+          option.textContent = `${valor}`;
+          select.appendChild(option);
+        }
+        select.value = String(item.min);
+        pontosArea.appendChild(label);
+        pontosArea.appendChild(select);
+
+        const adicionar = document.createElement('button');
+        adicionar.type = 'button';
+        adicionar.className = 'btn-pequeno';
+        adicionar.textContent = 'Adicionar';
+        adicionar.addEventListener('click', () => adicionarVantagemDefeitoDoCatalogo(item, Number(select.value || item.min)));
+
+        card.appendChild(info);
+        card.appendChild(pontosArea);
+        card.appendChild(adicionar);
+        catalogoVantagens.appendChild(card);
+      });
+    }
+
+    function adicionarVantagemDefeitoDoCatalogo(item, pontos) {
+      if (!item) return;
+      const novoItem = {
+        nome: item.nome,
+        pontos: String(pontos || item.min || 1),
+        descricao: item.descricao || '',
+        categoria: item.categoria || ''
+      };
+      if (item.tipo === 'vantagem') {
+        listaVant.push(novoItem);
+        mostrarAviso('Vantagem adicionada.');
+      } else {
+        listaDesvant.push(novoItem);
+        mostrarAviso('Defeito adicionado.');
+      }
+      renderizarListas();
+      salvarFicha(true);
+    }
+
+    function alternarModalVantagens(forcarEstado) {
+      const abrir = typeof forcarEstado === 'boolean' ? forcarEstado : !modalVantagens.classList.contains('aberto');
+      modalVantagens.classList.toggle('aberto', abrir);
+      fundoVantagens.classList.toggle('aberto', abrir);
+      document.body.classList.toggle('modal-vantagens-aberta', abrir);
+      modalVantagens.setAttribute('aria-hidden', String(!abrir));
+      fundoVantagens.setAttribute('aria-hidden', String(!abrir));
+      if (abrir) {
+        preencherFiltroCategorias();
+        renderizarCatalogoVantagens();
+        setTimeout(() => modalVantagens.focus(), 40);
+      }
+    }
+
     function adicionarDisciplina() {
       const nome = disciplinaSelect.value;
       if (!nome) {
         mostrarAviso('Selecione uma disciplina.');
         return;
       }
+      if (listaDisc.some((item) => item.nome === nome)) {
+        mostrarAviso('Essa disciplina já foi adicionada.');
+        return;
+      }
       listaDisc.push({
         nome,
-        pontos: disciplinaNivel.value.trim(),
+        pontos: '',
+        resumo: descricaoDisciplina(nome),
         descricao: disciplinaPoder.value.trim()
       });
-      disciplinaNivel.value = '';
+      normalizarDistribuicaoDisciplinas();
       disciplinaPoder.value = '';
       disciplinaSelect.value = '';
       renderizarListas();
       salvarFicha(true);
-      mostrarAviso('Disciplina adicionada.');
-    }
-
-    function adicionarVantagem() {
-      listaVant.push({
-        nome: vantagemSelect.value,
-        pontos: vantagemPontos.value.trim(),
-        descricao: vantagemDescricao.value.trim()
-      });
-      vantagemPontos.value = '';
-      vantagemDescricao.value = '';
-      renderizarListas();
-      salvarFicha(true);
-      mostrarAviso('Vantagem adicionada.');
-    }
-
-    function adicionarDesvantagem() {
-      listaDesvant.push({
-        nome: desvantagemSelect.value,
-        pontos: desvantagemPontos.value.trim(),
-        descricao: desvantagemDescricao.value.trim()
-      });
-      desvantagemPontos.value = '';
-      desvantagemDescricao.value = '';
-      renderizarListas();
-      salvarFicha(true);
-      mostrarAviso('Desvantagem adicionada.');
+      mostrarAviso('Disciplina adicionada com descrição e 5 bolinhas.');
     }
 
     function restaurarListasDinamicas() {
@@ -2207,7 +3137,10 @@
       leitor.readAsDataURL(arquivo);
     });
 
-    formFicha.addEventListener('input', () => salvarFicha(true));
+    formFicha.addEventListener('input', () => {
+      atualizarValoresJogoAutomaticos();
+      salvarFicha(true);
+    });
 
     botoesSalvar.forEach((botao) => botao.addEventListener('click', () => salvarFicha(false)));
     botoesFinalizar.forEach((botao) => {
@@ -2218,10 +3151,24 @@
     });
 
     btnAdicionarDisciplina.addEventListener('click', adicionarDisciplina);
-    btnAdicionarVantagem.addEventListener('click', adicionarVantagem);
-    btnAdicionarDesvantagem.addEventListener('click', adicionarDesvantagem);
+    btnAbrirVantagens.addEventListener('click', () => alternarModalVantagens(true));
+    btnFecharVantagens.addEventListener('click', () => alternarModalVantagens(false));
+    fundoVantagens.addEventListener('click', () => alternarModalVantagens(false));
+    filtroTipoVantagem.addEventListener('change', renderizarCatalogoVantagens);
+    filtroCategoriaVantagem.addEventListener('change', renderizarCatalogoVantagens);
+    buscaVantagem.addEventListener('input', renderizarCatalogoVantagens);
     claSelect.addEventListener('change', () => {
       atualizarDisciplinasPorCla();
+      const opcoesValidas = disciplinasPorCla[claSelect.value] || [];
+      listaDisc = listaDisc.filter((item) => opcoesValidas.includes(item.nome));
+      normalizarDistribuicaoDisciplinas();
+      renderizarListas();
+      atualizarPerdicaoPorCla(true);
+      salvarFicha(true);
+    });
+
+    predadorSelect.addEventListener('change', () => {
+      atualizarDescricaoPredador();
       salvarFicha(true);
     });
 
@@ -2244,7 +3191,10 @@
     });
 
     document.addEventListener('keydown', (evento) => {
-      if (evento.key === 'Escape') alternarEtapas(false);
+      if (evento.key === 'Escape') {
+        alternarEtapas(false);
+        alternarModalVantagens(false);
+      }
     });
 
     btnSair.addEventListener('click', () => {
@@ -2262,7 +3212,10 @@
     restaurarRascunho();
     iniciarBolinhas();
     atualizarTodasBolinhas();
+    atualizarValoresJogoAutomaticos();
     atualizarDisciplinasPorCla();
+    atualizarPerdicaoPorCla(false);
+    atualizarDescricaoPredador();
     restaurarListasDinamicas();
   </script>
 </body>
