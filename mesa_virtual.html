@@ -86,6 +86,11 @@
     .btn-secundario { border:1px solid rgba(255,255,255,.16); color:rgba(244,240,255,.82); background:rgba(255,255,255,.055); }
     .btn-menor { min-height:34px; padding:0 11px; border-radius:11px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:rgba(255,255,255,.86); font-size:.72rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
     .btn-sair:hover, .btn-primario:hover, .btn-secundario:hover, .btn-menor:hover { transform: translateY(-2px); color:#fff; border-color: rgba(255,255,255,.38); }
+    .btn-tela-cheia { gap: 8px; }
+    .btn-tela-cheia::before { content: "⛶"; font-size: 1rem; line-height: 1; }
+    .btn-tela-cheia[aria-pressed="true"]::before { content: "×"; font-size: 1.2rem; }
+    :fullscreen { background: #030306; overflow: hidden; }
+    :-webkit-full-screen { background: #030306; overflow: hidden; }
 
     .grid { display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
     .card { grid-column: span 6; border:1px solid rgba(255,255,255,.12); border-radius:22px; background:rgba(0,0,0,.22); padding:20px; min-width:0; }
@@ -151,13 +156,114 @@
       .personagem-foto { width:46px; height:46px; border-radius:12px; }
     }
 
+    .mapa-fullscreen { width:100%; position:relative; border-radius:18px; overflow:hidden; }
     .mapa-area { width:100%; aspect-ratio: 16 / 9; border: 1px dashed rgba(255,255,255,.18); border-radius:18px; overflow:hidden; background: rgba(255,255,255,.04); display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-align:center; }
     .mapa-area img { width:100%; height:100%; object-fit:cover; display:block; }
+    .barra-mapa-ferramentas {
+      position:absolute; top:12px; left:12px; z-index:12; display:flex; align-items:center; gap:6px; max-width:calc(100% - 76px);
+      padding:6px; border:1px solid rgba(255,255,255,.17); border-radius:17px; background:rgba(3,3,6,.74); backdrop-filter:blur(14px);
+      box-shadow:0 0 18px rgba(0,0,0,.36), 0 0 24px rgba(0,200,255,.10); overflow-x:auto; scrollbar-width:none;
+    }
+    .barra-mapa-ferramentas::-webkit-scrollbar { display:none; }
+    .ferramenta-mapa {
+      flex:0 0 auto; width:38px; height:38px; border-radius:13px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.055);
+      color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:.22s ease; position:relative;
+    }
+    .ferramenta-mapa:hover, .ferramenta-mapa.ativo, .ferramenta-mapa[aria-pressed="true"] {
+      transform:translateY(-2px); border-color:rgba(255,255,255,.42); background:linear-gradient(135deg, rgba(255,0,120,.46), rgba(0,200,255,.34), rgba(138,43,226,.44));
+      box-shadow:0 0 14px rgba(255,0,120,.18), 0 0 22px rgba(0,200,255,.14);
+    }
+    .ferramenta-mapa svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.15; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-mapa-tela-cheia::before { content:none; }
+    .btn-chat-mesa {
+      position:absolute; top:12px; right:12px; z-index:12; width:44px; height:44px; border-radius:15px;
+      border:1px solid rgba(255,255,255,.2); background:rgba(3,3,6,.74); color:#fff; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; backdrop-filter:blur(12px);
+      box-shadow:0 0 18px rgba(0,0,0,.34), 0 0 18px rgba(0,200,255,.12); transition:.22s ease;
+    }
+    .btn-chat-mesa:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.42); box-shadow:0 0 18px rgba(255,0,120,.22), 0 0 28px rgba(0,200,255,.16); }
+    .btn-chat-mesa svg { width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:2.25; stroke-linecap:round; stroke-linejoin:round; }
+    .contador-chat { position:absolute; top:-6px; right:-6px; min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:rgba(255,0,120,.92); color:#fff; border:1px solid rgba(255,255,255,.45); font-size:.66rem; font-weight:900; line-height:17px; text-align:center; }
+    .mapa-painel-ferramenta, .painel-chat-mesa {
+      position:absolute; z-index:13; border:1px solid rgba(255,255,255,.16); border-radius:18px; background:rgba(8,6,18,.94); backdrop-filter:blur(18px);
+      box-shadow:0 0 28px rgba(0,0,0,.45), 0 0 28px rgba(0,200,255,.12); overflow:hidden;
+    }
+    .mapa-painel-ferramenta { top:68px; left:12px; width:min(390px, calc(100% - 24px)); max-height:min(500px, calc(100% - 82px)); display:grid; grid-template-rows:auto 1fr; }
+    .painel-chat-mesa { top:64px; right:12px; width:min(360px, calc(100% - 24px)); max-height:min(460px, calc(100% - 78px)); display:grid; grid-template-rows:auto 1fr auto; }
+    .mapa-painel-ferramenta[hidden], .painel-chat-mesa[hidden] { display:none; }
+    .painel-ferramenta-topo, .chat-topo { min-height:46px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid rgba(255,255,255,.11); background:linear-gradient(90deg, rgba(255,0,120,.2), rgba(0,200,255,.13)); }
+    .painel-ferramenta-topo strong, .chat-topo strong { color:#fff; text-transform:uppercase; letter-spacing:.08em; font-size:.76rem; }
+    .btn-fechar-painel, .btn-fechar-chat { width:30px; height:30px; border-radius:10px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:#fff; cursor:pointer; font-weight:900; }
+    .painel-ferramenta-corpo { overflow:auto; padding:12px; display:grid; align-content:start; gap:10px; color:rgba(244,240,255,.86); }
+    .jogador-mesa-card, .iniciativa-item, .musica-box {
+      border:1px solid rgba(255,255,255,.11); border-radius:14px; background:rgba(255,255,255,.045); padding:10px 11px; color:#fff;
+    }
+    .jogador-mesa-card { display:grid; grid-template-columns:38px 1fr; gap:10px; align-items:center; }
+    .jogador-avatar { width:38px; height:38px; border-radius:13px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(255,0,120,.34), rgba(0,200,255,.22)); font-weight:900; }
+    .jogador-mesa-card strong, .iniciativa-item strong { display:block; color:#fff; word-break:break-word; }
+    .jogador-mesa-card span, .iniciativa-item span, .texto-ajuda-ferramenta { color:var(--muted); font-size:.8rem; line-height:1.42; }
+    .ferramenta-form { display:grid; gap:9px; }
+    .ferramenta-form input, .ferramenta-form select {
+      width:100%; min-height:40px; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:rgba(0,0,0,.26); color:#fff; padding:10px 12px; outline:none; font-weight:800;
+    }
+    .ferramenta-form input::placeholder { color:rgba(244,240,255,.48); }
+    .player-musica iframe, .player-musica audio { width:100%; border:0; border-radius:14px; display:block; }
+    .player-musica iframe { aspect-ratio:16 / 9; background:#000; }
+    .link-musica-salvo { color:#fff; text-decoration:none; word-break:break-all; font-size:.82rem; }
+    .lista-iniciativa { display:grid; gap:8px; }
+    .iniciativa-item { display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:9px; cursor:grab; }
+    .iniciativa-item:active { cursor:grabbing; }
+    .iniciativa-posicao { width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); color:#fff; font-weight:900; }
+    .iniciativa-total { min-width:44px; text-align:center; border-radius:10px; padding:7px 8px; background:rgba(0,200,255,.15); color:#fff; font-weight:900; }
+    .mapa-grade { position:absolute; inset:0; z-index:3; pointer-events:none; display:none; border-radius:18px; opacity:.58; background-image:linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px); background-size:70px 70px; }
+    .mapa-fullscreen.grid-ativo .mapa-grade { display:block; }
+    .regua-camada { position:absolute; inset:0; z-index:4; pointer-events:none; display:none; overflow:visible; }
+    .mapa-fullscreen.regua-ativa { cursor:crosshair; }
+    .mapa-fullscreen.regua-ativa .regua-camada, .regua-camada.com-medida { display:block; }
+    .regua-linha { stroke:#fff; stroke-width:3; filter:drop-shadow(0 0 8px rgba(0,200,255,.8)); }
+    .regua-ponto { fill:#fff; stroke:rgba(0,200,255,.9); stroke-width:2; }
+    .regua-texto { fill:#fff; stroke:rgba(0,0,0,.8); stroke-width:4; paint-order:stroke; font-size:15px; font-weight:900; text-anchor:middle; dominant-baseline:central; }
+    .medida-info {
+      position:absolute; left:12px; bottom:12px; z-index:12; max-width:min(430px, calc(100% - 24px)); border:1px solid rgba(255,255,255,.15); border-radius:15px;
+      background:rgba(3,3,6,.78); backdrop-filter:blur(12px); color:#fff; padding:10px 12px; box-shadow:0 0 18px rgba(0,0,0,.34); display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:.78rem; font-weight:800;
+    }
+    .medida-info[hidden] { display:none; }
+    .btn-limpar-regua { min-height:30px; padding:0 9px; border-radius:10px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.07); color:#fff; cursor:pointer; font-size:.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
+    .tokens-virados .token-mesa, .tokens-virados .token-mesa img { transform:scaleX(-1); }
+    .chat-mensagens { min-height:170px; max-height:310px; overflow:auto; padding:12px; display:grid; align-content:start; gap:10px; }
+    .chat-vazio { color:var(--muted); line-height:1.45; text-align:center; padding:24px 10px; font-weight:800; }
+    .chat-msg { border:1px solid rgba(255,255,255,.11); border-radius:14px; background:rgba(255,255,255,.045); padding:10px 11px; color:#fff; }
+    .chat-msg-cabecalho { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+    .chat-msg-cabecalho strong { color:#fff; font-size:.82rem; word-break:break-word; }
+    .chat-msg-cabecalho small { color:rgba(244,240,255,.55); font-size:.68rem; white-space:nowrap; }
+    .chat-msg p { color:rgba(244,240,255,.88); line-height:1.45; word-break:break-word; font-size:.86rem; }
+    .chat-form { padding:10px; display:grid; grid-template-columns:1fr auto; gap:8px; border-top:1px solid rgba(255,255,255,.11); background:rgba(0,0,0,.18); }
+    .chat-form input { min-height:38px; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:rgba(0,0,0,.26); color:#fff; padding:10px 12px; outline:none; font-weight:700; }
+    .chat-form input::placeholder { color:rgba(244,240,255,.48); }
+    .chat-nome { grid-column:1 / -1; }
+    .btn-enviar-chat { min-width:82px; border:1px solid rgba(255,255,255,.24); border-radius:12px; color:#fff; cursor:pointer; background:linear-gradient(90deg, rgba(255,0,120,.68), rgba(0,200,255,.56), rgba(138,43,226,.66)); background-size:220% 220%; animation:moverCores 5s linear infinite; text-transform:uppercase; letter-spacing:.08em; font-size:.7rem; font-weight:900; }
+    .mapa-fullscreen:fullscreen { width:100vw; height:100vh; padding:0; border-radius:0; background:#030306; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .mapa-fullscreen:-webkit-full-screen { width:100vw; height:100vh; padding:0; border-radius:0; background:#030306; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .mapa-fullscreen:fullscreen .mapa-area, .mapa-fullscreen:-webkit-full-screen .mapa-area { width:100%; height:100%; aspect-ratio:auto; border:0; border-radius:0; background:#030306; }
+    .mapa-fullscreen:fullscreen .mapa-area img, .mapa-fullscreen:-webkit-full-screen .mapa-area img { object-fit:contain; }
+    .mapa-fullscreen:fullscreen .barra-mapa-ferramentas, .mapa-fullscreen:-webkit-full-screen .barra-mapa-ferramentas { position:fixed; top:16px; left:16px; max-width:calc(100vw - 88px); }
+    .mapa-fullscreen:fullscreen .btn-chat-mesa, .mapa-fullscreen:-webkit-full-screen .btn-chat-mesa { position:fixed; top:16px; right:16px; }
+    .mapa-fullscreen:fullscreen .painel-chat-mesa, .mapa-fullscreen:-webkit-full-screen .painel-chat-mesa { position:fixed; top:70px; right:16px; width:min(380px, calc(100vw - 32px)); max-height:calc(100vh - 86px); }
+    .mapa-fullscreen:fullscreen .mapa-painel-ferramenta, .mapa-fullscreen:-webkit-full-screen .mapa-painel-ferramenta { position:fixed; top:72px; left:16px; width:min(420px, calc(100vw - 32px)); max-height:calc(100vh - 88px); }
+    .mapa-fullscreen:fullscreen .mapa-grade, .mapa-fullscreen:-webkit-full-screen .mapa-grade { border-radius:0; }
+    .mapa-fullscreen:fullscreen .medida-info, .mapa-fullscreen:-webkit-full-screen .medida-info { position:fixed; left:16px; bottom:16px; }
     .botoes-dados { display:grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap:8px; margin-top:12px; }
     .historico-rolagens { max-height: 290px; overflow:auto; display:grid; gap:10px; padding-right:4px; }
     .historico-item { border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.04); padding:12px; color:var(--muted); line-height:1.55; }
     .historico-item strong { color:#fff; }
-    @media (max-width: 560px) { .botoes-dados { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 560px) {
+      .botoes-dados { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .btn-mapa-tela-cheia { top:10px; left:10px; max-width:140px; overflow:hidden; }
+      .btn-chat-mesa { top:10px; right:10px; width:42px; height:42px; }
+      .painel-chat-mesa { top:60px; right:10px; width:calc(100% - 20px); max-height:calc(100% - 70px); }
+      .chat-form { grid-template-columns:1fr; }
+      .btn-enviar-chat { min-height:38px; }
+    }
   </style>
 </head>
 <body>
@@ -195,7 +301,107 @@
 
         <section class="card card-largo">
           <h2>Cena / mapa</h2>
-          <div id="areaMapa" class="mapa-area">Nenhum mapa selecionado.</div>
+          <div id="mapaFullscreen" class="mapa-fullscreen">
+            <div class="barra-mapa-ferramentas" aria-label="Ferramentas da mesa virtual">
+              <button type="button" id="btnTelaCheia" class="ferramenta-mapa btn-tela-cheia btn-mapa-tela-cheia" aria-pressed="false" title="Abrir mapa em tela cheia" aria-label="Tela cheia">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4"></path><path d="M16 4h4v4"></path><path d="M4 16v4h4"></path><path d="M20 16v4h-4"></path><path d="M9 4 4 9"></path><path d="m15 4 5 5"></path><path d="m4 15 5 5"></path><path d="m20 15-5 5"></path></svg>
+              </button>
+              <button type="button" id="btnFerramentaJogadores" class="ferramenta-mapa" data-painel="painelJogadoresMesa" title="Jogadores" aria-label="Jogadores">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg>
+              </button>
+              <button type="button" id="btnFerramentaMusica" class="ferramenta-mapa" data-painel="painelMusicaMesa" title="Música" aria-label="Música">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l10-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="16" cy="16" r="3"></circle></svg>
+              </button>
+              <button type="button" id="btnFerramentaIniciativa" class="ferramenta-mapa" data-painel="painelIniciativaMesa" title="Iniciativa" aria-label="Iniciativa">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 14.5 9.5"></path><path d="M9 19l-4-4"></path><path d="M14.5 9.5 18 6l2-2"></path><path d="M20 20 9.5 9.5"></path><path d="M15 19l4-4"></path><path d="M9.5 9.5 6 6 4 4"></path></svg>
+              </button>
+              <button type="button" id="btnFerramentaVirar" class="ferramenta-mapa" title="Virar tokens" aria-label="Virar tokens" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7H4v4"></path><path d="M4 7h11a5 5 0 0 1 0 10H8"></path><path d="M8 13v4H4"></path></svg>
+              </button>
+              <button type="button" id="btnFerramentaRegua" class="ferramenta-mapa" title="Régua" aria-label="Régua" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 17 4l3 3L7 20 4 17Z"></path><path d="m14 7 3 3"></path><path d="m11 10 2 2"></path><path d="m8 13 3 3"></path></svg>
+              </button>
+              <button type="button" id="btnFerramentaGrid" class="ferramenta-mapa" title="Grid" aria-label="Grid" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4Z"></path><path d="M9.33 4v16"></path><path d="M14.66 4v16"></path><path d="M4 9.33h16"></path><path d="M4 14.66h16"></path></svg>
+              </button>
+            </div>
+
+            <button type="button" id="btnChatMesa" class="btn-chat-mesa" aria-label="Abrir conversa da mesa" aria-expanded="false" aria-controls="painelChatMesa" title="Conversa da mesa">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 5.5h15a1.8 1.8 0 0 1 1.8 1.8v8.4a1.8 1.8 0 0 1-1.8 1.8H9.2L4.5 21v-3.5a1.8 1.8 0 0 1-1.8-1.8V7.3a1.8 1.8 0 0 1 1.8-1.8Z"></path>
+                <path d="M7.5 9.5h9"></path>
+                <path d="M7.5 13h6"></path>
+              </svg>
+              <span id="contadorChat" class="contador-chat" hidden>0</span>
+            </button>
+
+            <div id="painelJogadoresMesa" class="mapa-painel-ferramenta" hidden>
+              <div class="painel-ferramenta-topo">
+                <strong>Jogadores</strong>
+                <button type="button" class="btn-fechar-painel" data-fechar-painel="painelJogadoresMesa" aria-label="Fechar jogadores">×</button>
+              </div>
+              <div id="listaJogadoresMesa" class="painel-ferramenta-corpo"></div>
+            </div>
+
+            <div id="painelMusicaMesa" class="mapa-painel-ferramenta" hidden>
+              <div class="painel-ferramenta-topo">
+                <strong>Música</strong>
+                <button type="button" class="btn-fechar-painel" data-fechar-painel="painelMusicaMesa" aria-label="Fechar música">×</button>
+              </div>
+              <div class="painel-ferramenta-corpo">
+                <div class="ferramenta-form">
+                  <input type="url" id="linkMusicaMesa" placeholder="Cole o link da música, playlist ou ambiente..." />
+                  <button type="button" id="btnTocarMusica" class="btn-primario">Tocar música</button>
+                </div>
+                <div id="playerMusicaMesa" class="player-musica musica-box">Nenhuma música selecionada.</div>
+              </div>
+            </div>
+
+            <div id="painelIniciativaMesa" class="mapa-painel-ferramenta" hidden>
+              <div class="painel-ferramenta-topo">
+                <strong>Iniciativa</strong>
+                <button type="button" class="btn-fechar-painel" data-fechar-painel="painelIniciativaMesa" aria-label="Fechar iniciativa">×</button>
+              </div>
+              <div class="painel-ferramenta-corpo">
+                <div class="ferramenta-form">
+                  <select id="criterioIniciativa">
+                    <option value="aleatorio">Aleatório simples</option>
+                    <option value="destreza">Destreza</option>
+                    <option value="raciocinio">Raciocínio</option>
+                    <option value="atletismo">Atletismo</option>
+                    <option value="briga">Briga</option>
+                    <option value="armasBrancas">Armas brancas</option>
+                    <option value="armasFogo">Armas de fogo</option>
+                    <option value="prontidao">Prontidão</option>
+                  </select>
+                  <button type="button" id="btnSortearIniciativa" class="btn-primario">Aleatorizar iniciativa</button>
+                </div>
+                <p class="texto-ajuda-ferramenta">Arraste os personagens para mudar a ordem depois do sorteio.</p>
+                <div id="listaIniciativaMesa" class="lista-iniciativa"></div>
+              </div>
+            </div>
+
+            <div id="painelChatMesa" class="painel-chat-mesa" hidden>
+              <div class="chat-topo">
+                <strong>Conversa da mesa</strong>
+                <button type="button" id="btnFecharChat" class="btn-fechar-chat" aria-label="Fechar conversa">×</button>
+              </div>
+              <div id="listaChatMesa" class="chat-mensagens" aria-live="polite"></div>
+              <form id="formChatMesa" class="chat-form">
+                <input type="text" id="nomeChatMesa" class="chat-nome" maxlength="36" placeholder="Seu nome" />
+                <input type="text" id="mensagemChatMesa" maxlength="320" placeholder="Digite uma mensagem..." autocomplete="off" />
+                <button type="submit" class="btn-enviar-chat">Enviar</button>
+              </form>
+            </div>
+
+            <svg id="reguaCamada" class="regua-camada" aria-hidden="true"></svg>
+            <div id="mapaGrade" class="mapa-grade" aria-hidden="true"></div>
+            <div id="infoRegua" class="medida-info" hidden>
+              <span id="textoRegua">Régua ativa: clique em dois pontos do mapa.</span>
+              <button type="button" id="btnLimparRegua" class="btn-limpar-regua">Limpar</button>
+            </div>
+            <div id="areaMapa" class="mapa-area">Nenhum mapa selecionado.</div>
+          </div>
           <div class="linha" style="margin-top:12px;">
             <label class="campo">
               Nome da cena
@@ -468,6 +674,7 @@
 
 
     const areaMapa = document.getElementById('areaMapa');
+    const mapaFullscreen = document.getElementById('mapaFullscreen');
     const nomeCena = document.getElementById('nomeCena');
     const campoMapa = document.getElementById('campoMapa');
     const descricaoCena = document.getElementById('descricaoCena');
@@ -485,17 +692,44 @@
     const historicoRolagens = document.getElementById('historicoRolagens');
     const registroMesa = document.getElementById('registroMesa');
     const linkEscudo = document.getElementById('linkEscudo');
+    const btnTelaCheia = document.getElementById('btnTelaCheia');
+    const btnChatMesa = document.getElementById('btnChatMesa');
+    const painelChatMesa = document.getElementById('painelChatMesa');
+    const btnFecharChat = document.getElementById('btnFecharChat');
+    const listaChatMesa = document.getElementById('listaChatMesa');
+    const formChatMesa = document.getElementById('formChatMesa');
+    const nomeChatMesa = document.getElementById('nomeChatMesa');
+    const mensagemChatMesa = document.getElementById('mensagemChatMesa');
+    const contadorChat = document.getElementById('contadorChat');
+    const listaJogadoresMesa = document.getElementById('listaJogadoresMesa');
+    const linkMusicaMesa = document.getElementById('linkMusicaMesa');
+    const btnTocarMusica = document.getElementById('btnTocarMusica');
+    const playerMusicaMesa = document.getElementById('playerMusicaMesa');
+    const criterioIniciativa = document.getElementById('criterioIniciativa');
+    const btnSortearIniciativa = document.getElementById('btnSortearIniciativa');
+    const listaIniciativaMesa = document.getElementById('listaIniciativaMesa');
+    const btnFerramentaVirar = document.getElementById('btnFerramentaVirar');
+    const btnFerramentaRegua = document.getElementById('btnFerramentaRegua');
+    const btnFerramentaGrid = document.getElementById('btnFerramentaGrid');
+    const reguaCamada = document.getElementById('reguaCamada');
+    const infoRegua = document.getElementById('infoRegua');
+    const textoRegua = document.getElementById('textoRegua');
+    const btnLimparRegua = document.getElementById('btnLimparRegua');
 
-    let estadoMesa = { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [] };
+    const ESTADO_MESA_PADRAO = { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [], chat: [], musica: '', iniciativa: [], criterioIniciativa: 'aleatorio', gridAtivo: false, tokensVirados: false, regua: null };
+    let estadoMesa = { ...ESTADO_MESA_PADRAO };
+    let reguaAtiva = false;
+    let pontosTemporariosRegua = [];
+    let indiceArrastandoIniciativa = null;
 
     function chaveMesa() { return `mesaVirtual_${campanhaAtual.id}`; }
 
     function obterEstadoMesa() {
       try {
         const salvo = JSON.parse(localStorage.getItem(chaveMesa())) || {};
-        return { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [], ...salvo };
+        return { ...ESTADO_MESA_PADRAO, ...salvo };
       } catch (erro) {
-        return { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [] };
+        return { ...ESTADO_MESA_PADRAO };
       }
     }
 
@@ -561,6 +795,345 @@
       }).join('');
     }
 
+
+    function normalizarChave(texto) {
+      return String(texto || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function obterColecaoJogadoresCampanha() {
+      const possiveis = [campanhaAtual?.jogadores, campanhaAtual?.players, campanhaAtual?.membros, campanhaAtual?.participantes];
+      const lista = possiveis.find((item) => Array.isArray(item)) || [];
+      const extras = [];
+      if (campanhaAtual?.mestreNome || campanhaAtual?.mestreEmail || campanhaAtual?.mestre) {
+        extras.push({ nome: campanhaAtual.mestreNome || campanhaAtual.mestre || 'Mestre', email: campanhaAtual.mestreEmail || '', papel: 'Mestre' });
+      }
+      const todos = [...extras, ...lista];
+      const vistos = new Set();
+      return todos.filter((jogador, indice) => {
+        const chave = typeof jogador === 'object' && jogador ? String(jogador.email || jogador.id || jogador.uid || jogador.nome || jogador.name || indice) : String(jogador || indice);
+        if (vistos.has(chave)) return false;
+        vistos.add(chave);
+        return true;
+      });
+    }
+
+    function obterNomeJogador(jogador, indice) {
+      if (typeof jogador === 'string' || typeof jogador === 'number') return String(jogador);
+      if (!jogador || typeof jogador !== 'object') return `Jogador ${indice + 1}`;
+      return String(jogador.nome || jogador.name || jogador.displayName || jogador.jogador || jogador.email || `Jogador ${indice + 1}`);
+    }
+
+    function obterDetalheJogador(jogador) {
+      if (!jogador || typeof jogador !== 'object') return 'Participante da campanha';
+      return String(jogador.papel || jogador.tipo || jogador.email || jogador.uid || 'Participante da campanha');
+    }
+
+    function renderizarJogadoresMesa() {
+      const jogadores = obterColecaoJogadoresCampanha();
+      if (!jogadores.length) {
+        listaJogadoresMesa.innerHTML = '<p class="chat-vazio">Nenhum jogador foi adicionado à campanha ainda.</p>';
+        return;
+      }
+      listaJogadoresMesa.innerHTML = jogadores.map((jogador, indice) => {
+        const nome = obterNomeJogador(jogador, indice);
+        return `
+          <article class="jogador-mesa-card">
+            <div class="jogador-avatar">${escaparTexto(obterInicial(nome))}</div>
+            <div>
+              <strong>${escaparTexto(nome)}</strong>
+              <span>${escaparTexto(obterDetalheJogador(jogador))}</span>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function fecharPaineisFerramenta() {
+      document.querySelectorAll('.mapa-painel-ferramenta').forEach((painel) => { painel.hidden = true; });
+      document.querySelectorAll('.ferramenta-mapa[data-painel]').forEach((botao) => botao.classList.remove('ativo'));
+    }
+
+    function alternarPainelFerramenta(idPainel) {
+      const painel = document.getElementById(idPainel);
+      if (!painel) return;
+      const estavaAberto = !painel.hidden;
+      fecharPaineisFerramenta();
+      if (!estavaAberto) {
+        painel.hidden = false;
+        const botao = document.querySelector(`.ferramenta-mapa[data-painel="${idPainel}"]`);
+        if (botao) botao.classList.add('ativo');
+        if (idPainel === 'painelJogadoresMesa') renderizarJogadoresMesa();
+        if (idPainel === 'painelMusicaMesa') renderizarMusicaMesa();
+        if (idPainel === 'painelIniciativaMesa') renderizarIniciativaMesa();
+      }
+    }
+
+    function converterYoutubeParaEmbed(link) {
+      try {
+        const url = new URL(link);
+        let id = '';
+        if (url.hostname.includes('youtu.be')) id = url.pathname.split('/').filter(Boolean)[0] || '';
+        if (url.hostname.includes('youtube.com')) {
+          if (url.pathname.startsWith('/watch')) id = url.searchParams.get('v') || '';
+          if (url.pathname.startsWith('/shorts/')) id = url.pathname.split('/')[2] || '';
+          if (url.pathname.startsWith('/embed/')) id = url.pathname.split('/')[2] || '';
+        }
+        if (!id) return '';
+        const lista = url.searchParams.get('list');
+        const playlist = lista ? `&list=${encodeURIComponent(lista)}` : '';
+        return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1${playlist}`;
+      } catch (erro) {
+        return '';
+      }
+    }
+
+    function renderizarMusicaMesa() {
+      const link = String(estadoMesa.musica || '').trim();
+      linkMusicaMesa.value = link;
+      if (!link) {
+        playerMusicaMesa.innerHTML = 'Nenhuma música selecionada.';
+        return;
+      }
+      const embedYoutube = converterYoutubeParaEmbed(link);
+      if (embedYoutube) {
+        playerMusicaMesa.innerHTML = `<iframe src="${escaparTexto(embedYoutube)}" title="Música da mesa" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        return;
+      }
+      if (/\.(mp3|ogg|wav)(\?|#|$)/i.test(link)) {
+        playerMusicaMesa.innerHTML = `<audio src="${escaparTexto(link)}" controls autoplay></audio>`;
+        return;
+      }
+      playerMusicaMesa.innerHTML = `<a class="link-musica-salvo" href="${escaparTexto(link)}" target="_blank" rel="noopener">Abrir música em nova aba</a>`;
+    }
+
+    function salvarMusicaMesa() {
+      estadoMesa.musica = linkMusicaMesa.value.trim();
+      salvarEstadoMesa();
+      renderizarMusicaMesa();
+      mostrarAviso(estadoMesa.musica ? 'Música carregada.' : 'Música removida.');
+    }
+
+    const ALIASES_INICIATIVA = {
+      destreza: ['destreza', 'des'],
+      raciocinio: ['raciocinio', 'rac'],
+      atletismo: ['atletismo'],
+      briga: ['briga'],
+      armasBrancas: ['armasbrancas', 'armasbranca', 'armas brancas'],
+      armasFogo: ['armasdefogo', 'armas fogo', 'armas de fogo'],
+      prontidao: ['prontidao', 'prontidão', 'alerta', 'percepcao', 'percepção']
+    };
+
+    function extrairNumero(valor) {
+      if (typeof valor === 'number' && Number.isFinite(valor)) return valor;
+      if (typeof valor === 'string') {
+        const match = valor.match(/-?\d+(?:[\.,]\d+)?/);
+        return match ? Number(match[0].replace(',', '.')) || 0 : 0;
+      }
+      if (valor && typeof valor === 'object') {
+        for (const chave of ['valor', 'pontos', 'nivel', 'nível', 'total', 'value', 'score']) {
+          if (chave in valor) return extrairNumero(valor[chave]);
+        }
+      }
+      return 0;
+    }
+
+    function buscarNumeroPorAliases(objeto, aliases, visitados = new Set(), profundidade = 0) {
+      if (!objeto || typeof objeto !== 'object' || visitados.has(objeto) || profundidade > 6) return 0;
+      visitados.add(objeto);
+      const aliasesNormalizados = aliases.map(normalizarChave);
+      for (const [chave, valor] of Object.entries(objeto)) {
+        const chaveNormalizada = normalizarChave(chave);
+        if (aliasesNormalizados.includes(chaveNormalizada)) {
+          const numero = extrairNumero(valor);
+          if (numero) return numero;
+        }
+      }
+      for (const valor of Object.values(objeto)) {
+        const encontrado = buscarNumeroPorAliases(valor, aliases, visitados, profundidade + 1);
+        if (encontrado) return encontrado;
+      }
+      return 0;
+    }
+
+    function obterBonusIniciativa(personagem, criterio) {
+      if (criterio === 'aleatorio') return 0;
+      return buscarNumeroPorAliases(personagem, ALIASES_INICIATIVA[criterio] || [criterio]);
+    }
+
+    function sortearIniciativaMesa() {
+      const personagens = obterPersonagensCampanha();
+      if (!personagens.length) {
+        mostrarAviso('Adicione personagens à campanha antes de sortear iniciativa.');
+        return;
+      }
+      const criterio = criterioIniciativa.value || 'aleatorio';
+      estadoMesa.criterioIniciativa = criterio;
+      estadoMesa.iniciativa = personagens.map((personagem, indice) => {
+        const bonus = obterBonusIniciativa(personagem, criterio);
+        const dado = rolar(10);
+        return {
+          id: obterIdPersonagem(personagem) || `personagem-${indice}`,
+          nome: obterNomePersonagem(personagem, indice),
+          bonus,
+          dado,
+          total: dado + bonus
+        };
+      }).sort((a, b) => b.total - a.total || b.dado - a.dado || a.nome.localeCompare(b.nome));
+      salvarEstadoMesa();
+      renderizarIniciativaMesa();
+      mostrarAviso('Iniciativa aleatorizada.');
+    }
+
+    function renderizarIniciativaMesa() {
+      criterioIniciativa.value = estadoMesa.criterioIniciativa || 'aleatorio';
+      const iniciativa = Array.isArray(estadoMesa.iniciativa) ? estadoMesa.iniciativa : [];
+      if (!iniciativa.length) {
+        listaIniciativaMesa.innerHTML = '<p class="chat-vazio">Nenhuma iniciativa sorteada ainda.</p>';
+        return;
+      }
+      listaIniciativaMesa.innerHTML = iniciativa.map((item, indice) => `
+        <article class="iniciativa-item" draggable="true" data-iniciativa-index="${indice}">
+          <div class="iniciativa-posicao">${indice + 1}</div>
+          <div>
+            <strong>${escaparTexto(item.nome || `Personagem ${indice + 1}`)}</strong>
+            <span>d10 ${Number(item.bonus || 0) >= 0 ? '+' : '-'} ${Math.abs(Number(item.bonus || 0))} = ${Number(item.total || 0)}</span>
+          </div>
+          <div class="iniciativa-total">${Number(item.total || 0)}</div>
+        </article>
+      `).join('');
+      listaIniciativaMesa.querySelectorAll('.iniciativa-item').forEach((item) => {
+        item.addEventListener('dragstart', (evento) => {
+          indiceArrastandoIniciativa = Number(item.dataset.iniciativaIndex);
+          evento.dataTransfer.effectAllowed = 'move';
+        });
+        item.addEventListener('dragover', (evento) => evento.preventDefault());
+        item.addEventListener('drop', (evento) => {
+          evento.preventDefault();
+          const destino = Number(item.dataset.iniciativaIndex);
+          moverIniciativa(indiceArrastandoIniciativa, destino);
+        });
+      });
+    }
+
+    function moverIniciativa(origem, destino) {
+      if (!Array.isArray(estadoMesa.iniciativa)) return;
+      if (!Number.isInteger(origem) || !Number.isInteger(destino) || origem === destino) return;
+      const lista = [...estadoMesa.iniciativa];
+      const [movido] = lista.splice(origem, 1);
+      if (!movido) return;
+      lista.splice(destino, 0, movido);
+      estadoMesa.iniciativa = lista;
+      salvarEstadoMesa();
+      renderizarIniciativaMesa();
+    }
+
+    function atualizarGridMesa() {
+      mapaFullscreen.classList.toggle('grid-ativo', Boolean(estadoMesa.gridAtivo));
+      btnFerramentaGrid.classList.toggle('ativo', Boolean(estadoMesa.gridAtivo));
+      btnFerramentaGrid.setAttribute('aria-pressed', estadoMesa.gridAtivo ? 'true' : 'false');
+    }
+
+    function alternarGridMesa() {
+      estadoMesa.gridAtivo = !estadoMesa.gridAtivo;
+      salvarEstadoMesa();
+      atualizarGridMesa();
+      mostrarAviso(estadoMesa.gridAtivo ? 'Grid ativado.' : 'Grid desativado.');
+    }
+
+    function atualizarVirarTokens() {
+      mapaFullscreen.classList.toggle('tokens-virados', Boolean(estadoMesa.tokensVirados));
+      btnFerramentaVirar.classList.toggle('ativo', Boolean(estadoMesa.tokensVirados));
+      btnFerramentaVirar.setAttribute('aria-pressed', estadoMesa.tokensVirados ? 'true' : 'false');
+    }
+
+    function alternarVirarTokens() {
+      estadoMesa.tokensVirados = !estadoMesa.tokensVirados;
+      salvarEstadoMesa();
+      atualizarVirarTokens();
+      mostrarAviso(estadoMesa.tokensVirados ? 'Tokens virados.' : 'Tokens no lado normal.');
+    }
+
+    function atualizarReguaAtiva() {
+      mapaFullscreen.classList.toggle('regua-ativa', reguaAtiva);
+      btnFerramentaRegua.classList.toggle('ativo', reguaAtiva);
+      btnFerramentaRegua.setAttribute('aria-pressed', reguaAtiva ? 'true' : 'false');
+      infoRegua.hidden = !reguaAtiva;
+      renderizarReguaMesa();
+    }
+
+    function alternarReguaMesa() {
+      reguaAtiva = !reguaAtiva;
+      pontosTemporariosRegua = [];
+      fecharPaineisFerramenta();
+      atualizarReguaAtiva();
+      mostrarAviso(reguaAtiva ? 'Régua ativada. Clique em dois pontos do mapa.' : 'Régua desativada.');
+    }
+
+    function limparReguaMesa() {
+      estadoMesa.regua = null;
+      pontosTemporariosRegua = [];
+      salvarEstadoMesa();
+      renderizarReguaMesa();
+    }
+
+    function registrarPontoRegua(evento) {
+      if (!reguaAtiva) return;
+      if (evento.target.closest('button, input, select, textarea, a, .mapa-painel-ferramenta, .painel-chat-mesa, .barra-mapa-ferramentas, .btn-chat-mesa, .medida-info')) return;
+      const retangulo = mapaFullscreen.getBoundingClientRect();
+      const ponto = {
+        x: Math.max(0, Math.min(1, (evento.clientX - retangulo.left) / retangulo.width)),
+        y: Math.max(0, Math.min(1, (evento.clientY - retangulo.top) / retangulo.height))
+      };
+      pontosTemporariosRegua.push(ponto);
+      if (pontosTemporariosRegua.length >= 2) {
+        estadoMesa.regua = { p1: pontosTemporariosRegua[0], p2: pontosTemporariosRegua[1] };
+        pontosTemporariosRegua = [];
+        salvarEstadoMesa();
+      }
+      renderizarReguaMesa();
+    }
+
+    function renderizarReguaMesa() {
+      const retangulo = mapaFullscreen.getBoundingClientRect();
+      const largura = Math.max(1, Math.round(retangulo.width));
+      const altura = Math.max(1, Math.round(retangulo.height));
+      reguaCamada.setAttribute('viewBox', `0 0 ${largura} ${altura}`);
+      const medida = estadoMesa.regua;
+      if (!medida?.p1 || !medida?.p2) {
+        reguaCamada.innerHTML = '';
+        reguaCamada.classList.remove('com-medida');
+        textoRegua.textContent = pontosTemporariosRegua.length ? 'Agora clique no segundo ponto do mapa.' : 'Régua ativa: clique em dois pontos do mapa.';
+        return;
+      }
+      const x1 = medida.p1.x * largura;
+      const y1 = medida.p1.y * altura;
+      const x2 = medida.p2.x * largura;
+      const y2 = medida.p2.y * altura;
+      const distancia = Math.hypot(x2 - x1, y2 - y1);
+      const quadrados = distancia / 70;
+      const meioX = (x1 + x2) / 2;
+      const meioY = (y1 + y2) / 2;
+      const texto = `${Math.round(distancia)} px • ${quadrados.toFixed(1)} quadrados`;
+      reguaCamada.innerHTML = `
+        <line class="regua-linha" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"></line>
+        <circle class="regua-ponto" cx="${x1}" cy="${y1}" r="6"></circle>
+        <circle class="regua-ponto" cx="${x2}" cy="${y2}" r="6"></circle>
+        <text class="regua-texto" x="${meioX}" y="${meioY - 16}">${escaparTexto(texto)}</text>
+      `;
+      reguaCamada.classList.add('com-medida');
+      textoRegua.textContent = `Distância: ${texto}`;
+    }
+
+    function atualizarFerramentasMesa() {
+      renderizarJogadoresMesa();
+      renderizarMusicaMesa();
+      renderizarIniciativaMesa();
+      atualizarGridMesa();
+      atualizarVirarTokens();
+      atualizarReguaAtiva();
+    }
+
     function renderizarHistorico() {
       const itens = Array.isArray(estadoMesa.historico) ? estadoMesa.historico : [];
       if (!itens.length) {
@@ -570,6 +1143,82 @@
       historicoRolagens.innerHTML = itens.slice(0, 25).map((item) => `
         <div class="historico-item"><strong>${escaparTexto(item.titulo)}:</strong> ${item.html}</div>
       `).join('');
+    }
+
+    function obterNomeUsuarioAtual() {
+      try {
+        const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+        return String(usuario?.nome || '').trim() || 'Jogador';
+      } catch (erro) {
+        return 'Jogador';
+      }
+    }
+
+    function formatarHoraChat(dataISO) {
+      const data = new Date(dataISO || Date.now());
+      if (Number.isNaN(data.getTime())) return '';
+      return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderizarChat() {
+      const mensagens = Array.isArray(estadoMesa.chat) ? estadoMesa.chat : [];
+      if (!nomeChatMesa.value.trim()) nomeChatMesa.value = obterNomeUsuarioAtual();
+      if (!mensagens.length) {
+        listaChatMesa.innerHTML = '<div class="chat-vazio">Nenhuma mensagem ainda. Use este espaço para conversar com os jogadores durante a cena.</div>';
+      } else {
+        listaChatMesa.innerHTML = mensagens.slice(-80).map((msg) => `
+          <article class="chat-msg">
+            <div class="chat-msg-cabecalho">
+              <strong>${escaparTexto(msg.autor || 'Jogador')}</strong>
+              <small>${escaparTexto(formatarHoraChat(msg.data))}</small>
+            </div>
+            <p>${escaparTexto(msg.texto || '')}</p>
+          </article>
+        `).join('');
+        listaChatMesa.scrollTop = listaChatMesa.scrollHeight;
+      }
+
+      const total = mensagens.length;
+      if (!painelChatMesa.hidden && total > 0) {
+        contadorChat.hidden = true;
+      } else if (total > 0) {
+        contadorChat.hidden = false;
+        contadorChat.textContent = total > 99 ? '99+' : String(total);
+      } else {
+        contadorChat.hidden = true;
+      }
+    }
+
+    function abrirChatMesa() {
+      painelChatMesa.hidden = false;
+      btnChatMesa.setAttribute('aria-expanded', 'true');
+      contadorChat.hidden = true;
+      renderizarChat();
+      setTimeout(() => mensagemChatMesa.focus(), 60);
+    }
+
+    function fecharChatMesa() {
+      painelChatMesa.hidden = true;
+      btnChatMesa.setAttribute('aria-expanded', 'false');
+      renderizarChat();
+    }
+
+    function alternarChatMesa() {
+      if (painelChatMesa.hidden) abrirChatMesa();
+      else fecharChatMesa();
+    }
+
+    function enviarMensagemChat(evento) {
+      evento.preventDefault();
+      const texto = mensagemChatMesa.value.trim();
+      const autor = nomeChatMesa.value.trim() || obterNomeUsuarioAtual();
+      if (!texto) return;
+      estadoMesa.chat = Array.isArray(estadoMesa.chat) ? estadoMesa.chat : [];
+      estadoMesa.chat.push({ autor, texto, data: new Date().toISOString() });
+      estadoMesa.chat = estadoMesa.chat.slice(-120);
+      mensagemChatMesa.value = '';
+      salvarEstadoMesa();
+      renderizarChat();
     }
 
     function adicionarHistorico(titulo, html) {
@@ -639,7 +1288,53 @@
       renderizarMapa();
       renderizarPersonagens();
       renderizarHistorico();
+      renderizarChat();
+      atualizarFerramentasMesa();
       linkEscudo.href = `escudo_mestre.html?id=${encodeURIComponent(campanhaAtual.id)}`;
+    }
+
+    function obterElementoTelaCheia() {
+      return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
+    }
+
+    function atualizarBotaoTelaCheia() {
+      const ativo = Boolean(obterElementoTelaCheia());
+      btnTelaCheia.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      btnTelaCheia.setAttribute('aria-label', ativo ? 'Sair da tela cheia' : 'Tela cheia');
+      btnTelaCheia.title = ativo ? 'Sair da tela cheia' : 'Abrir mapa em tela cheia';
+    }
+
+    async function entrarEmTelaCheia() {
+      const alvo = mapaFullscreen;
+      const solicitarTelaCheia = alvo.requestFullscreen || alvo.webkitRequestFullscreen || alvo.mozRequestFullScreen || alvo.msRequestFullscreen;
+      if (!solicitarTelaCheia) {
+        mostrarAviso('Seu navegador não permite tela cheia por este botão.');
+        return;
+      }
+      try {
+        await solicitarTelaCheia.call(alvo);
+      } catch (erro) {
+        mostrarAviso('Não consegui ativar a tela cheia.');
+      }
+    }
+
+    async function sairDaTelaCheia() {
+      const fecharTelaCheia = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+      if (!fecharTelaCheia) return;
+      try {
+        await fecharTelaCheia.call(document);
+      } catch (erro) {
+        mostrarAviso('Não consegui sair da tela cheia.');
+      }
+    }
+
+    async function alternarTelaCheia() {
+      if (obterElementoTelaCheia()) {
+        await sairDaTelaCheia();
+      } else {
+        await entrarEmTelaCheia();
+      }
+      atualizarBotaoTelaCheia();
     }
 
     campoMapa.addEventListener('change', async () => {
@@ -671,6 +1366,47 @@
       mostrarAviso('Mapa removido.');
     });
 
+    btnTelaCheia.addEventListener('click', alternarTelaCheia);
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach((evento) => {
+      document.addEventListener(evento, atualizarBotaoTelaCheia);
+    });
+
+    document.querySelectorAll('.ferramenta-mapa[data-painel]').forEach((botao) => {
+      botao.addEventListener('click', () => alternarPainelFerramenta(botao.dataset.painel));
+    });
+    document.querySelectorAll('[data-fechar-painel]').forEach((botao) => {
+      botao.addEventListener('click', () => alternarPainelFerramenta(botao.dataset.fecharPainel));
+    });
+    btnTocarMusica.addEventListener('click', salvarMusicaMesa);
+    linkMusicaMesa.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Enter') salvarMusicaMesa();
+    });
+    btnSortearIniciativa.addEventListener('click', sortearIniciativaMesa);
+    btnFerramentaVirar.addEventListener('click', alternarVirarTokens);
+    btnFerramentaRegua.addEventListener('click', alternarReguaMesa);
+    btnFerramentaGrid.addEventListener('click', alternarGridMesa);
+    btnLimparRegua.addEventListener('click', limparReguaMesa);
+    mapaFullscreen.addEventListener('click', registrarPontoRegua);
+    window.addEventListener('resize', renderizarReguaMesa);
+
+    btnChatMesa.addEventListener('click', alternarChatMesa);
+    btnFecharChat.addEventListener('click', fecharChatMesa);
+    formChatMesa.addEventListener('submit', enviarMensagemChat);
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && !painelChatMesa.hidden && !obterElementoTelaCheia()) fecharChatMesa();
+    });
+    window.addEventListener('storage', (evento) => {
+      if (!campanhaAtual || evento.key !== chaveMesa()) return;
+      estadoMesa = obterEstadoMesa();
+      nomeCena.value = estadoMesa.nomeCena || '';
+      descricaoCena.value = estadoMesa.descricaoCena || '';
+      registroMesa.value = estadoMesa.registro || '';
+      renderizarMapa();
+      renderizarHistorico();
+      renderizarChat();
+      atualizarFerramentasMesa();
+    });
+
     document.getElementById('btnRolarV5').addEventListener('click', rolarV5);
     document.getElementById('btnRolarDado').addEventListener('click', () => rolarDadoGenerico());
     document.querySelectorAll('[data-dado-rapido]').forEach((botao) => {
@@ -700,6 +1436,7 @@
       salvarEstadoMesa();
     });
 
+    atualizarBotaoTelaCheia();
     carregarUsuario();
     if (carregarCampanhaBase('Mesa virtual')) carregarMesa();
   </script>

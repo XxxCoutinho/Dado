@@ -201,36 +201,34 @@
     .card-titulo-acoes h2 { margin-bottom:6px; }
     .texto-pequeno { font-size:.84rem; }
     .lista-personagens-vivos { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
-    .personagem-card-vivo { position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.13); border-radius:22px; background:linear-gradient(135deg, rgba(255,0,120,.085), rgba(0,200,255,.055), rgba(0,0,0,.22)); padding:16px; display:grid; gap:14px; box-shadow: inset 0 0 24px rgba(255,255,255,.025); }
-    .personagem-card-vivo::before { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 18% 0%, rgba(255,0,120,.18), transparent 30%), radial-gradient(circle at 88% 20%, rgba(0,200,255,.12), transparent 28%); opacity:.72; }
-    .personagem-card-vivo > * { position:relative; z-index:1; }
-    .personagem-cabecalho-vivo { display:grid; grid-template-columns:76px 1fr; gap:14px; align-items:center; min-width:0; }
-    .personagem-foto-grande { width:76px; height:76px; border-radius:20px; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.15); background:linear-gradient(135deg, rgba(255,0,120,.34), rgba(0,200,255,.20)); color:#fff; font-size:1.6rem; font-weight:900; box-shadow:0 0 18px rgba(255,0,120,.12); }
+    .personagem-card-vivo { border:1px solid rgba(255,255,255,.12); border-radius:18px; background:rgba(255,255,255,.04); padding:14px; display:grid; gap:12px; }
+    .personagem-cabecalho-vivo { display:grid; grid-template-columns:64px 1fr; gap:12px; align-items:center; min-width:0; }
+    .personagem-foto-grande { width:64px; height:64px; border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); color:#fff; font-size:1.35rem; font-weight:900; }
     .personagem-foto-grande img { width:100%; height:100%; object-fit:cover; display:block; }
-    .personagem-titulo-vivo { min-width:0; display:grid; gap:7px; }
-    .personagem-titulo-vivo strong { color:#fff; font-size:1.08rem; line-height:1.15; word-break:break-word; text-shadow:0 0 10px rgba(255,0,120,.24); }
+    .personagem-titulo-vivo { min-width:0; display:grid; gap:4px; }
+    .personagem-titulo-vivo strong { color:#fff; font-size:1rem; line-height:1.15; word-break:break-word; }
     .personagem-titulo-vivo span { color:var(--muted); font-size:.78rem; line-height:1.35; word-break:break-word; }
+    .personagem-meta-simples { color:rgba(244,240,255,.78); font-size:.76rem; line-height:1.35; word-break:break-word; }
     .personagem-tags { display:flex; flex-wrap:wrap; gap:6px; }
     .tag-personagem { border:1px solid rgba(255,255,255,.14); border-radius:999px; background:rgba(255,255,255,.055); color:rgba(255,255,255,.86); padding:5px 9px; font-size:.66rem; font-weight:900; text-transform:uppercase; letter-spacing:.055em; }
-    .resumo-personagem-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:9px; }
-    .stat-personagem { border:1px solid rgba(255,255,255,.11); border-radius:15px; background:rgba(0,0,0,.22); padding:10px; display:grid; gap:7px; min-width:0; }
+    .resumo-personagem-grid { display:grid; grid-template-columns: 1fr; gap:8px; }
+    .stat-personagem { border:1px solid rgba(255,255,255,.11); border-radius:14px; background:rgba(0,0,0,.18); padding:10px; display:grid; gap:7px; min-width:0; }
     .stat-personagem span { color:var(--muted); font-size:.66rem; font-weight:900; letter-spacing:.07em; text-transform:uppercase; }
     .stat-personagem strong { color:#fff; font-size:1.05rem; line-height:1.1; word-break:break-word; }
-    .barra-stat { height:8px; border-radius:999px; background:rgba(255,255,255,.09); overflow:hidden; border:1px solid rgba(255,255,255,.08); }
+    .barra-stat { height:8px; border-radius:999px; background:rgba(255,255,255,.09); overflow:hidden; border:none; }
     .barra-stat i { display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg, rgba(255,0,120,.8), rgba(0,200,255,.7), rgba(138,43,226,.76)); background-size:220% 220%; animation:moverCores 5s linear infinite; }
     .barras-vampiro-card { display:grid; gap:10px; }
-    .resumo-personagem-grid .barras-vampiro-card { grid-column:1 / -1; }
-    .barra-ficha-vampiro { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(0,0,0,.22); padding:10px 11px; display:grid; gap:8px; min-width:0; box-shadow:inset 0 0 16px rgba(255,255,255,.025); }
+    .barra-ficha-vampiro { border:none; border-radius:0; background:transparent; padding:0; display:grid; gap:7px; min-width:0; }
     .barra-ficha-vampiro .barra-info { display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; }
     .barra-ficha-vampiro .barra-label { color:rgba(244,240,255,.72); font-size:.66rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .barra-ficha-vampiro .barra-valor { color:#fff; font-size:.78rem; font-weight:900; letter-spacing:.04em; white-space:nowrap; text-shadow:0 0 8px rgba(0,200,255,.18); }
-    .barra-ficha-vampiro .barra-trilho { height:14px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); overflow:hidden; box-shadow:inset 0 0 12px rgba(0,0,0,.35); }
+    .barra-ficha-vampiro .barra-trilho { height:14px; border-radius:999px; background:rgba(255,255,255,.08); border:none; overflow:hidden; box-shadow:inset 0 0 12px rgba(0,0,0,.35); }
     .barra-ficha-vampiro .barra-preenchimento { display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg, rgba(255,0,120,.82), rgba(0,200,255,.72), rgba(138,43,226,.82)); background-size:220% 220%; animation:moverCores 5s linear infinite; box-shadow:0 0 12px rgba(255,0,120,.20), 0 0 18px rgba(0,200,255,.12); transition:width .25s ease; }
     .barra-ficha-vampiro.barra-fome .barra-preenchimento { background:linear-gradient(90deg, rgba(120,0,20,.92), rgba(255,0,80,.86), rgba(255,120,0,.72)); background-size:220% 220%; }
     .barra-ficha-vampiro.barra-experiencia .barra-preenchimento { background:linear-gradient(90deg, rgba(255,214,80,.78), rgba(255,0,120,.72), rgba(0,200,255,.62)); background-size:220% 220%; }
-    .personagem-detalhes-vivo { display:grid; gap:7px; color:rgba(244,240,255,.76); font-size:.82rem; line-height:1.45; }
-    .personagem-detalhes-vivo div { border-left:2px solid rgba(0,200,255,.28); padding-left:9px; }
-    .personagem-card-vivo textarea { min-height:78px; }
+    .personagem-detalhes-vivo { display:grid; gap:6px; color:rgba(244,240,255,.76); font-size:.8rem; line-height:1.4; }
+    .personagem-detalhes-vivo div { padding-left:0; }
+    .personagem-card-vivo textarea { min-height:64px; }
     .sincronizacao-ficha { color:rgba(244,240,255,.54); font-size:.68rem; font-weight:900; letter-spacing:.06em; text-transform:uppercase; }
     .painel-pequeno { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
     .contador { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(0,0,0,.22); padding:12px; display:grid; gap:8px; }
@@ -485,20 +483,17 @@
 
     function obterNomePersonagem(personagem, indice) {
       if (!personagem || typeof personagem !== 'object') return `Personagem ${indice + 1}`;
-      const nome = obterPrimeiroValor(personagem, ['nome', 'nomePersonagem', 'personagemNome', 'titulo', 'dadosBasicos.nome', 'basico.nome']);
-      return String(nome || `Personagem ${indice + 1}`);
+      return String(personagem.nome || personagem.nomePersonagem || personagem.personagemNome || personagem.titulo || `Personagem ${indice + 1}`);
     }
 
     function obterSistemaPersonagem(personagem) {
       if (!personagem || typeof personagem !== 'object') return 'Sistema não informado';
-      const sistema = obterPrimeiroValor(personagem, ['sistema', 'modelo', 'fichaModelo', 'tipoFicha', 'jogo']);
-      return String(sistema || 'Sistema não informado');
+      return String(personagem.sistema || personagem.modelo || personagem.fichaModelo || 'Sistema não informado');
     }
 
     function obterImagemPersonagem(personagem) {
       if (!personagem || typeof personagem !== 'object') return '';
-      const imagem = obterPrimeiroValor(personagem, ['imagem', 'foto', 'avatar', 'imagemPersonagem', 'fotoPersonagem', 'portrait', 'retrato']);
-      return String(imagem || '');
+      return String(personagem.imagem || personagem.foto || personagem.avatar || personagem.imagemPersonagem || personagem.fotoPersonagem || '');
     }
 
     function obterInicial(nome) {
@@ -651,21 +646,10 @@
       return atual;
     }
 
-    function gerarVariantesCaminho(caminho) {
-      const original = String(caminho);
-      const variantes = [original];
-      if (!original.startsWith('dados.') && !original.startsWith('ficha.') && !original.startsWith('personagem.') && !original.startsWith('status.')) {
-        variantes.push(`dados.${original}`, `ficha.${original}`, `personagem.${original}`, `dadosFicha.${original}`);
-      }
-      return variantes;
-    }
-
     function obterPrimeiroValor(objeto, caminhos) {
       for (const caminho of caminhos) {
-        for (const variante of gerarVariantesCaminho(caminho)) {
-          const valor = obterValorCaminho(objeto, variante);
-          if (valor !== undefined && valor !== null && valor !== '') return valor;
-        }
+        const valor = obterValorCaminho(objeto, caminho);
+        if (valor !== undefined && valor !== null && valor !== '') return valor;
       }
       return '';
     }
@@ -679,6 +663,7 @@
         return null;
       }
       const texto = String(valor).replace(',', '.');
+      const fracao = texto.match(/-?\d+(?:\.\d+)?\s*\/\s*(-?\d+(?:\.\d+)?)/);
       const numero = texto.match(/-?\d+(?:\.\d+)?/);
       if (!numero) return null;
       return Number(numero[0]);
@@ -693,7 +678,8 @@
       }
       const texto = String(valor).replace(',', '.');
       const fracao = texto.match(/-?\d+(?:\.\d+)?\s*\/\s*(-?\d+(?:\.\d+)?)/);
-      return fracao ? Number(fracao[1]) : null;
+      if (!fracao) return null;
+      return Number(fracao[1]);
     }
 
     function montarStatPersonagem(dados, rotulo, caminhosAtual, caminhosMaximo = [], maximoPadrao = null) {
@@ -709,30 +695,70 @@
       return { rotulo, texto, percentual };
     }
 
+    function renderizarStatPersonagem(stat) {
+      const barra = stat.percentual !== null ? `<div class="barra-stat"><i style="width:${stat.percentual}%"></i></div>` : '';
+      return `<div class="stat-personagem"><span>${escaparTexto(stat.rotulo)}</span><strong>${escaparTexto(stat.texto)}</strong>${barra}</div>`;
+    }
+
     function obterBarrasVampiroPersonagem(dados) {
       return [
         {
-          ...montarStatPersonagem(dados, 'Experiência', ['experienciaGasta', 'experiênciaGasta', 'xpGasto', 'xpGasta', 'experienciaAtual', 'experiênciaAtual', 'xpAtual', 'experiencia', 'experiência', 'xp', 'status.experiencia.atual', 'barras.experiencia.atual'], ['experienciaTotal', 'experiênciaTotal', 'xpTotal', 'experienciaMax', 'experiênciaMax', 'xpMax', 'status.experiencia.max', 'barras.experiencia.max']),
+          ...montarStatPersonagem(
+            dados,
+            'Experiência',
+            ['experienciaGasta', 'experiênciaGasta', 'xpGasto', 'xpGasta', 'experienciaAtual', 'experiênciaAtual', 'xpAtual', 'experiencia', 'experiência', 'xp', 'status.experiencia.atual', 'barras.experiencia.atual'],
+            ['experienciaTotal', 'experiênciaTotal', 'xpTotal', 'experienciaMax', 'experiênciaMax', 'xpMax', 'status.experiencia.max', 'barras.experiencia.max']
+          ),
           classe: 'barra-experiencia'
         },
         {
-          ...montarStatPersonagem(dados, 'Vitalidade', ['vitalidade', 'vitalidadeAtual', 'saudeAtual', 'saúdeAtual', 'health.current', 'status.vitalidade.atual', 'barras.vitalidade.atual'], ['vitalidadeMax', 'vitalidadeMaxima', 'vitalidadeMáxima', 'vitalidadeTotal', 'health.max', 'status.vitalidade.max', 'barras.vitalidade.max'], 10),
+          ...montarStatPersonagem(
+            dados,
+            'Vitalidade',
+            ['vitalidade', 'vitalidadeAtual', 'saudeAtual', 'saúdeAtual', 'health.current', 'status.vitalidade.atual', 'barras.vitalidade.atual'],
+            ['vitalidadeMax', 'vitalidadeMaxima', 'vitalidadeMáxima', 'vitalidadeTotal', 'health.max', 'status.vitalidade.max', 'barras.vitalidade.max'],
+            10
+          ),
           classe: 'barra-vitalidade'
         },
         {
-          ...montarStatPersonagem(dados, 'Força de vontade', ['forcaVontade', 'forçaVontade', 'forca de vontade', 'força de vontade', 'vontade', 'vontadeAtual', 'willpower.current', 'status.vontade.atual', 'barras.vontade.atual'], ['forcaVontadeMax', 'forçaVontadeMax', 'forcaVontadeMaxima', 'forçaVontadeMáxima', 'vontadeMax', 'vontadeMaxima', 'vontadeMáxima', 'willpower.max', 'status.vontade.max', 'barras.vontade.max'], 10),
+          ...montarStatPersonagem(
+            dados,
+            'Força de vontade',
+            ['forcaVontade', 'forçaVontade', 'forca de vontade', 'força de vontade', 'vontade', 'vontadeAtual', 'willpower.current', 'status.vontade.atual', 'barras.vontade.atual'],
+            ['forcaVontadeMax', 'forçaVontadeMax', 'forcaVontadeMaxima', 'forçaVontadeMáxima', 'vontadeMax', 'vontadeMaxima', 'vontadeMáxima', 'willpower.max', 'status.vontade.max', 'barras.vontade.max'],
+            10
+          ),
           classe: 'barra-vontade'
         },
         {
-          ...montarStatPersonagem(dados, 'Humanidade', ['humanidade', 'humanidadeAtual', 'humanity', 'status.humanidade.atual', 'barras.humanidade.atual'], ['humanidadeMax', 'humanidadeMaxima', 'humanidadeMáxima', 'humanity.max', 'status.humanidade.max', 'barras.humanidade.max'], 10),
+          ...montarStatPersonagem(
+            dados,
+            'Humanidade',
+            ['humanidade', 'humanidadeAtual', 'humanity', 'status.humanidade.atual', 'barras.humanidade.atual'],
+            ['humanidadeMax', 'humanidadeMaxima', 'humanidadeMáxima', 'humanity.max', 'status.humanidade.max', 'barras.humanidade.max'],
+            10
+          ),
           classe: 'barra-humanidade'
         },
         {
-          ...montarStatPersonagem(dados, 'Fome', ['fome', 'fomeAtual', 'hunger', 'status.fome.atual', 'barras.fome.atual'], ['fomeMax', 'fomeMaxima', 'fomeMáxima', 'hunger.max', 'status.fome.max', 'barras.fome.max'], 5),
+          ...montarStatPersonagem(
+            dados,
+            'Fome',
+            ['fome', 'fomeAtual', 'hunger', 'status.fome.atual', 'barras.fome.atual'],
+            ['fomeMax', 'fomeMaxima', 'fomeMáxima', 'hunger.max', 'status.fome.max', 'barras.fome.max'],
+            5
+          ),
           classe: 'barra-fome'
         },
         {
-          ...montarStatPersonagem(dados, 'Potência do sangue', ['potenciaSangue', 'potênciaSangue', 'potencia do sangue', 'potência do sangue', 'bloodPotency', 'status.potencia.atual', 'barras.potencia.atual'], ['potenciaSangueMax', 'potênciaSangueMax', 'potenciaSangueMaxima', 'potênciaSangueMáxima', 'bloodPotency.max', 'status.potencia.max', 'barras.potencia.max'], 10),
+          ...montarStatPersonagem(
+            dados,
+            'Potência do sangue',
+            ['potenciaSangue', 'potênciaSangue', 'potencia do sangue', 'potência do sangue', 'bloodPotency', 'status.potencia.atual', 'barras.potencia.atual'],
+            ['potenciaSangueMax', 'potênciaSangueMax', 'potenciaSangueMaxima', 'potênciaSangueMáxima', 'bloodPotency.max', 'status.potencia.max', 'barras.potencia.max'],
+            10
+          ),
           classe: 'barra-potencia'
         }
       ];
@@ -750,11 +776,6 @@
         </div>`;
     }
 
-    function renderizarStatPersonagem(stat) {
-      const barra = stat.percentual !== null ? `<div class="barra-stat"><i style="width:${stat.percentual}%"></i></div>` : '';
-      return `<div class="stat-personagem"><span>${escaparTexto(stat.rotulo)}</span><strong>${escaparTexto(stat.texto)}</strong>${barra}</div>`;
-    }
-
     function renderizarTagPersonagem(texto) {
       if (texto === undefined || texto === null || texto === '') return '';
       return `<span class="tag-personagem">${escaparTexto(texto)}</span>`;
@@ -769,7 +790,7 @@
       if (!objeto || typeof objeto !== 'object' || Array.isArray(objeto)) return false;
       if (Array.isArray(objeto.personagens) || Array.isArray(objeto.jogadores) || objeto.mestreId || objeto.ownerId) return false;
       const chaves = Object.keys(objeto).map(normalizarTextoBusca);
-      const pistas = ['nomepersonagem', 'personagemnome', 'cla', 'clan', 'predador', 'geracao', 'vitalidade', 'fome', 'humanidade', 'potencia', 'experiencia', 'atributos', 'habilidades', 'disciplinas', 'classe', 'origem', 'nex', 'pv', 'pe', 'sanidade', 'defesa', 'foto', 'imagem', 'avatar'];
+      const pistas = ['nomepersonagem', 'personagemnome', 'cla', 'clan', 'predador', 'geracao', 'vitalidade', 'fome', 'humanidade', 'potencia', 'atributos', 'habilidades', 'disciplinas', 'classe', 'origem', 'nex', 'pv', 'pe', 'sanidade', 'defesa', 'foto', 'avatar'];
       return pistas.some((pista) => chaves.some((chave) => chave.includes(pista))) || Boolean(objeto.id && (objeto.fichaModelo || objeto.modelo || objeto.pagina));
     }
 
@@ -779,22 +800,36 @@
       if (typeof valor !== 'object') return [];
       const listasDiretas = ['personagens', 'characters', 'fichas', 'itens', 'items', 'lista', 'dados', 'docs', 'results'];
       let encontrados = [];
-      listasDiretas.forEach((chave) => { if (Array.isArray(valor[chave])) encontrados.push(...extrairListaPersonagens(valor[chave], profundidade + 1)); });
+      listasDiretas.forEach((chave) => {
+        if (Array.isArray(valor[chave])) encontrados.push(...extrairListaPersonagens(valor[chave], profundidade + 1));
+      });
       if (parecePersonagemSalvo(valor)) encontrados.push(valor);
+      if (!encontrados.length && profundidade < 2) {
+        Object.values(valor).forEach((item) => {
+          if (item && typeof item === 'object') encontrados.push(...extrairListaPersonagens(item, profundidade + 1));
+        });
+      }
       return encontrados;
     }
 
     function obterTodosPersonagensSalvos() {
+      const chavesPreferidas = [
+        'personagensCriados', 'personagensSalvos', 'personagens', 'characters', 'fichasCriadas', 'fichas', 'fichasSalvas', 'personagensFirebaseCache', 'charactersCache'
+      ];
       const todos = [];
+      chavesPreferidas.forEach((chave) => todos.push(...extrairListaPersonagens(lerJsonSeguro(chave))));
       for (let i = 0; i < localStorage.length; i += 1) {
         const chave = localStorage.key(i);
-        if (!chave || !/(personagem|personagens|character|characters|ficha|fichas)/.test(normalizarTextoBusca(chave))) continue;
+        const chaveBusca = normalizarTextoBusca(chave || '');
+        if (!/(personagem|personagens|character|characters|ficha|fichas)/.test(chaveBusca)) continue;
+        if (/(escudo|rolagem|rolagens|dice|campanha_rolagens|historico)/.test(chaveBusca)) continue;
         todos.push(...extrairListaPersonagens(lerJsonSeguro(chave)));
       }
+      todos.push(...obterPersonagensCampanha().filter((personagem) => personagem && typeof personagem === 'object'));
       const vistos = new Set();
-      return todos.filter((item, indice) => {
-        const id = obterIdPersonagem(item);
-        const nome = obterNomePersonagem(item, indice);
+      return todos.filter((personagem) => {
+        const id = obterIdPersonagem(personagem);
+        const nome = obterNomePersonagem(personagem, 0);
         const chave = id ? `id:${id}` : `nome:${normalizarTextoBusca(nome)}`;
         if (vistos.has(chave)) return false;
         vistos.add(chave);
@@ -806,7 +841,8 @@
       const base = personagem && typeof personagem === 'object' ? personagem : { id: String(personagem || '') };
       const idBase = obterIdPersonagem(base);
       const nomeBase = normalizarTextoBusca(obterNomePersonagem(base, indice));
-      const encontrado = obterTodosPersonagensSalvos().find((item) => {
+      const todos = obterTodosPersonagensSalvos();
+      const encontrado = todos.find((item) => {
         const idItem = obterIdPersonagem(item);
         if (idBase && idItem && String(idItem) === String(idBase)) return true;
         const nomeItem = normalizarTextoBusca(obterNomePersonagem(item, indice));
@@ -833,7 +869,9 @@
     }
 
     function obterStatsPersonagem(dados, sistema) {
-      if (sistema.includes('vampiro')) return obterBarrasVampiroPersonagem(dados);
+      if (sistema.includes('vampiro')) {
+        return obterBarrasVampiroPersonagem(dados);
+      }
       return [
         montarStatPersonagem(dados, 'PV', ['pv', 'vida', 'pontosVida', 'vidaAtual', 'status.pv.atual'], ['pvMax', 'pvMaximo', 'vidaMax', 'vidaMaxima', 'status.pv.max']),
         montarStatPersonagem(dados, 'PE', ['pe', 'esforco', 'esforço', 'pontosEsforco', 'pontosEsforço', 'status.pe.atual'], ['peMax', 'peMaximo', 'esforcoMax', 'esforçoMax', 'status.pe.max']),
@@ -859,13 +897,6 @@
       ].filter(Boolean).join('');
     }
 
-    function atualizarCampanhaAtualDoStorage() {
-      if (!campanhaAtual) return;
-      const campanhas = obterCampanhas();
-      const atualizada = campanhas.find((campanha) => String(campanha.id) === String(campanhaAtual.id));
-      if (atualizada) campanhaAtual = atualizada;
-    }
-
     function assinaturaPersonagemResumo(dados, indice) {
       const sistema = obterSistemaPersonagem(dados).toLowerCase();
       return {
@@ -877,6 +908,13 @@
         stats: obterStatsPersonagem(dados, sistema).map((stat) => stat.texto),
         detalhes: obterDetalhesPrincipais(dados, sistema)
       };
+    }
+
+    function atualizarCampanhaAtualDoStorage() {
+      if (!campanhaAtual) return;
+      const campanhas = obterCampanhas();
+      const atualizada = campanhas.find((campanha) => String(campanha.id) === String(campanhaAtual.id));
+      if (atualizada) campanhaAtual = atualizada;
     }
 
     function renderizarStatusPersonagens(forcar = false) {
@@ -904,27 +942,29 @@
         const sistemaBusca = sistema.toLowerCase();
         const jogador = obterPrimeiroValor(personagem, ['jogador', 'player', 'nomeJogador', 'usuarioNome', 'donoNome']);
         const nota = estadoEscudo.notasPersonagens?.[id] || '';
-        const tags = obterTagsPersonagem(personagem, sistemaBusca).map(renderizarTagPersonagem).join('') || renderizarTagPersonagem('Sem detalhes');
+        const metaTags = obterTagsPersonagem(personagem, sistemaBusca).filter(Boolean);
+        const metaSimples = metaTags.join(' · ');
         const stats = sistemaBusca.includes('vampiro')
           ? `<div class="barras-vampiro-card">${obterBarrasVampiroPersonagem(personagem).map(renderizarBarraVampiroPersonagem).join('')}</div>`
           : obterStatsPersonagem(personagem, sistemaBusca).map(renderizarStatPersonagem).join('');
-        const detalhes = obterDetalhesPrincipais(personagem, sistemaBusca) || '<div>Sem resumo adicional salvo na ficha.</div>';
+        const detalhes = !sistemaBusca.includes('vampiro') ? (obterDetalhesPrincipais(personagem, sistemaBusca) || '') : '';
         return `
           <article class="personagem-card-vivo" data-personagem-id="${escaparTexto(id)}">
             <div class="personagem-cabecalho-vivo">
               <div class="personagem-foto-grande">${renderizarFotoPersonagem(personagem, nome)}</div>
               <div class="personagem-titulo-vivo">
                 <strong>${escaparTexto(nome)}</strong>
-                <span>${escaparTexto(sistema)}${jogador ? ` · Jogador: ${escaparTexto(jogador)}` : ''}</span>
-                <div class="personagem-tags">${tags}</div>
+                <span>${escaparTexto(sistema)}</span>
+                ${jogador ? `<div class="personagem-meta-simples">Jogador: ${escaparTexto(jogador)}</div>` : ''}
+                ${metaSimples ? `<div class="personagem-meta-simples">${escaparTexto(metaSimples)}</div>` : ''}
               </div>
             </div>
             <div class="resumo-personagem-grid">${stats}</div>
-            <div class="personagem-detalhes-vivo">${detalhes}</div>
-            <textarea class="area-grande nota-personagem" data-personagem-id="${escaparTexto(id)}" placeholder="Notas privadas do mestre sobre este personagem...">${escaparTexto(nota)}</textarea>
+            ${detalhes ? `<div class="personagem-detalhes-vivo">${detalhes}</div>` : ''}
+            <textarea class="area-grande nota-personagem" data-personagem-id="${escaparTexto(id)}" placeholder="Notas privadas do mestre...">${escaparTexto(nota)}</textarea>
             <div class="mini-acoes">
               <a class="btn-menor" href="${escaparTexto(montarLinkFicha(personagem))}">Acessar ficha</a>
-              <span class="sincronizacao-ficha">Sincronizado com a ficha</span>
+              <span class="sincronizacao-ficha">Atualização em tempo real</span>
             </div>
           </article>`;
       }).join('');
@@ -937,7 +977,6 @@
         });
       });
     }
-
 
     function normalizarTextoBusca(texto) {
       return String(texto || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -1167,7 +1206,7 @@
       estadoEscudo = obterEstadoEscudo();
       Object.entries(camposTexto).forEach(([chave, campo]) => { campo.value = estadoEscudo[chave] || ''; });
       atualizarContadores();
-      renderizarStatusPersonagens();
+      renderizarStatusPersonagens(true);
       renderizarRolagensCampanha();
       linkMesa.href = `mesa_virtual.html?id=${encodeURIComponent(campanhaAtual.id)}`;
     }
