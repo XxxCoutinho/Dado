@@ -496,20 +496,26 @@
     async function salvarUsuarioNoFirestore(usuarioFirebase, nome) {
       if (!db || !usuarioFirebase?.uid) return;
 
-      await setDoc(doc(db, 'users', usuarioFirebase.uid), {
-        uid: usuarioFirebase.uid,
-        nome,
-        email: usuarioFirebase.email || '',
-        atualizadoEm: serverTimestamp(),
-        criadoEm: serverTimestamp()
-      }, { merge: true });
+      try {
+        await setDoc(doc(db, 'users', usuarioFirebase.uid), {
+          uid: usuarioFirebase.uid,
+          nome,
+          email: usuarioFirebase.email || '',
+          atualizadoEm: serverTimestamp(),
+          criadoEm: serverTimestamp()
+        }, { merge: true });
+      } catch (erro) {
+        // O login/cadastro não deve falhar só porque as regras do Firestore
+        // ainda não permitem salvar o perfil do usuário.
+        console.warn('Login realizado, mas não consegui salvar o perfil no Firestore:', erro);
+      }
     }
 
     function tratarErroFirebase(erro) {
       const codigo = erro?.code || '';
 
-      if (codigo === 'auth/wrong-password' || codigo === 'auth/invalid-credential') {
-        return 'Senha incorreta para este e-mail.';
+      if (codigo === 'auth/wrong-password' || codigo === 'auth/invalid-credential' || codigo === 'auth/invalid-login-credentials') {
+        return 'Não consegui entrar com esses dados. Se o e-mail já existe, confira a senha.';
       }
 
       if (codigo === 'auth/invalid-email') {
@@ -524,11 +530,23 @@
         return 'Este e-mail já existe. Tente entrar com a senha cadastrada.';
       }
 
+      if (codigo === 'auth/operation-not-allowed') {
+        return 'Ative Email/senha em Firebase Authentication > Sign-in method.';
+      }
+
+      if (codigo === 'auth/configuration-not-found') {
+        return 'O Firebase Authentication ainda não foi configurado neste projeto.';
+      }
+
+      if (codigo === 'auth/unauthorized-domain') {
+        return 'Este domínio não está autorizado no Firebase Authentication.';
+      }
+
       if (codigo === 'auth/too-many-requests') {
         return 'Muitas tentativas. Aguarde um pouco e tente novamente.';
       }
 
-      return 'Não consegui fazer login agora. Confira o Firebase e tente novamente.';
+      return `Não consegui fazer login agora. Código: ${codigo || 'erro desconhecido'}.`;
     }
 
     toggleSenha.addEventListener('click', () => {
@@ -592,15 +610,38 @@
         try {
           credencial = await signInWithEmailAndPassword(auth, email, senha);
         } catch (erroLogin) {
-          if (erroLogin?.code === 'auth/user-not-found') {
-            credencial = await createUserWithEmailAndPassword(auth, email, senha);
+          const codigoLogin = erroLogin?.code || '';
+
+          // Em versões recentes do Firebase, quando o e-mail não existe,
+          // o erro pode vir como auth/invalid-credential em vez de auth/user-not-found.
+          // Por isso tentamos criar a conta. Se o e-mail já existir, o Firebase
+          // devolve auth/email-already-in-use e mostramos a mensagem correta.
+          if (
+            codigoLogin === 'auth/user-not-found' ||
+            codigoLogin === 'auth/invalid-credential' ||
+            codigoLogin === 'auth/invalid-login-credentials'
+          ) {
+            try {
+              mostrarMensagem('Conta não encontrada. Criando cadastro...');
+              credencial = await createUserWithEmailAndPassword(auth, email, senha);
+            } catch (erroCadastro) {
+              if (erroCadastro?.code === 'auth/email-already-in-use') {
+                throw erroLogin;
+              }
+
+              throw erroCadastro;
+            }
           } else {
             throw erroLogin;
           }
         }
 
         if (credencial.user.displayName !== nome) {
-          await updateProfile(credencial.user, { displayName: nome });
+          try {
+            await updateProfile(credencial.user, { displayName: nome });
+          } catch (erroPerfil) {
+            console.warn('Login realizado, mas não consegui atualizar o nome do perfil:', erroPerfil);
+          }
         }
 
         await salvarUsuarioNoFirestore(credencial.user, nome);
