@@ -338,6 +338,327 @@
       font-size: 0.95rem;
     }
 
+
+
+    .btn-primario,
+    .btn-secundario,
+    .btn-editor,
+    .modal-fechar {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .campanhas-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .campanha-card {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.24);
+      padding: 18px;
+      box-shadow:
+        0 0 16px rgba(255, 0, 120, 0.08),
+        inset 0 0 22px rgba(255, 255, 255, 0.025);
+    }
+
+    .campanha-card h3 {
+      color: #fff;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .campanha-sistema {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      margin-bottom: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.22), rgba(0, 200, 255, 0.14));
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .campanha-descricao {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .campanha-descricao ul,
+    .campanha-descricao ol {
+      margin: 8px 0 8px 20px;
+    }
+
+    .btn-acessar-campanha {
+      width: 100%;
+      min-height: 40px;
+      margin-top: 0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(244, 240, 255, 0.88);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+      font-weight: 900;
+      transition: 0.22s ease;
+    }
+
+    .btn-acessar-campanha:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(0, 200, 255, 0.1);
+    }
+
+    .campanha-acoes {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: stretch;
+    }
+
+    .btn-excluir-campanha {
+      min-width: 106px;
+      min-height: 40px;
+      border: 1px solid rgba(255, 55, 105, 0.34);
+      border-radius: 13px;
+      background: rgba(255, 0, 76, 0.1);
+      color: rgba(255, 210, 225, 0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.22s ease;
+    }
+
+    .btn-excluir-campanha:hover {
+      color: #fff;
+      background: rgba(255, 0, 76, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(255, 0, 76, 0.16);
+    }
+
+    .modal-campanha {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.68);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: 0.25s ease;
+    }
+
+    .modal-campanha.aberto {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .modal-caixa {
+      width: min(720px, 100%);
+      max-height: calc(100dvh - 44px);
+      overflow: auto;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 120, 0.14), transparent 34%),
+        radial-gradient(circle at 90% 80%, rgba(0, 200, 255, 0.12), transparent 34%),
+        rgba(9, 7, 18, 0.96);
+      box-shadow:
+        0 0 30px rgba(255, 0, 120, 0.18),
+        0 0 54px rgba(0, 200, 255, 0.12),
+        inset 0 0 32px rgba(255, 255, 255, 0.035);
+      padding: clamp(22px, 4vw, 34px);
+      transform: translateY(14px) scale(0.98);
+      transition: 0.25s ease;
+    }
+
+    .modal-campanha.aberto .modal-caixa {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-cabecalho {
+      padding-right: 44px;
+      margin-bottom: 22px;
+    }
+
+    .modal-cabecalho h2 {
+      color: #fff;
+      font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-shadow:
+        0 0 10px rgba(255, 0, 120, 0.42),
+        0 0 22px rgba(0, 200, 255, 0.2);
+    }
+
+    .modal-cabecalho p {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .modal-fechar {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 1.45rem;
+      line-height: 1;
+      transition: 0.22s ease;
+    }
+
+    .modal-fechar:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+
+    .form-campanha {
+      display: grid;
+      gap: 16px;
+    }
+
+    .campo-formulario {
+      display: grid;
+      gap: 8px;
+    }
+
+    .campo-formulario label,
+    .label-editor {
+      color: rgba(244, 240, 255, 0.82);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .campo-formulario input,
+    .campo-formulario select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.28);
+      color: #fff;
+      padding: 0 14px;
+      outline: none;
+      font-size: 0.98rem;
+      transition: 0.22s ease;
+    }
+
+    .campo-formulario select option {
+      color: #080710;
+      background: #f4f0ff;
+    }
+
+    .campo-formulario input:focus,
+    .campo-formulario select:focus,
+    .editor-descricao:focus {
+      border-color: rgba(0, 200, 255, 0.48);
+      box-shadow:
+        0 0 0 3px rgba(0, 200, 255, 0.09),
+        0 0 18px rgba(255, 0, 120, 0.1);
+    }
+
+    .editor-caixa {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .btn-editor {
+      min-width: 38px;
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.78rem;
+      font-weight: 900;
+      transition: 0.2s ease;
+    }
+
+    .btn-editor:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+
+    .editor-descricao {
+      min-height: 150px;
+      padding: 14px;
+      outline: none;
+      color: #fff;
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .editor-descricao:empty::before {
+      content: attr(data-placeholder);
+      color: rgba(244, 240, 255, 0.42);
+      pointer-events: none;
+    }
+
+    .editor-descricao ul,
+    .editor-descricao ol {
+      margin-left: 22px;
+    }
+
+    .modal-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
     @keyframes brilhoAtrasColorido {
       0% {
         text-shadow:
@@ -578,6 +899,14 @@
         letter-spacing: .08em;
       }
 
+      .campanha-acoes {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-excluir-campanha {
+        width: 100%;
+      }
+
       .modal-personagem {
         padding: 14px;
         align-items: flex-start;
@@ -597,7 +926,7 @@
 
 <body>
   <header class="topbar">
-    <a href="personagens.html" class="logo-dado">Dado</a>
+    <a href="index.html" class="logo-dado">Dado</a>
 
     <nav class="nav-abas" aria-label="Navegação principal">
       <a href="personagens.html">Personagens</a>
@@ -619,25 +948,84 @@
         </p>
 
         <div class="acoes-campanhas">
-          <a href="#" class="btn-primario">Criar campanha</a>
+          <button type="button" id="btnAbrirCriarCampanha" class="btn-primario">Criar campanha</button>
           <a href="personagens.html" class="btn-secundario">Ver personagens</a>
         </div>
       </div>
 
       <aside class="painel-lateral">
-        <div class="card-vazio">
-          <h2>Nenhuma campanha</h2>
-          <p>
-            Quando as campanhas forem criadas, elas podem aparecer aqui em cards com imagem, nome, sistema, jogadores e botão para acessar.
-          </p>
-        </div>
+        <div id="campanhasLista" class="campanhas-lista" aria-live="polite"></div>
       </aside>
     </section>
   </main>
 
+
+  <div id="modalCampanha" class="modal-campanha" aria-hidden="true">
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalCampanha">
+      <button type="button" id="btnFecharModalCampanha" class="modal-fechar" aria-label="Fechar janela">×</button>
+
+      <div class="modal-cabecalho">
+        <h2 id="tituloModalCampanha">Criar campanha</h2>
+        <p>Preencha as informações principais da campanha antes de adicionar jogadores e personagens.</p>
+      </div>
+
+      <form id="formCampanha" class="form-campanha">
+        <div class="campo-formulario">
+          <label for="nomeCampanha">Nome da campanha</label>
+          <input type="text" id="nomeCampanha" name="nomeCampanha" placeholder="Ex.: Ecos da Noite" autocomplete="off" required />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="sistemaCampanha">Sistema utilizado</label>
+          <select id="sistemaCampanha" name="sistemaCampanha" required>
+            <option value="Vampiro: a Máscara">Vampiro: a Máscara</option>
+          </select>
+        </div>
+
+        <div class="campo-formulario">
+          <span class="label-editor">Descrição da campanha</span>
+          <div class="editor-caixa">
+            <div class="editor-toolbar" aria-label="Editor de descrição">
+              <button type="button" class="btn-editor" data-comando="bold" title="Negrito"><strong>B</strong></button>
+              <button type="button" class="btn-editor" data-comando="italic" title="Itálico"><em>I</em></button>
+              <button type="button" class="btn-editor" data-comando="underline" title="Sublinhado"><u>U</u></button>
+              <button type="button" class="btn-editor" data-comando="insertUnorderedList" title="Lista">• Lista</button>
+              <button type="button" class="btn-editor" data-comando="removeFormat" title="Limpar formatação">Limpar</button>
+            </div>
+            <div
+              id="descricaoCampanhaEditor"
+              class="editor-descricao"
+              contenteditable="true"
+              role="textbox"
+              aria-multiline="true"
+              data-placeholder="Escreva uma breve descrição, o clima da história, cidade, tema e objetivo da campanha..."
+            ></div>
+          </div>
+        </div>
+
+        <div class="modal-acoes">
+          <button type="button" id="btnCancelarCampanha" class="btn-secundario">Cancelar</button>
+          <button type="submit" class="btn-primario">Criar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
     const btnSair = document.getElementById('btnSair');
+    const btnAbrirCriarCampanha = document.getElementById('btnAbrirCriarCampanha');
+    const modalCampanha = document.getElementById('modalCampanha');
+    const btnFecharModalCampanha = document.getElementById('btnFecharModalCampanha');
+    const btnCancelarCampanha = document.getElementById('btnCancelarCampanha');
+    const formCampanha = document.getElementById('formCampanha');
+    const nomeCampanha = document.getElementById('nomeCampanha');
+    const sistemaCampanha = document.getElementById('sistemaCampanha');
+    const descricaoCampanhaEditor = document.getElementById('descricaoCampanhaEditor');
+    const campanhasLista = document.getElementById('campanhasLista');
+    const botoesEditor = document.querySelectorAll('.btn-editor[data-comando]');
+    const CHAVE_CAMPANHAS = 'campanhasCriadas';
+    const LIMITE_CAMPANHAS = 15;
 
     function carregarUsuario() {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
@@ -667,6 +1055,188 @@
       }
     }
 
+    function abrirModalCampanha() {
+      modalCampanha.classList.add('aberto');
+      modalCampanha.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => nomeCampanha.focus(), 80);
+    }
+
+    function fecharModalCampanha() {
+      modalCampanha.classList.remove('aberto');
+      modalCampanha.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      formCampanha.reset();
+      descricaoCampanhaEditor.innerHTML = '';
+    }
+
+    function escaparTexto(texto) {
+      return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function sanitizarDescricao(html) {
+      const temporario = document.createElement('div');
+      temporario.innerHTML = html;
+      const tagsPermitidas = ['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'BR', 'P', 'DIV'];
+
+      temporario.querySelectorAll('script, style, iframe, object, embed, link, meta').forEach((elemento) => elemento.remove());
+
+      temporario.querySelectorAll('*').forEach((elemento) => {
+        if (!tagsPermitidas.includes(elemento.tagName)) {
+          elemento.replaceWith(...Array.from(elemento.childNodes));
+          return;
+        }
+
+        Array.from(elemento.attributes).forEach((atributo) => elemento.removeAttribute(atributo.name));
+      });
+
+      return temporario.innerHTML.trim();
+    }
+
+    function obterCampanhas() {
+      try {
+        const campanhasSalvas = JSON.parse(localStorage.getItem(CHAVE_CAMPANHAS)) || [];
+        return Array.isArray(campanhasSalvas) ? campanhasSalvas : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function salvarCampanhas(campanhas) {
+      localStorage.setItem(CHAVE_CAMPANHAS, JSON.stringify(campanhas));
+    }
+
+    function excluirCampanha(idCampanha) {
+      const campanhas = obterCampanhas();
+      const campanha = campanhas.find((item) => item.id === idCampanha);
+
+      if (!campanha) return;
+
+      const confirmarExclusao = confirm(`Excluir a campanha "${campanha.nome}"? Essa ação não pode ser desfeita.`);
+
+      if (!confirmarExclusao) return;
+
+      const campanhasAtualizadas = campanhas.filter((item) => item.id !== idCampanha);
+      salvarCampanhas(campanhasAtualizadas);
+
+      if (localStorage.getItem('campanhaSelecionada') === idCampanha) {
+        localStorage.removeItem('campanhaSelecionada');
+      }
+
+      renderizarCampanhas();
+    }
+
+    function renderizarCampanhas() {
+      const campanhas = obterCampanhas();
+
+      if (!campanhas.length) {
+        campanhasLista.innerHTML = `
+          <div class="card-vazio">
+            <h2>Nenhuma campanha</h2>
+            <p>
+              Clique em criar campanha para cadastrar uma história com nome, sistema e descrição.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      campanhasLista.innerHTML = campanhas.map((campanha) => {
+        const descricaoSegura = sanitizarDescricao(campanha.descricao || '');
+        const descricao = descricaoSegura || '<p>Sem descrição cadastrada.</p>';
+        const linkCampanha = `campanha.html?id=${encodeURIComponent(campanha.id)}`;
+
+        return `
+          <article class="campanha-card">
+            <h3>${escaparTexto(campanha.nome)}</h3>
+            <span class="campanha-sistema">${escaparTexto(campanha.sistema)}</span>
+            <div class="campanha-descricao">${descricao}</div>
+            <div class="campanha-acoes">
+              <a href="${linkCampanha}" class="btn-acessar-campanha" data-campanha-id="${escaparTexto(campanha.id)}">Acessar campanha</a>
+              <button type="button" class="btn-excluir-campanha" data-excluir-campanha-id="${escaparTexto(campanha.id)}">Excluir</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    botoesEditor.forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const comando = botao.dataset.comando;
+        descricaoCampanhaEditor.focus();
+        document.execCommand(comando, false, null);
+      });
+    });
+
+    btnAbrirCriarCampanha.addEventListener('click', abrirModalCampanha);
+    btnFecharModalCampanha.addEventListener('click', fecharModalCampanha);
+    btnCancelarCampanha.addEventListener('click', fecharModalCampanha);
+
+    campanhasLista.addEventListener('click', (evento) => {
+      const botaoExcluir = evento.target.closest('[data-excluir-campanha-id]');
+
+      if (botaoExcluir) {
+        excluirCampanha(botaoExcluir.dataset.excluirCampanhaId);
+        return;
+      }
+
+      const linkCampanha = evento.target.closest('[data-campanha-id]');
+
+      if (!linkCampanha) return;
+
+      localStorage.setItem('campanhaSelecionada', linkCampanha.dataset.campanhaId);
+    });
+
+    modalCampanha.addEventListener('click', (evento) => {
+      if (evento.target === modalCampanha) {
+        fecharModalCampanha();
+      }
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && modalCampanha.classList.contains('aberto')) {
+        fecharModalCampanha();
+      }
+    });
+
+    formCampanha.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+
+      const campanhas = obterCampanhas();
+
+      if (campanhas.length >= LIMITE_CAMPANHAS) {
+        alert(`Você atingiu o limite de ${LIMITE_CAMPANHAS} campanhas.`);
+        return;
+      }
+
+      const nome = nomeCampanha.value.trim();
+      const sistema = sistemaCampanha.value.trim();
+      const descricao = sanitizarDescricao(descricaoCampanhaEditor.innerHTML);
+
+      if (!nome) {
+        nomeCampanha.focus();
+        return;
+      }
+
+      const novaCampanha = {
+        id: `campanha-${Date.now()}`,
+        nome,
+        sistema,
+        descricao,
+        criadaEm: new Date().toISOString()
+      };
+
+      campanhas.unshift(novaCampanha);
+      salvarCampanhas(campanhas);
+      localStorage.setItem('campanhaSelecionada', novaCampanha.id);
+      window.location.href = `campanha.html?id=${encodeURIComponent(novaCampanha.id)}`;
+    });
+
     btnSair.addEventListener('click', () => {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
 
@@ -681,6 +1251,7 @@
     });
 
     carregarUsuario();
+    renderizarCampanhas();
   </script>
 </body>
 </html>

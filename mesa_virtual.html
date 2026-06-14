@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesa virtual</title>
+  <style>
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --fundo: #030306;
+      --card: rgba(9, 7, 18, 0.78);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --borda: rgba(255, 255, 255, 0.14);
+      --texto: #f4f0ff;
+      --muted: rgba(244, 240, 255, 0.66);
+      --pink: rgba(255, 0, 120, 0.72);
+      --cyan: rgba(0, 200, 255, 0.62);
+      --violet: rgba(138, 43, 226, 0.72);
+    }
+    html { width: 100%; max-width: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      width: 100%; max-width: 100%; min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 0, 120, 0.14), transparent 32%),
+        radial-gradient(circle at 86% 74%, rgba(0, 200, 255, 0.13), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(138, 43, 226, 0.16), transparent 44%),
+        linear-gradient(180deg, #05030b 0%, #000 100%);
+      color: var(--texto); font-family: Arial, Helvetica, sans-serif; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 0;
+      background: conic-gradient(from 0deg, transparent, rgba(255, 0, 120, 0.065), rgba(0, 200, 255, 0.065), rgba(138, 43, 226, 0.065), transparent);
+      animation: girarBrilho 18s linear infinite;
+    }
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10) 0 1px, transparent 1px),
+        radial-gradient(circle at 35% 55%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+      background-size: 34px 34px, 58px 58px, 92px 92px; opacity: 0.22; mix-blend-mode: screen;
+      animation: ruido 1.6s steps(2) infinite;
+    }
+    img, svg, video, canvas { max-width: 100%; height: auto; }
+    input, textarea, select, button { max-width: 100%; font: inherit; }
+    button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+
+    .topbar {
+      width: min(1180px, calc(100% - 34px)); min-height: 82px; margin: 18px auto 0; padding: 14px 18px;
+      position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px;
+      border: 1px solid var(--borda); border-radius: 24px; background: rgba(8, 6, 18, 0.72); backdrop-filter: blur(16px);
+      box-shadow: 0 0 22px rgba(255, 0, 120, 0.14), 0 0 42px rgba(0, 200, 255, 0.09), inset 0 0 28px rgba(255, 255, 255, 0.035);
+      overflow: hidden; animation: surgirTopo 0.9s ease forwards;
+    }
+    .topbar::before {
+      content: ""; position: absolute; inset: 0; padding: 1px; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078); background-size: 320% 320%; animation: moverCores 6s linear infinite; opacity: 0.45;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    }
+    .logo-dado {
+      justify-self: start; color: #f5e6ff; text-decoration: none; text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.7rem, 4vw, 2.6rem); letter-spacing: 0.12em; line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite; white-space: nowrap;
+    }
+    .nav-abas { justify-self: center; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 7px; border: 1px solid rgba(255,255,255,.11); border-radius: 18px; background: rgba(0,0,0,.28); }
+    .nav-abas a { min-width: 138px; text-align: center; padding: 12px 18px; border-radius: 13px; color: rgba(244,240,255,.72); text-decoration: none; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 900; transition: .25s ease; }
+    .nav-abas a:hover, .nav-abas a.ativo { color:#fff; background: linear-gradient(90deg, rgba(255,0,120,.64), rgba(0,200,255,.52), rgba(138,43,226,.64)); background-size: 220% 220%; box-shadow: 0 0 16px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14); animation: moverCores 5s linear infinite; }
+    .usuario-area { justify-self: end; display:flex; align-items:center; gap:12px; min-width:0; }
+    .usuario-nome { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff; font-weight:800; text-align:right; text-shadow: 0 0 8px rgba(255,0,120,.34), 0 0 14px rgba(0,200,255,.2); }
+
+    .conteudo { width: min(1180px, calc(100% - 34px)); margin: 46px auto 40px; position: relative; z-index: 1; animation: surgirConteudo 1s ease forwards; }
+    .painel { border: 1px solid var(--borda); border-radius: 26px; background: var(--card); backdrop-filter: blur(14px); box-shadow: 0 0 22px rgba(255,0,120,.12), 0 0 42px rgba(0,200,255,.08), inset 0 0 28px rgba(255,255,255,.032); padding: clamp(22px, 4vw, 40px); }
+    .pagina-topo { display: grid; grid-template-columns: 190px 1fr auto; align-items: center; gap: 18px; margin-bottom: 24px; }
+    .capa-campanha { width: 190px; aspect-ratio: 16 / 9; border: 1px dashed rgba(255,255,255,.18); border-radius: 18px; overflow: hidden; background: rgba(255,255,255,.045); display:flex; align-items:center; justify-content:center; color: var(--muted); font-size:.78rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-align:center; }
+    .capa-campanha img { width: 100%; height: 100%; object-fit: cover; display:block; }
+    .titulo-pagina { font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif; font-size: clamp(2.15rem, 6vw, 4.6rem); line-height:.95; text-transform: uppercase; letter-spacing:.04em; color:#fff; word-break: break-word; text-shadow: 0 0 10px rgba(255,0,120,.45), 0 0 24px rgba(0,200,255,.22), 0 0 42px rgba(138,43,226,.22); }
+    .subtitulo { display:inline-flex; margin-top:10px; min-height:30px; align-items:center; padding:5px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:linear-gradient(90deg, rgba(255,0,120,.22), rgba(0,200,255,.14)); color: rgba(255,255,255,.9); font-size:.7rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .acoes-topo { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .btn-sair, .btn-primario, .btn-secundario, .btn-menor { font-family: inherit; cursor: pointer; }
+    .btn-sair { border: 1px solid rgba(255,255,255,.18); border-radius:12px; background:rgba(255,255,255,.06); color:rgba(244,240,255,.82); padding:9px 12px; font-size:.72rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; transition:.22s ease; }
+    .btn-primario, .btn-secundario { min-height: 46px; padding: 0 18px; border-radius:15px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; text-transform:uppercase; letter-spacing:.1em; font-size:.76rem; font-weight:900; transition:.25s ease; white-space:nowrap; }
+    .btn-primario { border:1px solid rgba(255,255,255,.28); color:#fff; background:linear-gradient(90deg, rgba(255,0,120,.72), rgba(0,200,255,.62), rgba(138,43,226,.72)); background-size:220% 220%; animation:moverCores 5s linear infinite; box-shadow:0 0 18px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14); }
+    .btn-secundario { border:1px solid rgba(255,255,255,.16); color:rgba(244,240,255,.82); background:rgba(255,255,255,.055); }
+    .btn-menor { min-height:34px; padding:0 11px; border-radius:11px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:rgba(255,255,255,.86); font-size:.72rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+    .btn-sair:hover, .btn-primario:hover, .btn-secundario:hover, .btn-menor:hover { transform: translateY(-2px); color:#fff; border-color: rgba(255,255,255,.38); }
+
+    .grid { display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+    .card { grid-column: span 6; border:1px solid rgba(255,255,255,.12); border-radius:22px; background:rgba(0,0,0,.22); padding:20px; min-width:0; }
+    .card.card-largo { grid-column: 1 / -1; }
+    .card.card-terco { grid-column: span 4; }
+    .card h2, .card h3 { color:#fff; margin-bottom:12px; text-transform:uppercase; letter-spacing:.1em; font-size:1rem; }
+    .card h3 { font-size:.88rem; margin-top: 12px; }
+    .texto-muted, .estado-vazio { color:var(--muted); line-height:1.6; }
+    .linha { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-bottom: 12px; }
+    .campo { display:grid; gap:7px; color:rgba(244,240,255,.84); font-size:.75rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+    .campo input, .campo select, .campo textarea, textarea.area-grande, input.input-texto { width:100%; border:1px solid rgba(255,255,255,.14); border-radius:14px; background:rgba(0,0,0,.26); color:#fff; padding:13px 14px; outline:none; font:inherit; text-transform:none; letter-spacing:0; font-weight:700; }
+    .campo textarea, textarea.area-grande { min-height: 150px; resize: vertical; line-height: 1.5; font-weight: 600; }
+    .acoes-card { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+    .resultado { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.045); padding:14px; min-height:54px; color:#fff; line-height:1.6; word-break:break-word; }
+    .dado-tag { display:inline-flex; align-items:center; justify-content:center; min-width:34px; min-height:34px; padding:5px 8px; border-radius:10px; margin:3px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:#fff; font-weight:900; }
+    .dado-fome { border-color:rgba(255,0,80,.42); background:rgba(255,0,80,.2); }
+    .lista { display:grid; gap:10px; }
+    .personagem-card { display:grid; grid-template-columns: 54px 1fr; gap:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.045); padding:12px; align-items:center; }
+    .personagem-foto { width:54px; height:54px; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(255,0,120,.28), rgba(0,200,255,.18)); color:#fff; font-weight:900; }
+    .personagem-foto img { width:100%; height:100%; object-fit:cover; display:block; }
+    .personagem-info { min-width:0; display:grid; gap:5px; }
+    .personagem-info strong { color:#fff; word-break:break-word; }
+    .personagem-info span { color:var(--muted); font-size:.82rem; line-height:1.35; word-break:break-word; }
+    .mini-acoes { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+    .erro { text-align:center; border:1px dashed rgba(255,255,255,.18); border-radius:22px; background:rgba(0,0,0,.22); padding:30px; }
+    .erro h1 { color:#fff; font-size:clamp(1.6rem, 6vw, 3rem); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+    .aviso-flutuante { position:fixed; left:50%; bottom:24px; z-index:30; transform:translateX(-50%) translateY(20px); max-width:min(520px, calc(100% - 30px)); border:1px solid rgba(255,255,255,.18); border-radius:16px; background:rgba(9,7,18,.96); color:#fff; padding:12px 16px; box-shadow:0 0 22px rgba(0,200,255,.14); opacity:0; pointer-events:none; transition:.25s ease; text-align:center; font-weight:800; }
+    .aviso-flutuante.mostrar { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @keyframes brilhoAtrasColorido {
+      0% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+      25% { text-shadow: 0 0 8px #00c8ff, 0 0 18px #00c8ff, 0 0 34px #00c8ff, 0 0 58px #004cff; }
+      50% { text-shadow: 0 0 8px #00ff85, 0 0 18px #00ff85, 0 0 34px #00ff85, 0 0 58px #00c8ff; }
+      75% { text-shadow: 0 0 8px #ffe600, 0 0 18px #ffe600, 0 0 34px #ff9f1c, 0 0 58px #ff00ff; }
+      100% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+    }
+    @keyframes moverCores { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+    @keyframes girarBrilho { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes ruido { 0% { transform:translate(0,0); } 50% { transform:translate(-1px,1px); } 100% { transform:translate(1px,-1px); } }
+    @keyframes surgirTopo { from { opacity:0; transform:translateY(-16px); filter:blur(8px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+    @keyframes surgirConteudo { from { opacity:0; transform:translateY(20px); filter:blur(8px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+
+    @media (max-width: 980px) {
+      .topbar { width:min(100% - 24px, 1180px); min-height:0; margin-top:12px; grid-template-columns:1fr; justify-items:center; gap:12px; padding:16px 14px; border-radius:20px; }
+      .logo-dado, .nav-abas, .usuario-area { justify-self:center; }
+      .nav-abas { width:100%; }
+      .nav-abas a { min-width:0; flex:1 1 0; padding:11px 8px; font-size:.68rem; letter-spacing:.07em; }
+      .usuario-area { width:100%; justify-content:center; flex-wrap:wrap; }
+      .usuario-nome { max-width:100%; text-align:center; }
+      .conteudo { width:min(100% - 24px, 1180px); margin-top:24px; margin-bottom:34px; }
+      .pagina-topo { grid-template-columns:1fr; align-items:start; }
+      .capa-campanha { width:100%; max-width:360px; }
+      .acoes-topo { justify-content:flex-start; }
+      .btn-primario, .btn-secundario { width:100%; }
+      .card, .card.card-terco { grid-column: 1 / -1; }
+      .linha { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .conteudo { width:min(100% - 20px, 1180px); margin-top:18px; }
+      .painel, .card { border-radius:22px; }
+      .titulo-pagina { font-size: clamp(2.1rem, 14vw, 3.5rem); }
+      .personagem-card { grid-template-columns: 46px 1fr; }
+      .personagem-foto { width:46px; height:46px; border-radius:12px; }
+    }
+
+    .mapa-area { width:100%; aspect-ratio: 16 / 9; border: 1px dashed rgba(255,255,255,.18); border-radius:18px; overflow:hidden; background: rgba(255,255,255,.04); display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-align:center; }
+    .mapa-area img { width:100%; height:100%; object-fit:cover; display:block; }
+    .botoes-dados { display:grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap:8px; margin-top:12px; }
+    .historico-rolagens { max-height: 290px; overflow:auto; display:grid; gap:10px; padding-right:4px; }
+    .historico-item { border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.04); padding:12px; color:var(--muted); line-height:1.55; }
+    .historico-item strong { color:#fff; }
+    @media (max-width: 560px) { .botoes-dados { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo-dado">Dado</a>
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html">Personagens</a>
+      <a href="campanhas.html" class="ativo">Campanhas</a>
+    </nav>
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo" id="conteudoPrincipal">
+    <section class="painel">
+      <div class="pagina-topo">
+        <div id="capaCampanha" class="capa-campanha"><span>Imagem da campanha</span></div>
+        <div>
+          <h1 id="tituloCampanha" class="titulo-pagina">Mesa virtual</h1>
+          <span id="sistemaCampanha" class="subtitulo">Sistema</span>
+        </div>
+        <div class="acoes-topo">
+          <a id="linkVoltarCampanha" href="campanha.html" class="btn-secundario">Voltar para campanha</a>
+          <a href="escudo_mestre.html" id="linkEscudo" class="btn-primario">Escudo do mestre</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="card card-largo">
+          <h2>Mesa virtual</h2>
+          <p class="texto-muted">Área de apoio para a cena atual, rolagens, registro da sessão e personagens vinculados à campanha.</p>
+        </section>
+
+        <section class="card card-largo">
+          <h2>Cena / mapa</h2>
+          <div id="areaMapa" class="mapa-area">Nenhum mapa selecionado.</div>
+          <div class="linha" style="margin-top:12px;">
+            <label class="campo">
+              Nome da cena
+              <input type="text" id="nomeCena" placeholder="Ex.: Salão principal, refúgio, beco..." />
+            </label>
+            <label class="campo">
+              Imagem do mapa/cena
+              <input type="file" id="campoMapa" accept="image/*" />
+            </label>
+            <div class="campo">
+              Ações
+              <div class="acoes-card" style="margin-top:0;">
+                <button type="button" id="btnSalvarCena" class="btn-primario">Salvar cena</button>
+                <button type="button" id="btnLimparMapa" class="btn-secundario">Limpar mapa</button>
+              </div>
+            </div>
+          </div>
+          <label class="campo">
+            Descrição rápida da cena
+            <textarea id="descricaoCena" placeholder="Anote onde os personagens estão, clima, perigo, NPCs presentes..."></textarea>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>Rolagem Vampiro V5</h2>
+          <div class="linha">
+            <label class="campo">
+              Dados comuns
+              <input type="number" id="dadosComuns" min="0" max="30" value="4" />
+            </label>
+            <label class="campo">
+              Dados de fome
+              <input type="number" id="dadosFome" min="0" max="5" value="1" />
+            </label>
+            <label class="campo">
+              Dificuldade
+              <input type="number" id="dificuldadeV5" min="0" max="20" value="1" />
+            </label>
+          </div>
+          <div class="acoes-card">
+            <button type="button" id="btnRolarV5" class="btn-primario">Rolar V5</button>
+          </div>
+          <div id="resultadoV5" class="resultado" style="margin-top:12px;">Resultado da rolagem aparecerá aqui.</div>
+        </section>
+
+        <section class="card">
+          <h2>Dados rápidos</h2>
+          <div class="linha">
+            <label class="campo">
+              Quantidade
+              <input type="number" id="quantidadeDado" min="1" max="50" value="1" />
+            </label>
+            <label class="campo">
+              Dado
+              <select id="tipoDado">
+                <option value="4">d4</option>
+                <option value="6" selected>d6</option>
+                <option value="8">d8</option>
+                <option value="10">d10</option>
+                <option value="12">d12</option>
+                <option value="20">d20</option>
+                <option value="100">d100</option>
+              </select>
+            </label>
+            <label class="campo">
+              Modificador
+              <input type="number" id="modificadorDado" value="0" />
+            </label>
+          </div>
+          <div class="acoes-card">
+            <button type="button" id="btnRolarDado" class="btn-primario">Rolar</button>
+          </div>
+          <div class="botoes-dados" aria-label="Dados rápidos">
+            <button type="button" class="btn-menor" data-dado-rapido="4">d4</button>
+            <button type="button" class="btn-menor" data-dado-rapido="6">d6</button>
+            <button type="button" class="btn-menor" data-dado-rapido="8">d8</button>
+            <button type="button" class="btn-menor" data-dado-rapido="10">d10</button>
+            <button type="button" class="btn-menor" data-dado-rapido="12">d12</button>
+            <button type="button" class="btn-menor" data-dado-rapido="20">d20</button>
+          </div>
+          <div id="resultadoDado" class="resultado" style="margin-top:12px;">Resultado do dado aparecerá aqui.</div>
+        </section>
+
+        <section class="card">
+          <h2>Personagens</h2>
+          <div id="listaPersonagens" class="lista"></div>
+        </section>
+
+        <section class="card">
+          <h2>Histórico de rolagens</h2>
+          <div class="acoes-card" style="margin-top:0; margin-bottom:10px;">
+            <button type="button" id="btnLimparHistorico" class="btn-menor">Limpar histórico</button>
+          </div>
+          <div id="historicoRolagens" class="historico-rolagens"></div>
+        </section>
+
+        <section class="card card-largo">
+          <h2>Registro da mesa</h2>
+          <textarea id="registroMesa" class="area-grande" placeholder="Anote acontecimentos da sessão, pistas, decisões importantes e pendências..."></textarea>
+          <div class="acoes-card">
+            <button type="button" id="btnSalvarRegistro" class="btn-primario">Salvar registro</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="avisoFlutuante" class="aviso-flutuante" role="status" aria-live="polite"></div>
+
+  <script>
+
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const avisoFlutuante = document.getElementById('avisoFlutuante');
+    const CHAVE_CAMPANHAS = 'campanhasCriadas';
+    let campanhaAtual = null;
+
+    function escaparTexto(texto) {
+      return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function carregarUsuario() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (!usuarioSalvo) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+        if (!usuario || usuario.logado !== true || !usuario.nome) throw new Error('Usuário inválido');
+        usuarioNome.textContent = usuario.nome;
+        btnSair.textContent = 'Sair';
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+      }
+    }
+
+    function obterCampanhas() {
+      try {
+        const campanhas = JSON.parse(localStorage.getItem(CHAVE_CAMPANHAS)) || [];
+        return Array.isArray(campanhas) ? campanhas : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function obterIdCampanha() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || localStorage.getItem('campanhaSelecionada');
+    }
+
+    function obterPersonagensCampanha() {
+      return Array.isArray(campanhaAtual?.personagens) ? campanhaAtual.personagens : [];
+    }
+
+    function obterIdPersonagem(personagem) {
+      if (typeof personagem === 'string' || typeof personagem === 'number') return String(personagem);
+      if (!personagem || typeof personagem !== 'object') return '';
+      return String(personagem.id || personagem.personagemId || personagem.fichaId || personagem.uid || '');
+    }
+
+    function obterNomePersonagem(personagem, indice) {
+      if (!personagem || typeof personagem !== 'object') return `Personagem ${indice + 1}`;
+      return String(personagem.nome || personagem.nomePersonagem || personagem.personagemNome || personagem.titulo || `Personagem ${indice + 1}`);
+    }
+
+    function obterSistemaPersonagem(personagem) {
+      if (!personagem || typeof personagem !== 'object') return 'Sistema não informado';
+      return String(personagem.sistema || personagem.modelo || personagem.fichaModelo || 'Sistema não informado');
+    }
+
+    function obterImagemPersonagem(personagem) {
+      if (!personagem || typeof personagem !== 'object') return '';
+      return String(personagem.imagem || personagem.foto || personagem.avatar || personagem.imagemPersonagem || personagem.fotoPersonagem || '');
+    }
+
+    function obterInicial(nome) {
+      return String(nome || '?').trim().charAt(0).toUpperCase() || '?';
+    }
+
+    function montarPaginaFichaPersonagem(personagem) {
+      if (personagem && typeof personagem === 'object' && personagem.pagina) return String(personagem.pagina);
+      const sistema = obterSistemaPersonagem(personagem).toLowerCase();
+      if (sistema.includes('vampiro')) return 'ficha_vampiro_jogo.html';
+      if (sistema.includes('ordem')) return 'ficha_ordem_paranormal_jogo.html';
+      return 'personagens.html';
+    }
+
+    function montarLinkFicha(personagem) {
+      const pagina = montarPaginaFichaPersonagem(personagem);
+      const id = obterIdPersonagem(personagem);
+      if (!id || pagina === 'personagens.html') return pagina;
+      const separador = pagina.includes('?') ? '&' : '?';
+      return `${pagina}${separador}id=${encodeURIComponent(id)}`;
+    }
+
+    function renderizarFotoPersonagem(personagem, nome) {
+      const imagem = obterImagemPersonagem(personagem);
+      if (imagem) return `<img src="${escaparTexto(imagem)}" alt="Foto de ${escaparTexto(nome)}">`;
+      return escaparTexto(obterInicial(nome));
+    }
+
+    function mostrarAviso(texto) {
+      avisoFlutuante.textContent = texto;
+      avisoFlutuante.classList.add('mostrar');
+      clearTimeout(mostrarAviso._timer);
+      mostrarAviso._timer = setTimeout(() => avisoFlutuante.classList.remove('mostrar'), 2400);
+    }
+
+    function atualizarTopoPagina(tipoPagina) {
+      const tituloCampanha = document.getElementById('tituloCampanha');
+      const sistemaCampanha = document.getElementById('sistemaCampanha');
+      const capaCampanha = document.getElementById('capaCampanha');
+      const linkVoltarCampanha = document.getElementById('linkVoltarCampanha');
+
+      document.title = `${tipoPagina} - ${campanhaAtual.nome || 'Campanha'}`;
+      tituloCampanha.textContent = campanhaAtual.nome || 'Campanha';
+      sistemaCampanha.textContent = campanhaAtual.sistema || 'Sistema não informado';
+      linkVoltarCampanha.href = `campanha.html?id=${encodeURIComponent(campanhaAtual.id)}`;
+
+      if (campanhaAtual.imagem) {
+        capaCampanha.innerHTML = `<img src="${escaparTexto(campanhaAtual.imagem)}" alt="Imagem da campanha">`;
+      } else {
+        capaCampanha.innerHTML = '<span>Imagem da campanha</span>';
+      }
+    }
+
+    function mostrarErroCampanha() {
+      const conteudo = document.getElementById('conteudoPrincipal');
+      conteudo.innerHTML = `
+        <section class="erro">
+          <h1>Campanha não encontrada</h1>
+          <p class="texto-muted">Abra esta página pelo botão Mesa dentro de uma campanha existente.</p>
+          <a href="campanhas.html" class="btn-primario">Voltar para campanhas</a>
+        </section>
+      `;
+    }
+
+    function carregarCampanhaBase(tipoPagina) {
+      const campanhas = obterCampanhas();
+      const idCampanha = obterIdCampanha();
+      campanhaAtual = campanhas.find((campanha) => String(campanha.id) === String(idCampanha)) || null;
+      if (!campanhaAtual) {
+        mostrarErroCampanha();
+        return false;
+      }
+      localStorage.setItem('campanhaSelecionada', campanhaAtual.id);
+      atualizarTopoPagina(tipoPagina);
+      return true;
+    }
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      window.location.href = 'login.html';
+    });
+
+
+    const areaMapa = document.getElementById('areaMapa');
+    const nomeCena = document.getElementById('nomeCena');
+    const campoMapa = document.getElementById('campoMapa');
+    const descricaoCena = document.getElementById('descricaoCena');
+    const btnSalvarCena = document.getElementById('btnSalvarCena');
+    const btnLimparMapa = document.getElementById('btnLimparMapa');
+    const dadosComuns = document.getElementById('dadosComuns');
+    const dadosFome = document.getElementById('dadosFome');
+    const dificuldadeV5 = document.getElementById('dificuldadeV5');
+    const resultadoV5 = document.getElementById('resultadoV5');
+    const quantidadeDado = document.getElementById('quantidadeDado');
+    const tipoDado = document.getElementById('tipoDado');
+    const modificadorDado = document.getElementById('modificadorDado');
+    const resultadoDado = document.getElementById('resultadoDado');
+    const listaPersonagens = document.getElementById('listaPersonagens');
+    const historicoRolagens = document.getElementById('historicoRolagens');
+    const registroMesa = document.getElementById('registroMesa');
+    const linkEscudo = document.getElementById('linkEscudo');
+
+    let estadoMesa = { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [] };
+
+    function chaveMesa() { return `mesaVirtual_${campanhaAtual.id}`; }
+
+    function obterEstadoMesa() {
+      try {
+        const salvo = JSON.parse(localStorage.getItem(chaveMesa())) || {};
+        return { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [], ...salvo };
+      } catch (erro) {
+        return { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [] };
+      }
+    }
+
+    function salvarEstadoMesa() {
+      localStorage.setItem(chaveMesa(), JSON.stringify(estadoMesa));
+    }
+
+    function lerImagemComoBase64(arquivo) {
+      return new Promise((resolve, reject) => {
+        const leitor = new FileReader();
+        leitor.onload = () => {
+          const imagem = new Image();
+          imagem.onload = () => {
+            const larguraMaxima = 1400;
+            const alturaMaxima = 788;
+            let largura = imagem.width;
+            let altura = imagem.height;
+            const proporcao = Math.min(larguraMaxima / largura, alturaMaxima / altura, 1);
+            largura = Math.round(largura * proporcao);
+            altura = Math.round(altura * proporcao);
+            const canvas = document.createElement('canvas');
+            canvas.width = largura;
+            canvas.height = altura;
+            canvas.getContext('2d').drawImage(imagem, 0, 0, largura, altura);
+            resolve(canvas.toDataURL('image/jpeg', 0.86));
+          };
+          imagem.onerror = reject;
+          imagem.src = leitor.result;
+        };
+        leitor.onerror = reject;
+        leitor.readAsDataURL(arquivo);
+      });
+    }
+
+    function renderizarMapa() {
+      if (estadoMesa.mapa) {
+        areaMapa.innerHTML = `<img src="${escaparTexto(estadoMesa.mapa)}" alt="Mapa ou imagem da cena">`;
+      } else {
+        areaMapa.textContent = 'Nenhum mapa selecionado.';
+      }
+    }
+
+    function renderizarPersonagens() {
+      const personagens = obterPersonagensCampanha();
+      if (!personagens.length) {
+        listaPersonagens.innerHTML = '<p class="estado-vazio">Nenhum personagem foi adicionado à campanha ainda.</p>';
+        return;
+      }
+      listaPersonagens.innerHTML = personagens.map((personagem, indice) => {
+        const nome = obterNomePersonagem(personagem, indice);
+        const sistema = obterSistemaPersonagem(personagem);
+        return `
+          <article class="personagem-card">
+            <div class="personagem-foto">${renderizarFotoPersonagem(personagem, nome)}</div>
+            <div class="personagem-info">
+              <strong>${escaparTexto(nome)}</strong>
+              <span>${escaparTexto(sistema)}</span>
+              <div class="mini-acoes">
+                <a class="btn-menor" href="${escaparTexto(montarLinkFicha(personagem))}">Acessar ficha</a>
+              </div>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function renderizarHistorico() {
+      const itens = Array.isArray(estadoMesa.historico) ? estadoMesa.historico : [];
+      if (!itens.length) {
+        historicoRolagens.innerHTML = '<p class="estado-vazio">Nenhuma rolagem registrada ainda.</p>';
+        return;
+      }
+      historicoRolagens.innerHTML = itens.slice(0, 25).map((item) => `
+        <div class="historico-item"><strong>${escaparTexto(item.titulo)}:</strong> ${item.html}</div>
+      `).join('');
+    }
+
+    function adicionarHistorico(titulo, html) {
+      estadoMesa.historico = Array.isArray(estadoMesa.historico) ? estadoMesa.historico : [];
+      estadoMesa.historico.unshift({ titulo, html, data: new Date().toISOString() });
+      estadoMesa.historico = estadoMesa.historico.slice(0, 50);
+      salvarEstadoMesa();
+      renderizarHistorico();
+    }
+
+    function rolar(faces) { return Math.floor(Math.random() * faces) + 1; }
+
+    function criarTagsDados(resultados, classe = '') {
+      return resultados.map((valor) => `<span class="dado-tag ${classe}">${valor}</span>`).join('');
+    }
+
+    function rolarV5() {
+      const comuns = Math.max(0, Math.min(30, Number(dadosComuns.value) || 0));
+      const fome = Math.max(0, Math.min(5, Number(dadosFome.value) || 0));
+      const dificuldade = Math.max(0, Number(dificuldadeV5.value) || 0);
+      if (comuns + fome <= 0) { mostrarAviso('Informe pelo menos 1 dado para rolar.'); return; }
+
+      const resultadosComuns = Array.from({ length: comuns }, () => rolar(10));
+      const resultadosFome = Array.from({ length: fome }, () => rolar(10));
+      const todos = [...resultadosComuns, ...resultadosFome];
+      const sucessosBase = todos.filter((valor) => valor >= 6).length;
+      const dezenas = todos.filter((valor) => valor === 10).length;
+      const bonusCritico = Math.floor(dezenas / 2) * 2;
+      const sucessos = sucessosBase + bonusCritico;
+      const venceu = sucessos >= dificuldade;
+      const critico = dezenas >= 2;
+      const criticoBaguncado = critico && resultadosFome.includes(10);
+      const falhaBestial = !venceu && resultadosFome.includes(1);
+      const observacoes = [];
+      if (criticoBaguncado) observacoes.push('Crítico bagunçado');
+      else if (critico) observacoes.push('Crítico');
+      if (falhaBestial) observacoes.push('Falha bestial');
+      observacoes.push(venceu ? 'Sucesso' : 'Falha');
+
+      const html = `
+        <div><strong>${sucessos} sucesso(s)</strong> contra dificuldade ${dificuldade} — ${observacoes.join(' / ')}</div>
+        <div>Comuns: ${criarTagsDados(resultadosComuns) || 'nenhum'}</div>
+        <div>Fome: ${criarTagsDados(resultadosFome, 'dado-fome') || 'nenhum'}</div>
+      `;
+      resultadoV5.innerHTML = html;
+      adicionarHistorico('Vampiro V5', html);
+    }
+
+    function rolarDadoGenerico(facesForcadas = null) {
+      const quantidade = Math.max(1, Math.min(50, Number(quantidadeDado.value) || 1));
+      const faces = facesForcadas || Math.max(2, Number(tipoDado.value) || 6);
+      const modificador = Number(modificadorDado.value) || 0;
+      const resultados = Array.from({ length: quantidade }, () => rolar(faces));
+      const soma = resultados.reduce((total, valor) => total + valor, 0);
+      const total = soma + modificador;
+      const textoMod = modificador === 0 ? '' : ` ${modificador > 0 ? '+' : '-'} ${Math.abs(modificador)}`;
+      const html = `<div><strong>${quantidade}d${faces}${textoMod} = ${total}</strong></div><div>${criarTagsDados(resultados)}</div>`;
+      resultadoDado.innerHTML = html;
+      adicionarHistorico(`${quantidade}d${faces}`, html);
+    }
+
+    function carregarMesa() {
+      estadoMesa = obterEstadoMesa();
+      nomeCena.value = estadoMesa.nomeCena || '';
+      descricaoCena.value = estadoMesa.descricaoCena || '';
+      registroMesa.value = estadoMesa.registro || '';
+      renderizarMapa();
+      renderizarPersonagens();
+      renderizarHistorico();
+      linkEscudo.href = `escudo_mestre.html?id=${encodeURIComponent(campanhaAtual.id)}`;
+    }
+
+    campoMapa.addEventListener('change', async () => {
+      const arquivo = campoMapa.files?.[0];
+      if (!arquivo) return;
+      if (!arquivo.type.startsWith('image/')) { mostrarAviso('Selecione uma imagem válida.'); return; }
+      try {
+        estadoMesa.mapa = await lerImagemComoBase64(arquivo);
+        salvarEstadoMesa();
+        renderizarMapa();
+        mostrarAviso('Mapa atualizado.');
+      } catch (erro) {
+        mostrarAviso('Não consegui carregar a imagem.');
+      }
+    });
+
+    btnSalvarCena.addEventListener('click', () => {
+      estadoMesa.nomeCena = nomeCena.value.trim();
+      estadoMesa.descricaoCena = descricaoCena.value.trim();
+      salvarEstadoMesa();
+      mostrarAviso('Cena salva.');
+    });
+
+    btnLimparMapa.addEventListener('click', () => {
+      estadoMesa.mapa = '';
+      campoMapa.value = '';
+      salvarEstadoMesa();
+      renderizarMapa();
+      mostrarAviso('Mapa removido.');
+    });
+
+    document.getElementById('btnRolarV5').addEventListener('click', rolarV5);
+    document.getElementById('btnRolarDado').addEventListener('click', () => rolarDadoGenerico());
+    document.querySelectorAll('[data-dado-rapido]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        quantidadeDado.value = 1;
+        tipoDado.value = botao.dataset.dadoRapido;
+        modificadorDado.value = 0;
+        rolarDadoGenerico(Number(botao.dataset.dadoRapido));
+      });
+    });
+
+    document.getElementById('btnLimparHistorico').addEventListener('click', () => {
+      estadoMesa.historico = [];
+      salvarEstadoMesa();
+      renderizarHistorico();
+      mostrarAviso('Histórico limpo.');
+    });
+
+    document.getElementById('btnSalvarRegistro').addEventListener('click', () => {
+      estadoMesa.registro = registroMesa.value;
+      salvarEstadoMesa();
+      mostrarAviso('Registro salvo.');
+    });
+
+    registroMesa.addEventListener('input', () => {
+      estadoMesa.registro = registroMesa.value;
+      salvarEstadoMesa();
+    });
+
+    carregarUsuario();
+    if (carregarCampanhaBase('Mesa virtual')) carregarMesa();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escudo do mestre</title>
+  <style>
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --fundo: #030306;
+      --card: rgba(9, 7, 18, 0.78);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --borda: rgba(255, 255, 255, 0.14);
+      --texto: #f4f0ff;
+      --muted: rgba(244, 240, 255, 0.66);
+      --pink: rgba(255, 0, 120, 0.72);
+      --cyan: rgba(0, 200, 255, 0.62);
+      --violet: rgba(138, 43, 226, 0.72);
+    }
+    html { width: 100%; max-width: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      width: 100%; max-width: 100%; min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 0, 120, 0.14), transparent 32%),
+        radial-gradient(circle at 86% 74%, rgba(0, 200, 255, 0.13), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(138, 43, 226, 0.16), transparent 44%),
+        linear-gradient(180deg, #05030b 0%, #000 100%);
+      color: var(--texto); font-family: Arial, Helvetica, sans-serif; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 0;
+      background: conic-gradient(from 0deg, transparent, rgba(255, 0, 120, 0.065), rgba(0, 200, 255, 0.065), rgba(138, 43, 226, 0.065), transparent);
+      animation: girarBrilho 18s linear infinite;
+    }
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10) 0 1px, transparent 1px),
+        radial-gradient(circle at 35% 55%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+      background-size: 34px 34px, 58px 58px, 92px 92px; opacity: 0.22; mix-blend-mode: screen;
+      animation: ruido 1.6s steps(2) infinite;
+    }
+    img, svg, video, canvas { max-width: 100%; height: auto; }
+    input, textarea, select, button { max-width: 100%; font: inherit; }
+    button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+
+    .topbar {
+      width: min(1180px, calc(100% - 34px)); min-height: 82px; margin: 18px auto 0; padding: 14px 18px;
+      position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px;
+      border: 1px solid var(--borda); border-radius: 24px; background: rgba(8, 6, 18, 0.72); backdrop-filter: blur(16px);
+      box-shadow: 0 0 22px rgba(255, 0, 120, 0.14), 0 0 42px rgba(0, 200, 255, 0.09), inset 0 0 28px rgba(255, 255, 255, 0.035);
+      overflow: hidden; animation: surgirTopo 0.9s ease forwards;
+    }
+    .topbar::before {
+      content: ""; position: absolute; inset: 0; padding: 1px; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078); background-size: 320% 320%; animation: moverCores 6s linear infinite; opacity: 0.45;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    }
+    .logo-dado {
+      justify-self: start; color: #f5e6ff; text-decoration: none; text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.7rem, 4vw, 2.6rem); letter-spacing: 0.12em; line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite; white-space: nowrap;
+    }
+    .nav-abas { justify-self: center; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 7px; border: 1px solid rgba(255,255,255,.11); border-radius: 18px; background: rgba(0,0,0,.28); }
+    .nav-abas a { min-width: 138px; text-align: center; padding: 12px 18px; border-radius: 13px; color: rgba(244,240,255,.72); text-decoration: none; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 900; transition: .25s ease; }
+    .nav-abas a:hover, .nav-abas a.ativo { color:#fff; background: linear-gradient(90deg, rgba(255,0,120,.64), rgba(0,200,255,.52), rgba(138,43,226,.64)); background-size: 220% 220%; box-shadow: 0 0 16px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14); animation: moverCores 5s linear infinite; }
+    .usuario-area { justify-self: end; display:flex; align-items:center; gap:12px; min-width:0; }
+    .usuario-nome { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#fff; font-weight:800; text-align:right; text-shadow: 0 0 8px rgba(255,0,120,.34), 0 0 14px rgba(0,200,255,.2); }
+
+    .conteudo { width: min(1180px, calc(100% - 34px)); margin: 46px auto 40px; position: relative; z-index: 1; animation: surgirConteudo 1s ease forwards; }
+    .painel { border: 1px solid var(--borda); border-radius: 26px; background: var(--card); backdrop-filter: blur(14px); box-shadow: 0 0 22px rgba(255,0,120,.12), 0 0 42px rgba(0,200,255,.08), inset 0 0 28px rgba(255,255,255,.032); padding: clamp(22px, 4vw, 40px); }
+    .pagina-topo { display: grid; grid-template-columns: 190px 1fr auto; align-items: center; gap: 18px; margin-bottom: 24px; }
+    .capa-campanha { width: 190px; aspect-ratio: 16 / 9; border: 1px dashed rgba(255,255,255,.18); border-radius: 18px; overflow: hidden; background: rgba(255,255,255,.045); display:flex; align-items:center; justify-content:center; color: var(--muted); font-size:.78rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; text-align:center; }
+    .capa-campanha img { width: 100%; height: 100%; object-fit: cover; display:block; }
+    .titulo-pagina { font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif; font-size: clamp(2.15rem, 6vw, 4.6rem); line-height:.95; text-transform: uppercase; letter-spacing:.04em; color:#fff; word-break: break-word; text-shadow: 0 0 10px rgba(255,0,120,.45), 0 0 24px rgba(0,200,255,.22), 0 0 42px rgba(138,43,226,.22); }
+    .subtitulo { display:inline-flex; margin-top:10px; min-height:30px; align-items:center; padding:5px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:linear-gradient(90deg, rgba(255,0,120,.22), rgba(0,200,255,.14)); color: rgba(255,255,255,.9); font-size:.7rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .acoes-topo { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .btn-sair, .btn-primario, .btn-secundario, .btn-menor { font-family: inherit; cursor: pointer; }
+    .btn-sair { border: 1px solid rgba(255,255,255,.18); border-radius:12px; background:rgba(255,255,255,.06); color:rgba(244,240,255,.82); padding:9px 12px; font-size:.72rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; transition:.22s ease; }
+    .btn-primario, .btn-secundario { min-height: 46px; padding: 0 18px; border-radius:15px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; text-transform:uppercase; letter-spacing:.1em; font-size:.76rem; font-weight:900; transition:.25s ease; white-space:nowrap; }
+    .btn-primario { border:1px solid rgba(255,255,255,.28); color:#fff; background:linear-gradient(90deg, rgba(255,0,120,.72), rgba(0,200,255,.62), rgba(138,43,226,.72)); background-size:220% 220%; animation:moverCores 5s linear infinite; box-shadow:0 0 18px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14); }
+    .btn-secundario { border:1px solid rgba(255,255,255,.16); color:rgba(244,240,255,.82); background:rgba(255,255,255,.055); }
+    .btn-menor { min-height:34px; padding:0 11px; border-radius:11px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:rgba(255,255,255,.86); font-size:.72rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+    .btn-sair:hover, .btn-primario:hover, .btn-secundario:hover, .btn-menor:hover { transform: translateY(-2px); color:#fff; border-color: rgba(255,255,255,.38); }
+
+    .grid { display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+    .card { grid-column: span 6; border:1px solid rgba(255,255,255,.12); border-radius:22px; background:rgba(0,0,0,.22); padding:20px; min-width:0; }
+    .card.card-largo { grid-column: 1 / -1; }
+    .card.card-terco { grid-column: span 4; }
+    .card h2, .card h3 { color:#fff; margin-bottom:12px; text-transform:uppercase; letter-spacing:.1em; font-size:1rem; }
+    .card h3 { font-size:.88rem; margin-top: 12px; }
+    .texto-muted, .estado-vazio { color:var(--muted); line-height:1.6; }
+    .linha { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-bottom: 12px; }
+    .campo { display:grid; gap:7px; color:rgba(244,240,255,.84); font-size:.75rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+    .campo input, .campo select, .campo textarea, textarea.area-grande, input.input-texto { width:100%; border:1px solid rgba(255,255,255,.14); border-radius:14px; background:rgba(0,0,0,.26); color:#fff; padding:13px 14px; outline:none; font:inherit; text-transform:none; letter-spacing:0; font-weight:700; }
+    .campo textarea, textarea.area-grande { min-height: 150px; resize: vertical; line-height: 1.5; font-weight: 600; }
+    .acoes-card { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+    .resultado { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.045); padding:14px; min-height:54px; color:#fff; line-height:1.6; word-break:break-word; }
+    .dado-tag { display:inline-flex; align-items:center; justify-content:center; min-width:34px; min-height:34px; padding:5px 8px; border-radius:10px; margin:3px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:#fff; font-weight:900; }
+    .dado-fome { border-color:rgba(255,0,80,.42); background:rgba(255,0,80,.2); }
+    .lista { display:grid; gap:10px; }
+    .personagem-card { display:grid; grid-template-columns: 54px 1fr; gap:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.045); padding:12px; align-items:center; }
+    .personagem-foto { width:54px; height:54px; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(255,0,120,.28), rgba(0,200,255,.18)); color:#fff; font-weight:900; }
+    .personagem-foto img { width:100%; height:100%; object-fit:cover; display:block; }
+    .personagem-info { min-width:0; display:grid; gap:5px; }
+    .personagem-info strong { color:#fff; word-break:break-word; }
+    .personagem-info span { color:var(--muted); font-size:.82rem; line-height:1.35; word-break:break-word; }
+    .mini-acoes { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+    .erro { text-align:center; border:1px dashed rgba(255,255,255,.18); border-radius:22px; background:rgba(0,0,0,.22); padding:30px; }
+    .erro h1 { color:#fff; font-size:clamp(1.6rem, 6vw, 3rem); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+    .aviso-flutuante { position:fixed; left:50%; bottom:24px; z-index:30; transform:translateX(-50%) translateY(20px); max-width:min(520px, calc(100% - 30px)); border:1px solid rgba(255,255,255,.18); border-radius:16px; background:rgba(9,7,18,.96); color:#fff; padding:12px 16px; box-shadow:0 0 22px rgba(0,200,255,.14); opacity:0; pointer-events:none; transition:.25s ease; text-align:center; font-weight:800; }
+    .aviso-flutuante.mostrar { opacity:1; transform:translateX(-50%) translateY(0); }
+
+
+    .escudo-layout { display:grid; grid-template-columns: minmax(290px, 340px) minmax(0, 1fr); gap:18px; align-items:start; }
+    .painel-rolagens { position:sticky; top:18px; max-height:calc(100vh - 36px); overflow:hidden; border:1px solid rgba(255,255,255,.14); border-radius:24px; background:rgba(0,0,0,.28); box-shadow:0 0 20px rgba(255,0,120,.12), inset 0 0 26px rgba(255,255,255,.03); padding:16px; display:grid; grid-template-rows:auto auto 1fr; gap:12px; }
+    .rolagem-topo { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .rolagem-topo h2 { color:#fff; text-transform:uppercase; letter-spacing:.08em; font-size:.88rem; line-height:1.25; }
+    .rolagem-ajuda { color:var(--muted); font-size:.78rem; line-height:1.45; }
+    .rolagens-lista { overflow:auto; padding-right:4px; display:grid; align-content:start; gap:10px; }
+    .rolagens-lista::-webkit-scrollbar { width:8px; }
+    .rolagens-lista::-webkit-scrollbar-thumb { background:rgba(255,255,255,.16); border-radius:999px; }
+    .rolagem-item { border:1px solid rgba(255,255,255,.12); border-radius:18px; background:linear-gradient(135deg, rgba(255,0,120,.09), rgba(0,200,255,.06), rgba(255,255,255,.035)); padding:12px; display:grid; gap:8px; }
+    .rolagem-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--muted); font-size:.7rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
+    .rolagem-personagem { color:#fff; font-weight:900; line-height:1.25; word-break:break-word; }
+    .rolagem-teste { color:rgba(244,240,255,.78); font-size:.82rem; line-height:1.35; word-break:break-word; }
+    .rolagem-resultado { display:flex; flex-wrap:wrap; gap:6px; align-items:center; color:#fff; font-size:.82rem; font-weight:900; }
+    .rolagem-dados { display:flex; flex-wrap:wrap; align-items:center; gap:3px; }
+    .rolagem-vazia { border:1px dashed rgba(255,255,255,.16); border-radius:18px; background:rgba(255,255,255,.035); padding:16px; color:var(--muted); line-height:1.55; text-align:center; }
+    .painel-abas-escudo { min-width:0; display:grid; gap:14px; }
+    .escudo-tabs { display:flex; gap:9px; flex-wrap:wrap; padding:8px; border:1px solid rgba(255,255,255,.11); border-radius:18px; background:rgba(0,0,0,.24); }
+    .tab-btn { flex:1 1 130px; min-height:42px; border:1px solid rgba(255,255,255,.12); border-radius:13px; background:rgba(255,255,255,.045); color:rgba(244,240,255,.74); cursor:pointer; text-transform:uppercase; letter-spacing:.08em; font-size:.72rem; font-weight:900; transition:.22s ease; }
+    .tab-btn:hover, .tab-btn.ativo { color:#fff; border-color:rgba(255,255,255,.28); background:linear-gradient(90deg, rgba(255,0,120,.54), rgba(0,200,255,.36), rgba(138,43,226,.52)); background-size:220% 220%; animation:moverCores 5s linear infinite; box-shadow:0 0 16px rgba(255,0,120,.16), 0 0 22px rgba(0,200,255,.1); transform:translateY(-1px); }
+    .tab-conteudo { display:none; }
+    .tab-conteudo.ativo { display:block; }
+    .tab-grid { display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap:16px; }
+    .tab-grid .card { display:block; }
+    .tab-grid .card.card-largo { grid-column: 1 / -1; }
+    .tab-grid .card:not(.card-largo) { grid-column: span 6; }
+
+    @media (max-width: 980px) {
+      .escudo-layout { grid-template-columns:1fr; }
+      .painel-rolagens { position:relative; top:auto; max-height:none; }
+      .rolagens-lista { max-height:360px; }
+      .tab-grid .card:not(.card-largo) { grid-column: 1 / -1; }
+    }
+    @media (max-width: 560px) {
+      .escudo-tabs { gap:7px; }
+      .tab-btn { flex-basis:calc(50% - 8px); font-size:.66rem; letter-spacing:.05em; }
+      .rolagem-topo { align-items:flex-start; flex-direction:column; }
+      .rolagem-topo .btn-menor { width:100%; }
+    }
+
+    @keyframes brilhoAtrasColorido {
+      0% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+      25% { text-shadow: 0 0 8px #00c8ff, 0 0 18px #00c8ff, 0 0 34px #00c8ff, 0 0 58px #004cff; }
+      50% { text-shadow: 0 0 8px #00ff85, 0 0 18px #00ff85, 0 0 34px #00ff85, 0 0 58px #00c8ff; }
+      75% { text-shadow: 0 0 8px #ffe600, 0 0 18px #ffe600, 0 0 34px #ff9f1c, 0 0 58px #ff00ff; }
+      100% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
+    }
+    @keyframes moverCores { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+    @keyframes girarBrilho { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes ruido { 0% { transform:translate(0,0); } 50% { transform:translate(-1px,1px); } 100% { transform:translate(1px,-1px); } }
+    @keyframes surgirTopo { from { opacity:0; transform:translateY(-16px); filter:blur(8px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+    @keyframes surgirConteudo { from { opacity:0; transform:translateY(20px); filter:blur(8px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+
+    @media (max-width: 980px) {
+      .topbar { width:min(100% - 24px, 1180px); min-height:0; margin-top:12px; grid-template-columns:1fr; justify-items:center; gap:12px; padding:16px 14px; border-radius:20px; }
+      .logo-dado, .nav-abas, .usuario-area { justify-self:center; }
+      .nav-abas { width:100%; }
+      .nav-abas a { min-width:0; flex:1 1 0; padding:11px 8px; font-size:.68rem; letter-spacing:.07em; }
+      .usuario-area { width:100%; justify-content:center; flex-wrap:wrap; }
+      .usuario-nome { max-width:100%; text-align:center; }
+      .conteudo { width:min(100% - 24px, 1180px); margin-top:24px; margin-bottom:34px; }
+      .pagina-topo { grid-template-columns:1fr; align-items:start; }
+      .capa-campanha { width:100%; max-width:360px; }
+      .acoes-topo { justify-content:flex-start; }
+      .btn-primario, .btn-secundario { width:100%; }
+      .card, .card.card-terco { grid-column: 1 / -1; }
+      .linha { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .conteudo { width:min(100% - 20px, 1180px); margin-top:18px; }
+      .painel, .card { border-radius:22px; }
+      .titulo-pagina { font-size: clamp(2.1rem, 14vw, 3.5rem); }
+      .personagem-card { grid-template-columns: 46px 1fr; }
+      .personagem-foto { width:46px; height:46px; border-radius:12px; }
+    }
+
+    .alerta-mestre { border: 1px solid rgba(255,0,120,.24); border-radius: 18px; background: linear-gradient(90deg, rgba(255,0,120,.13), rgba(0,200,255,.08)); padding: 14px 16px; color: rgba(255,255,255,.88); line-height: 1.55; margin-bottom: 16px; }
+    .regra-lista { display:grid; gap:10px; }
+    .regra-item { border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.045); padding:12px; color:var(--muted); line-height:1.5; }
+    .regra-item strong { display:block; color:#fff; margin-bottom:4px; }
+    .status-personagem { display:grid; grid-template-columns: 54px 1fr; gap:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.045); padding:12px; }
+    .status-personagem textarea { min-height:80px; }
+    .card-titulo-acoes { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:14px; }
+    .card-titulo-acoes h2 { margin-bottom:6px; }
+    .texto-pequeno { font-size:.84rem; }
+    .lista-personagens-vivos { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
+    .personagem-card-vivo { position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.13); border-radius:22px; background:linear-gradient(135deg, rgba(255,0,120,.085), rgba(0,200,255,.055), rgba(0,0,0,.22)); padding:16px; display:grid; gap:14px; box-shadow: inset 0 0 24px rgba(255,255,255,.025); }
+    .personagem-card-vivo::before { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 18% 0%, rgba(255,0,120,.18), transparent 30%), radial-gradient(circle at 88% 20%, rgba(0,200,255,.12), transparent 28%); opacity:.72; }
+    .personagem-card-vivo > * { position:relative; z-index:1; }
+    .personagem-cabecalho-vivo { display:grid; grid-template-columns:76px 1fr; gap:14px; align-items:center; min-width:0; }
+    .personagem-foto-grande { width:76px; height:76px; border-radius:20px; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.15); background:linear-gradient(135deg, rgba(255,0,120,.34), rgba(0,200,255,.20)); color:#fff; font-size:1.6rem; font-weight:900; box-shadow:0 0 18px rgba(255,0,120,.12); }
+    .personagem-foto-grande img { width:100%; height:100%; object-fit:cover; display:block; }
+    .personagem-titulo-vivo { min-width:0; display:grid; gap:7px; }
+    .personagem-titulo-vivo strong { color:#fff; font-size:1.08rem; line-height:1.15; word-break:break-word; text-shadow:0 0 10px rgba(255,0,120,.24); }
+    .personagem-titulo-vivo span { color:var(--muted); font-size:.78rem; line-height:1.35; word-break:break-word; }
+    .personagem-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag-personagem { border:1px solid rgba(255,255,255,.14); border-radius:999px; background:rgba(255,255,255,.055); color:rgba(255,255,255,.86); padding:5px 9px; font-size:.66rem; font-weight:900; text-transform:uppercase; letter-spacing:.055em; }
+    .resumo-personagem-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:9px; }
+    .stat-personagem { border:1px solid rgba(255,255,255,.11); border-radius:15px; background:rgba(0,0,0,.22); padding:10px; display:grid; gap:7px; min-width:0; }
+    .stat-personagem span { color:var(--muted); font-size:.66rem; font-weight:900; letter-spacing:.07em; text-transform:uppercase; }
+    .stat-personagem strong { color:#fff; font-size:1.05rem; line-height:1.1; word-break:break-word; }
+    .barra-stat { height:8px; border-radius:999px; background:rgba(255,255,255,.09); overflow:hidden; border:1px solid rgba(255,255,255,.08); }
+    .barra-stat i { display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg, rgba(255,0,120,.8), rgba(0,200,255,.7), rgba(138,43,226,.76)); background-size:220% 220%; animation:moverCores 5s linear infinite; }
+    .barras-vampiro-card { display:grid; gap:10px; }
+    .resumo-personagem-grid .barras-vampiro-card { grid-column:1 / -1; }
+    .barra-ficha-vampiro { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(0,0,0,.22); padding:10px 11px; display:grid; gap:8px; min-width:0; box-shadow:inset 0 0 16px rgba(255,255,255,.025); }
+    .barra-ficha-vampiro .barra-info { display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; }
+    .barra-ficha-vampiro .barra-label { color:rgba(244,240,255,.72); font-size:.66rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .barra-ficha-vampiro .barra-valor { color:#fff; font-size:.78rem; font-weight:900; letter-spacing:.04em; white-space:nowrap; text-shadow:0 0 8px rgba(0,200,255,.18); }
+    .barra-ficha-vampiro .barra-trilho { height:14px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); overflow:hidden; box-shadow:inset 0 0 12px rgba(0,0,0,.35); }
+    .barra-ficha-vampiro .barra-preenchimento { display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg, rgba(255,0,120,.82), rgba(0,200,255,.72), rgba(138,43,226,.82)); background-size:220% 220%; animation:moverCores 5s linear infinite; box-shadow:0 0 12px rgba(255,0,120,.20), 0 0 18px rgba(0,200,255,.12); transition:width .25s ease; }
+    .barra-ficha-vampiro.barra-fome .barra-preenchimento { background:linear-gradient(90deg, rgba(120,0,20,.92), rgba(255,0,80,.86), rgba(255,120,0,.72)); background-size:220% 220%; }
+    .barra-ficha-vampiro.barra-experiencia .barra-preenchimento { background:linear-gradient(90deg, rgba(255,214,80,.78), rgba(255,0,120,.72), rgba(0,200,255,.62)); background-size:220% 220%; }
+    .personagem-detalhes-vivo { display:grid; gap:7px; color:rgba(244,240,255,.76); font-size:.82rem; line-height:1.45; }
+    .personagem-detalhes-vivo div { border-left:2px solid rgba(0,200,255,.28); padding-left:9px; }
+    .personagem-card-vivo textarea { min-height:78px; }
+    .sincronizacao-ficha { color:rgba(244,240,255,.54); font-size:.68rem; font-weight:900; letter-spacing:.06em; text-transform:uppercase; }
+    .painel-pequeno { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
+    .contador { border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(0,0,0,.22); padding:12px; display:grid; gap:8px; }
+    .contador span { color:var(--muted); font-size:.75rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .contador strong { color:#fff; font-size:1.8rem; }
+    .contador .acoes-card { margin-top:0; }
+    @media (max-width: 980px) {
+      .lista-personagens-vivos { grid-template-columns:1fr; }
+      .card-titulo-acoes { flex-direction:column; }
+      .card-titulo-acoes .btn-menor { width:100%; }
+    }
+    @media (max-width: 560px) {
+      .painel-pequeno { grid-template-columns: 1fr; }
+      .personagem-cabecalho-vivo { grid-template-columns:60px 1fr; }
+      .personagem-foto-grande { width:60px; height:60px; border-radius:16px; font-size:1.25rem; }
+      .resumo-personagem-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo-dado">Dado</a>
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html">Personagens</a>
+      <a href="campanhas.html" class="ativo">Campanhas</a>
+    </nav>
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo" id="conteudoPrincipal">
+    <section class="painel">
+      <div class="pagina-topo">
+        <div id="capaCampanha" class="capa-campanha"><span>Imagem da campanha</span></div>
+        <div>
+          <h1 id="tituloCampanha" class="titulo-pagina">Escudo do mestre</h1>
+          <span id="sistemaCampanha" class="subtitulo">Sistema</span>
+        </div>
+        <div class="acoes-topo">
+          <a id="linkVoltarCampanha" href="campanha.html" class="btn-secundario">Voltar para campanha</a>
+          <a href="mesa_virtual.html" id="linkMesa" class="btn-primario">Mesa virtual</a>
+        </div>
+      </div>
+
+      <div class="alerta-mestre">
+        <strong>Escudo do mestre:</strong> use esta página para guardar anotações privadas da campanha, acompanhar NPCs, ameaças, relógios de cena e lembretes de regras.
+      </div>
+
+      <div class="escudo-layout">
+        <aside class="painel-rolagens" aria-label="Painel de rolagens da campanha">
+          <div class="rolagem-topo">
+            <h2>Rolagens da campanha</h2>
+            <button type="button" id="btnAtualizarRolagens" class="btn-menor">Atualizar</button>
+          </div>
+          <p class="rolagem-ajuda">Aqui aparecem as rolagens registradas pelos personagens adicionados na campanha. A rolagem secreta do mestre também fica salva neste histórico.</p>
+          <div id="listaRolagensCampanha" class="rolagens-lista"></div>
+        </aside>
+
+        <section class="painel-abas-escudo">
+          <div class="escudo-tabs" role="tablist" aria-label="Abas do escudo do mestre">
+            <button type="button" class="tab-btn ativo" data-tab="personagens" role="tab" aria-selected="true">Personagens</button>
+            <button type="button" class="tab-btn" data-tab="combates" role="tab" aria-selected="false">Combates</button>
+            <button type="button" class="tab-btn" data-tab="sessoes" role="tab" aria-selected="false">Sessões</button>
+            <button type="button" class="tab-btn" data-tab="anotacoes" role="tab" aria-selected="false">Anotações</button>
+          </div>
+
+          <div id="tab-personagens" class="tab-conteudo ativo" role="tabpanel">
+            <div class="tab-grid">
+              <section class="card card-largo">
+                <div class="card-titulo-acoes">
+                  <div>
+                    <h2>Personagens da campanha</h2>
+                    <p class="texto-muted texto-pequeno">Cards atualizados automaticamente com as informações principais da ficha salva.</p>
+                  </div>
+                  <button type="button" id="btnAtualizarPersonagens" class="btn-menor">Atualizar fichas</button>
+                </div>
+                <div id="statusPersonagens" class="lista-personagens-vivos"></div>
+              </section>
+            </div>
+          </div>
+
+          <div id="tab-combates" class="tab-conteudo" role="tabpanel">
+            <div class="tab-grid">
+              <section class="card">
+                <h2>Rolagem secreta V5</h2>
+                <div class="linha">
+                  <label class="campo">
+                    Dados comuns
+                    <input type="number" id="dadosComuns" min="0" max="30" value="4" />
+                  </label>
+                  <label class="campo">
+                    Dados de fome
+                    <input type="number" id="dadosFome" min="0" max="5" value="1" />
+                  </label>
+                  <label class="campo">
+                    Dificuldade
+                    <input type="number" id="dificuldadeV5" min="0" max="20" value="1" />
+                  </label>
+                </div>
+                <div class="acoes-card">
+                  <button type="button" id="btnRolarV5" class="btn-primario">Rolar</button>
+                </div>
+                <div id="resultadoV5" class="resultado" style="margin-top:12px;">Resultado aparecerá aqui.</div>
+              </section>
+
+              <section class="card">
+                <h2>Controle de combate</h2>
+                <textarea id="notasCombates" class="area-grande" placeholder="Iniciativa, inimigos em cena, dano recebido, objetivos, complicações e efeitos ativos..."></textarea>
+              </section>
+
+              <section class="card">
+                <h2>Ameaças e relógios</h2>
+                <textarea id="notasAmeacas" class="area-grande" placeholder="Ameaças ativas, contagem regressiva, caçadores, rivais, Mascarada..."></textarea>
+              </section>
+
+              <section class="card">
+                <h2>Regras rápidas</h2>
+                <div class="regra-lista">
+                  <div class="regra-item"><strong>Teste comum</strong> Some atributo + habilidade. Cada resultado 6 ou mais é 1 sucesso.</div>
+                  <div class="regra-item"><strong>Fome</strong> A quantidade de Fome substitui dados comuns por dados de fome, até o limite da parada.</div>
+                  <div class="regra-item"><strong>Crítico</strong> Dois resultados 10 formam crítico e adicionam sucessos extras.</div>
+                  <div class="regra-item"><strong>Falha bestial</strong> Se a rolagem falha e algum dado de fome cai 1, ocorre falha bestial.</div>
+                  <div class="regra-item"><strong>Crítico bagunçado</strong> Se um crítico envolve dado de fome, o sucesso vem com complicação monstruosa.</div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div id="tab-sessoes" class="tab-conteudo" role="tabpanel">
+            <div class="tab-grid">
+              <section class="card card-largo">
+                <h2>Controle da sessão</h2>
+                <div class="painel-pequeno">
+                  <div class="contador">
+                    <span>Sessão</span>
+                    <strong id="contadorSessao">1</strong>
+                    <div class="acoes-card">
+                      <button type="button" class="btn-menor" data-contador="sessao" data-acao="menos">-</button>
+                      <button type="button" class="btn-menor" data-contador="sessao" data-acao="mais">+</button>
+                    </div>
+                  </div>
+                  <div class="contador">
+                    <span>Tensão</span>
+                    <strong id="contadorTensao">0</strong>
+                    <div class="acoes-card">
+                      <button type="button" class="btn-menor" data-contador="tensao" data-acao="menos">-</button>
+                      <button type="button" class="btn-menor" data-contador="tensao" data-acao="mais">+</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card">
+                <h2>Cenas preparadas</h2>
+                <textarea id="notasCenas" class="area-grande" placeholder="Cenas, locais, pistas, consequências possíveis..."></textarea>
+              </section>
+
+              <section class="card">
+                <h2>Ganchos para próxima sessão</h2>
+                <textarea id="notasGanchos" class="area-grande" placeholder="O que precisa acontecer na próxima sessão? Quem vai cobrar algo? Qual pista ficou pendente?"></textarea>
+              </section>
+            </div>
+          </div>
+
+          <div id="tab-anotacoes" class="tab-conteudo" role="tabpanel">
+            <div class="tab-grid">
+              <section class="card">
+                <h2>Anotações secretas</h2>
+                <textarea id="notasSecretas" class="area-grande" placeholder="Planos do vilão, segredos da corte, informações que os jogadores ainda não sabem..."></textarea>
+              </section>
+
+              <section class="card">
+                <h2>NPCs importantes</h2>
+                <textarea id="notasNpcs" class="area-grande" placeholder="Nome, clã/facção, objetivo, relação com os jogadores..."></textarea>
+              </section>
+
+              <section class="card card-largo">
+                <div class="acoes-card" style="margin-top:0; justify-content:flex-end;">
+                  <button type="button" id="btnSalvarEscudo" class="btn-primario">Salvar escudo</button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </div>      </div>
+    </section>
+  </main>
+
+  <div id="avisoFlutuante" class="aviso-flutuante" role="status" aria-live="polite"></div>
+
+  <script>
+
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const avisoFlutuante = document.getElementById('avisoFlutuante');
+    const CHAVE_CAMPANHAS = 'campanhasCriadas';
+    let campanhaAtual = null;
+
+    function escaparTexto(texto) {
+      return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function carregarUsuario() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (!usuarioSalvo) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+        if (!usuario || usuario.logado !== true || !usuario.nome) throw new Error('Usuário inválido');
+        usuarioNome.textContent = usuario.nome;
+        btnSair.textContent = 'Sair';
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+      }
+    }
+
+    function obterCampanhas() {
+      try {
+        const campanhas = JSON.parse(localStorage.getItem(CHAVE_CAMPANHAS)) || [];
+        return Array.isArray(campanhas) ? campanhas : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function obterIdCampanha() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || localStorage.getItem('campanhaSelecionada');
+    }
+
+    function obterPersonagensCampanha() {
+      return Array.isArray(campanhaAtual?.personagens) ? campanhaAtual.personagens : [];
+    }
+
+    function obterIdPersonagem(personagem) {
+      if (typeof personagem === 'string' || typeof personagem === 'number') return String(personagem);
+      if (!personagem || typeof personagem !== 'object') return '';
+      return String(personagem.id || personagem.personagemId || personagem.fichaId || personagem.uid || '');
+    }
+
+    function obterNomePersonagem(personagem, indice) {
+      if (!personagem || typeof personagem !== 'object') return `Personagem ${indice + 1}`;
+      const nome = obterPrimeiroValor(personagem, ['nome', 'nomePersonagem', 'personagemNome', 'titulo', 'dadosBasicos.nome', 'basico.nome']);
+      return String(nome || `Personagem ${indice + 1}`);
+    }
+
+    function obterSistemaPersonagem(personagem) {
+      if (!personagem || typeof personagem !== 'object') return 'Sistema não informado';
+      const sistema = obterPrimeiroValor(personagem, ['sistema', 'modelo', 'fichaModelo', 'tipoFicha', 'jogo']);
+      return String(sistema || 'Sistema não informado');
+    }
+
+    function obterImagemPersonagem(personagem) {
+      if (!personagem || typeof personagem !== 'object') return '';
+      const imagem = obterPrimeiroValor(personagem, ['imagem', 'foto', 'avatar', 'imagemPersonagem', 'fotoPersonagem', 'portrait', 'retrato']);
+      return String(imagem || '');
+    }
+
+    function obterInicial(nome) {
+      return String(nome || '?').trim().charAt(0).toUpperCase() || '?';
+    }
+
+    function montarPaginaFichaPersonagem(personagem) {
+      if (personagem && typeof personagem === 'object' && personagem.pagina) return String(personagem.pagina);
+      const sistema = obterSistemaPersonagem(personagem).toLowerCase();
+      if (sistema.includes('vampiro')) return 'ficha_vampiro_jogo.html';
+      if (sistema.includes('ordem')) return 'ficha_ordem_paranormal_jogo.html';
+      return 'personagens.html';
+    }
+
+    function montarLinkFicha(personagem) {
+      const pagina = montarPaginaFichaPersonagem(personagem);
+      const id = obterIdPersonagem(personagem);
+      if (!id || pagina === 'personagens.html') return pagina;
+      const separador = pagina.includes('?') ? '&' : '?';
+      return `${pagina}${separador}id=${encodeURIComponent(id)}`;
+    }
+
+    function renderizarFotoPersonagem(personagem, nome) {
+      const imagem = obterImagemPersonagem(personagem);
+      if (imagem) return `<img src="${escaparTexto(imagem)}" alt="Foto de ${escaparTexto(nome)}">`;
+      return escaparTexto(obterInicial(nome));
+    }
+
+    function mostrarAviso(texto) {
+      avisoFlutuante.textContent = texto;
+      avisoFlutuante.classList.add('mostrar');
+      clearTimeout(mostrarAviso._timer);
+      mostrarAviso._timer = setTimeout(() => avisoFlutuante.classList.remove('mostrar'), 2400);
+    }
+
+    function atualizarTopoPagina(tipoPagina) {
+      const tituloCampanha = document.getElementById('tituloCampanha');
+      const sistemaCampanha = document.getElementById('sistemaCampanha');
+      const capaCampanha = document.getElementById('capaCampanha');
+      const linkVoltarCampanha = document.getElementById('linkVoltarCampanha');
+
+      document.title = `${tipoPagina} - ${campanhaAtual.nome || 'Campanha'}`;
+      tituloCampanha.textContent = campanhaAtual.nome || 'Campanha';
+      sistemaCampanha.textContent = campanhaAtual.sistema || 'Sistema não informado';
+      linkVoltarCampanha.href = `campanha.html?id=${encodeURIComponent(campanhaAtual.id)}`;
+
+      if (campanhaAtual.imagem) {
+        capaCampanha.innerHTML = `<img src="${escaparTexto(campanhaAtual.imagem)}" alt="Imagem da campanha">`;
+      } else {
+        capaCampanha.innerHTML = '<span>Imagem da campanha</span>';
+      }
+    }
+
+    function mostrarErroCampanha() {
+      const conteudo = document.getElementById('conteudoPrincipal');
+      conteudo.innerHTML = `
+        <section class="erro">
+          <h1>Campanha não encontrada</h1>
+          <p class="texto-muted">Abra esta página pelo botão Mesa dentro de uma campanha existente.</p>
+          <a href="campanhas.html" class="btn-primario">Voltar para campanhas</a>
+        </section>
+      `;
+    }
+
+    function carregarCampanhaBase(tipoPagina) {
+      const campanhas = obterCampanhas();
+      const idCampanha = obterIdCampanha();
+      campanhaAtual = campanhas.find((campanha) => String(campanha.id) === String(idCampanha)) || null;
+      if (!campanhaAtual) {
+        mostrarErroCampanha();
+        return false;
+      }
+      localStorage.setItem('campanhaSelecionada', campanhaAtual.id);
+      atualizarTopoPagina(tipoPagina);
+      return true;
+    }
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+      window.location.href = 'login.html';
+    });
+
+
+    const linkMesa = document.getElementById('linkMesa');
+    const camposTexto = {
+      notasSecretas: document.getElementById('notasSecretas'),
+      notasNpcs: document.getElementById('notasNpcs'),
+      notasCenas: document.getElementById('notasCenas'),
+      notasAmeacas: document.getElementById('notasAmeacas'),
+      notasCombates: document.getElementById('notasCombates'),
+      notasGanchos: document.getElementById('notasGanchos')
+    };
+    const statusPersonagens = document.getElementById('statusPersonagens');
+    const contadorSessao = document.getElementById('contadorSessao');
+    const contadorTensao = document.getElementById('contadorTensao');
+    const dadosComuns = document.getElementById('dadosComuns');
+    const dadosFome = document.getElementById('dadosFome');
+    const dificuldadeV5 = document.getElementById('dificuldadeV5');
+    const resultadoV5 = document.getElementById('resultadoV5');
+    const listaRolagensCampanha = document.getElementById('listaRolagensCampanha');
+    const btnAtualizarRolagens = document.getElementById('btnAtualizarRolagens');
+    const btnAtualizarPersonagens = document.getElementById('btnAtualizarPersonagens');
+
+    let estadoEscudo = {
+      notasSecretas: '', notasNpcs: '', notasCenas: '', notasAmeacas: '', notasCombates: '', notasGanchos: '',
+      sessao: 1, tensao: 0, notasPersonagens: {}, rolagens: []
+    };
+    let assinaturaPersonagensAoVivo = '';
+    let timerPersonagensAoVivo = null;
+
+    function chaveEscudo() { return `escudoMestre_${campanhaAtual.id}`; }
+
+    function obterEstadoEscudo() {
+      try {
+        const salvo = JSON.parse(localStorage.getItem(chaveEscudo())) || {};
+        return {
+          notasSecretas: '', notasNpcs: '', notasCenas: '', notasAmeacas: '', notasCombates: '', notasGanchos: '',
+          sessao: 1, tensao: 0, notasPersonagens: {}, rolagens: [],
+          ...salvo
+        };
+      } catch (erro) {
+        return { notasSecretas: '', notasNpcs: '', notasCenas: '', notasAmeacas: '', notasCombates: '', notasGanchos: '', sessao: 1, tensao: 0, notasPersonagens: {}, rolagens: [] };
+      }
+    }
+
+    function salvarEstadoEscudo() {
+      Object.entries(camposTexto).forEach(([chave, campo]) => { estadoEscudo[chave] = campo.value; });
+      localStorage.setItem(chaveEscudo(), JSON.stringify(estadoEscudo));
+    }
+
+    function atualizarContadores() {
+      contadorSessao.textContent = Math.max(1, Number(estadoEscudo.sessao) || 1);
+      contadorTensao.textContent = Math.max(0, Number(estadoEscudo.tensao) || 0);
+    }
+
+    function obterValorCaminho(objeto, caminho) {
+      if (!objeto || !caminho) return undefined;
+      const partes = String(caminho).split('.');
+      let atual = objeto;
+      for (const parte of partes) {
+        if (atual === null || atual === undefined) return undefined;
+        atual = atual[parte];
+      }
+      return atual;
+    }
+
+    function gerarVariantesCaminho(caminho) {
+      const original = String(caminho);
+      const variantes = [original];
+      if (!original.startsWith('dados.') && !original.startsWith('ficha.') && !original.startsWith('personagem.') && !original.startsWith('status.')) {
+        variantes.push(`dados.${original}`, `ficha.${original}`, `personagem.${original}`, `dadosFicha.${original}`);
+      }
+      return variantes;
+    }
+
+    function obterPrimeiroValor(objeto, caminhos) {
+      for (const caminho of caminhos) {
+        for (const variante of gerarVariantesCaminho(caminho)) {
+          const valor = obterValorCaminho(objeto, variante);
+          if (valor !== undefined && valor !== null && valor !== '') return valor;
+        }
+      }
+      return '';
+    }
+
+    function extrairNumero(valor) {
+      if (valor === undefined || valor === null || valor === '') return null;
+      if (typeof valor === 'number' && Number.isFinite(valor)) return valor;
+      if (typeof valor === 'object') {
+        const direto = obterPrimeiroValor(valor, ['atual', 'valor', 'value', 'current', 'pontos', 'preenchido', 'usado']);
+        if (direto !== '') return extrairNumero(direto);
+        return null;
+      }
+      const texto = String(valor).replace(',', '.');
+      const numero = texto.match(/-?\d+(?:\.\d+)?/);
+      if (!numero) return null;
+      return Number(numero[0]);
+    }
+
+    function extrairMaximo(valor) {
+      if (valor === undefined || valor === null || valor === '') return null;
+      if (typeof valor === 'object') {
+        const direto = obterPrimeiroValor(valor, ['max', 'maximo', 'máximo', 'total', 'limite', 'maximum']);
+        if (direto !== '') return extrairNumero(direto);
+        return null;
+      }
+      const texto = String(valor).replace(',', '.');
+      const fracao = texto.match(/-?\d+(?:\.\d+)?\s*\/\s*(-?\d+(?:\.\d+)?)/);
+      return fracao ? Number(fracao[1]) : null;
+    }
+
+    function montarStatPersonagem(dados, rotulo, caminhosAtual, caminhosMaximo = [], maximoPadrao = null) {
+      const valorBruto = obterPrimeiroValor(dados, caminhosAtual);
+      const maxBruto = obterPrimeiroValor(dados, caminhosMaximo);
+      const atual = extrairNumero(valorBruto);
+      const maximo = extrairMaximo(valorBruto) ?? extrairNumero(maxBruto) ?? maximoPadrao;
+      let texto = '—';
+      if (atual !== null && maximo !== null) texto = `${atual}/${maximo}`;
+      else if (atual !== null) texto = String(atual);
+      else if (valorBruto !== '') texto = String(valorBruto);
+      const percentual = atual !== null && maximo ? Math.max(0, Math.min(100, (atual / maximo) * 100)) : null;
+      return { rotulo, texto, percentual };
+    }
+
+    function obterBarrasVampiroPersonagem(dados) {
+      return [
+        {
+          ...montarStatPersonagem(dados, 'Experiência', ['experienciaGasta', 'experiênciaGasta', 'xpGasto', 'xpGasta', 'experienciaAtual', 'experiênciaAtual', 'xpAtual', 'experiencia', 'experiência', 'xp', 'status.experiencia.atual', 'barras.experiencia.atual'], ['experienciaTotal', 'experiênciaTotal', 'xpTotal', 'experienciaMax', 'experiênciaMax', 'xpMax', 'status.experiencia.max', 'barras.experiencia.max']),
+          classe: 'barra-experiencia'
+        },
+        {
+          ...montarStatPersonagem(dados, 'Vitalidade', ['vitalidade', 'vitalidadeAtual', 'saudeAtual', 'saúdeAtual', 'health.current', 'status.vitalidade.atual', 'barras.vitalidade.atual'], ['vitalidadeMax', 'vitalidadeMaxima', 'vitalidadeMáxima', 'vitalidadeTotal', 'health.max', 'status.vitalidade.max', 'barras.vitalidade.max'], 10),
+          classe: 'barra-vitalidade'
+        },
+        {
+          ...montarStatPersonagem(dados, 'Força de vontade', ['forcaVontade', 'forçaVontade', 'forca de vontade', 'força de vontade', 'vontade', 'vontadeAtual', 'willpower.current', 'status.vontade.atual', 'barras.vontade.atual'], ['forcaVontadeMax', 'forçaVontadeMax', 'forcaVontadeMaxima', 'forçaVontadeMáxima', 'vontadeMax', 'vontadeMaxima', 'vontadeMáxima', 'willpower.max', 'status.vontade.max', 'barras.vontade.max'], 10),
+          classe: 'barra-vontade'
+        },
+        {
+          ...montarStatPersonagem(dados, 'Humanidade', ['humanidade', 'humanidadeAtual', 'humanity', 'status.humanidade.atual', 'barras.humanidade.atual'], ['humanidadeMax', 'humanidadeMaxima', 'humanidadeMáxima', 'humanity.max', 'status.humanidade.max', 'barras.humanidade.max'], 10),
+          classe: 'barra-humanidade'
+        },
+        {
+          ...montarStatPersonagem(dados, 'Fome', ['fome', 'fomeAtual', 'hunger', 'status.fome.atual', 'barras.fome.atual'], ['fomeMax', 'fomeMaxima', 'fomeMáxima', 'hunger.max', 'status.fome.max', 'barras.fome.max'], 5),
+          classe: 'barra-fome'
+        },
+        {
+          ...montarStatPersonagem(dados, 'Potência do sangue', ['potenciaSangue', 'potênciaSangue', 'potencia do sangue', 'potência do sangue', 'bloodPotency', 'status.potencia.atual', 'barras.potencia.atual'], ['potenciaSangueMax', 'potênciaSangueMax', 'potenciaSangueMaxima', 'potênciaSangueMáxima', 'bloodPotency.max', 'status.potencia.max', 'barras.potencia.max'], 10),
+          classe: 'barra-potencia'
+        }
+      ];
+    }
+
+    function renderizarBarraVampiroPersonagem(stat) {
+      const percentual = stat.percentual !== null ? stat.percentual : 0;
+      return `
+        <div class="barra-ficha-vampiro ${escaparTexto(stat.classe || '')}">
+          <div class="barra-info">
+            <span class="barra-label">${escaparTexto(stat.rotulo)}</span>
+            <strong class="barra-valor">${escaparTexto(stat.texto)}</strong>
+          </div>
+          <div class="barra-trilho"><i class="barra-preenchimento" style="width:${percentual}%"></i></div>
+        </div>`;
+    }
+
+    function renderizarStatPersonagem(stat) {
+      const barra = stat.percentual !== null ? `<div class="barra-stat"><i style="width:${stat.percentual}%"></i></div>` : '';
+      return `<div class="stat-personagem"><span>${escaparTexto(stat.rotulo)}</span><strong>${escaparTexto(stat.texto)}</strong>${barra}</div>`;
+    }
+
+    function renderizarTagPersonagem(texto) {
+      if (texto === undefined || texto === null || texto === '') return '';
+      return `<span class="tag-personagem">${escaparTexto(texto)}</span>`;
+    }
+
+    function renderizarDetalhePersonagem(rotulo, valor) {
+      if (valor === undefined || valor === null || valor === '') return '';
+      return `<div><strong>${escaparTexto(rotulo)}:</strong> ${escaparTexto(valor)}</div>`;
+    }
+
+    function parecePersonagemSalvo(objeto) {
+      if (!objeto || typeof objeto !== 'object' || Array.isArray(objeto)) return false;
+      if (Array.isArray(objeto.personagens) || Array.isArray(objeto.jogadores) || objeto.mestreId || objeto.ownerId) return false;
+      const chaves = Object.keys(objeto).map(normalizarTextoBusca);
+      const pistas = ['nomepersonagem', 'personagemnome', 'cla', 'clan', 'predador', 'geracao', 'vitalidade', 'fome', 'humanidade', 'potencia', 'experiencia', 'atributos', 'habilidades', 'disciplinas', 'classe', 'origem', 'nex', 'pv', 'pe', 'sanidade', 'defesa', 'foto', 'imagem', 'avatar'];
+      return pistas.some((pista) => chaves.some((chave) => chave.includes(pista))) || Boolean(objeto.id && (objeto.fichaModelo || objeto.modelo || objeto.pagina));
+    }
+
+    function extrairListaPersonagens(valor, profundidade = 0) {
+      if (!valor || profundidade > 3) return [];
+      if (Array.isArray(valor)) return valor.flatMap((item) => extrairListaPersonagens(item, profundidade + 1));
+      if (typeof valor !== 'object') return [];
+      const listasDiretas = ['personagens', 'characters', 'fichas', 'itens', 'items', 'lista', 'dados', 'docs', 'results'];
+      let encontrados = [];
+      listasDiretas.forEach((chave) => { if (Array.isArray(valor[chave])) encontrados.push(...extrairListaPersonagens(valor[chave], profundidade + 1)); });
+      if (parecePersonagemSalvo(valor)) encontrados.push(valor);
+      return encontrados;
+    }
+
+    function obterTodosPersonagensSalvos() {
+      const todos = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const chave = localStorage.key(i);
+        if (!chave || !/(personagem|personagens|character|characters|ficha|fichas)/.test(normalizarTextoBusca(chave))) continue;
+        todos.push(...extrairListaPersonagens(lerJsonSeguro(chave)));
+      }
+      const vistos = new Set();
+      return todos.filter((item, indice) => {
+        const id = obterIdPersonagem(item);
+        const nome = obterNomePersonagem(item, indice);
+        const chave = id ? `id:${id}` : `nome:${normalizarTextoBusca(nome)}`;
+        if (vistos.has(chave)) return false;
+        vistos.add(chave);
+        return true;
+      });
+    }
+
+    function buscarPersonagemCompleto(personagem, indice) {
+      const base = personagem && typeof personagem === 'object' ? personagem : { id: String(personagem || '') };
+      const idBase = obterIdPersonagem(base);
+      const nomeBase = normalizarTextoBusca(obterNomePersonagem(base, indice));
+      const encontrado = obterTodosPersonagensSalvos().find((item) => {
+        const idItem = obterIdPersonagem(item);
+        if (idBase && idItem && String(idItem) === String(idBase)) return true;
+        const nomeItem = normalizarTextoBusca(obterNomePersonagem(item, indice));
+        return Boolean(nomeBase && nomeItem && nomeItem === nomeBase);
+      });
+      return { ...base, ...(encontrado || {}) };
+    }
+
+    function obterTagsPersonagem(dados, sistema) {
+      const tags = [];
+      if (sistema.includes('vampiro')) {
+        tags.push(obterPrimeiroValor(dados, ['cla', 'clã', 'clan', 'dadosBasicos.cla', 'dadosBasicos.clã']));
+        tags.push(obterPrimeiroValor(dados, ['predador', 'tipoPredador', 'predator']));
+        const geracao = obterPrimeiroValor(dados, ['geracao', 'geração', 'generation']);
+        if (geracao !== '') tags.push(`${geracao}ª geração`);
+      } else {
+        tags.push(obterPrimeiroValor(dados, ['classe', 'class']));
+        tags.push(obterPrimeiroValor(dados, ['origem', 'origin']));
+        tags.push(obterPrimeiroValor(dados, ['patente', 'cargo', 'rank']));
+        const nex = obterPrimeiroValor(dados, ['nex', 'NEX', 'nivelExposicao', 'nívelExposição']);
+        if (nex !== '') tags.push(`NEX ${nex}`);
+      }
+      return tags.filter((tag) => tag !== undefined && tag !== null && tag !== '').slice(0, 5);
+    }
+
+    function obterStatsPersonagem(dados, sistema) {
+      if (sistema.includes('vampiro')) return obterBarrasVampiroPersonagem(dados);
+      return [
+        montarStatPersonagem(dados, 'PV', ['pv', 'vida', 'pontosVida', 'vidaAtual', 'status.pv.atual'], ['pvMax', 'pvMaximo', 'vidaMax', 'vidaMaxima', 'status.pv.max']),
+        montarStatPersonagem(dados, 'PE', ['pe', 'esforco', 'esforço', 'pontosEsforco', 'pontosEsforço', 'status.pe.atual'], ['peMax', 'peMaximo', 'esforcoMax', 'esforçoMax', 'status.pe.max']),
+        montarStatPersonagem(dados, 'SAN', ['san', 'sanidade', 'sanidadeAtual', 'status.san.atual'], ['sanMax', 'sanidadeMax', 'sanidadeMaxima', 'status.san.max']),
+        montarStatPersonagem(dados, 'Defesa', ['defesa', 'defense', 'status.defesa'], []),
+        montarStatPersonagem(dados, 'Bloqueio', ['bloqueio', 'block', 'status.bloqueio'], [])
+      ];
+    }
+
+    function obterDetalhesPrincipais(dados, sistema) {
+      if (sistema.includes('vampiro')) {
+        return [
+          renderizarDetalhePersonagem('Ambição', obterPrimeiroValor(dados, ['ambicao', 'ambição', 'ambition'])),
+          renderizarDetalhePersonagem('Desejo', obterPrimeiroValor(dados, ['desejo', 'desire'])),
+          renderizarDetalhePersonagem('Senhor', obterPrimeiroValor(dados, ['senhor', 'sire'])),
+          renderizarDetalhePersonagem('Ressonância', obterPrimeiroValor(dados, ['ressonancia', 'ressonância', 'resonance']))
+        ].filter(Boolean).join('');
+      }
+      return [
+        renderizarDetalhePersonagem('Trilha', obterPrimeiroValor(dados, ['trilha', 'path'])),
+        renderizarDetalhePersonagem('Origem', obterPrimeiroValor(dados, ['origem', 'origin'])),
+        renderizarDetalhePersonagem('Perícias treinadas', obterPrimeiroValor(dados, ['periciasTreinadasResumo', 'períciasTreinadasResumo', 'periciasResumo']))
+      ].filter(Boolean).join('');
+    }
+
+    function atualizarCampanhaAtualDoStorage() {
+      if (!campanhaAtual) return;
+      const campanhas = obterCampanhas();
+      const atualizada = campanhas.find((campanha) => String(campanha.id) === String(campanhaAtual.id));
+      if (atualizada) campanhaAtual = atualizada;
+    }
+
+    function assinaturaPersonagemResumo(dados, indice) {
+      const sistema = obterSistemaPersonagem(dados).toLowerCase();
+      return {
+        id: obterIdPersonagem(dados) || `personagem-${indice}`,
+        nome: obterNomePersonagem(dados, indice),
+        sistema: obterSistemaPersonagem(dados),
+        imagem: obterImagemPersonagem(dados),
+        tags: obterTagsPersonagem(dados, sistema),
+        stats: obterStatsPersonagem(dados, sistema).map((stat) => stat.texto),
+        detalhes: obterDetalhesPrincipais(dados, sistema)
+      };
+    }
+
+    function renderizarStatusPersonagens(forcar = false) {
+      atualizarCampanhaAtualDoStorage();
+      const personagens = obterPersonagensCampanha().map((personagem, indice) => buscarPersonagemCompleto(personagem, indice));
+      if (!personagens.length) {
+        statusPersonagens.innerHTML = '<p class="estado-vazio">Nenhum personagem foi adicionado à campanha ainda.</p>';
+        assinaturaPersonagensAoVivo = '';
+        return;
+      }
+
+      const novaAssinatura = JSON.stringify(personagens.map((personagem, indice) => assinaturaPersonagemResumo(personagem, indice)));
+      const editandoNota = document.activeElement && document.activeElement.classList.contains('nota-personagem');
+      if (!forcar && novaAssinatura === assinaturaPersonagensAoVivo) return;
+      if (!forcar && editandoNota) return;
+
+      statusPersonagens.querySelectorAll('.nota-personagem').forEach((campo) => {
+        estadoEscudo.notasPersonagens[campo.dataset.personagemId] = campo.value;
+      });
+
+      statusPersonagens.innerHTML = personagens.map((personagem, indice) => {
+        const id = obterIdPersonagem(personagem) || `personagem-${indice}`;
+        const nome = obterNomePersonagem(personagem, indice);
+        const sistema = obterSistemaPersonagem(personagem);
+        const sistemaBusca = sistema.toLowerCase();
+        const jogador = obterPrimeiroValor(personagem, ['jogador', 'player', 'nomeJogador', 'usuarioNome', 'donoNome']);
+        const nota = estadoEscudo.notasPersonagens?.[id] || '';
+        const tags = obterTagsPersonagem(personagem, sistemaBusca).map(renderizarTagPersonagem).join('') || renderizarTagPersonagem('Sem detalhes');
+        const stats = sistemaBusca.includes('vampiro')
+          ? `<div class="barras-vampiro-card">${obterBarrasVampiroPersonagem(personagem).map(renderizarBarraVampiroPersonagem).join('')}</div>`
+          : obterStatsPersonagem(personagem, sistemaBusca).map(renderizarStatPersonagem).join('');
+        const detalhes = obterDetalhesPrincipais(personagem, sistemaBusca) || '<div>Sem resumo adicional salvo na ficha.</div>';
+        return `
+          <article class="personagem-card-vivo" data-personagem-id="${escaparTexto(id)}">
+            <div class="personagem-cabecalho-vivo">
+              <div class="personagem-foto-grande">${renderizarFotoPersonagem(personagem, nome)}</div>
+              <div class="personagem-titulo-vivo">
+                <strong>${escaparTexto(nome)}</strong>
+                <span>${escaparTexto(sistema)}${jogador ? ` · Jogador: ${escaparTexto(jogador)}` : ''}</span>
+                <div class="personagem-tags">${tags}</div>
+              </div>
+            </div>
+            <div class="resumo-personagem-grid">${stats}</div>
+            <div class="personagem-detalhes-vivo">${detalhes}</div>
+            <textarea class="area-grande nota-personagem" data-personagem-id="${escaparTexto(id)}" placeholder="Notas privadas do mestre sobre este personagem...">${escaparTexto(nota)}</textarea>
+            <div class="mini-acoes">
+              <a class="btn-menor" href="${escaparTexto(montarLinkFicha(personagem))}">Acessar ficha</a>
+              <span class="sincronizacao-ficha">Sincronizado com a ficha</span>
+            </div>
+          </article>`;
+      }).join('');
+
+      assinaturaPersonagensAoVivo = novaAssinatura;
+      statusPersonagens.querySelectorAll('.nota-personagem').forEach((campo) => {
+        campo.addEventListener('input', () => {
+          estadoEscudo.notasPersonagens[campo.dataset.personagemId] = campo.value;
+          salvarEstadoEscudo();
+        });
+      });
+    }
+
+
+    function normalizarTextoBusca(texto) {
+      return String(texto || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function obterMapaPersonagensCampanha() {
+      const personagens = obterPersonagensCampanha();
+      const ids = new Set();
+      const nomes = new Set();
+      const porId = new Map();
+      const porNome = new Map();
+      personagens.forEach((personagem, indice) => {
+        const id = obterIdPersonagem(personagem) || `personagem-${indice}`;
+        const nome = obterNomePersonagem(personagem, indice);
+        ids.add(String(id));
+        nomes.add(normalizarTextoBusca(nome));
+        porId.set(String(id), nome);
+        porNome.set(normalizarTextoBusca(nome), nome);
+      });
+      return { ids, nomes, porId, porNome };
+    }
+
+    function chaveRolagensCampanha() { return `rolagensCampanha_${campanhaAtual.id}`; }
+
+    function lerJsonSeguro(chave) {
+      try { return JSON.parse(localStorage.getItem(chave)); } catch (erro) { return null; }
+    }
+
+    function extrairListaRolagens(valor) {
+      if (!valor) return [];
+      if (Array.isArray(valor)) return valor;
+      if (Array.isArray(valor.rolagens)) return valor.rolagens;
+      if (Array.isArray(valor.historico)) return valor.historico;
+      if (Array.isArray(valor.resultados)) return valor.resultados;
+      if (Array.isArray(valor.itens)) return valor.itens;
+      if (Array.isArray(valor.logs)) return valor.logs;
+      return [];
+    }
+
+    function extrairValoresDados(valor) {
+      if (!valor) return [];
+      if (Array.isArray(valor)) {
+        return valor.map((item) => {
+          if (item && typeof item === 'object') return item.valor ?? item.resultado ?? item.face ?? item.numero ?? '';
+          return item;
+        }).filter((item) => item !== '' && item !== null && item !== undefined);
+      }
+      if (typeof valor === 'string') {
+        return valor.split(/[;,\s]+/).map((item) => item.trim()).filter(Boolean);
+      }
+      return [];
+    }
+
+    function obterValorRolagem(rolagem, chaves) {
+      for (const chave of chaves) {
+        if (rolagem && rolagem[chave] !== undefined && rolagem[chave] !== null && rolagem[chave] !== '') return rolagem[chave];
+      }
+      return '';
+    }
+
+    function normalizarRolagem(rolagem, origem = '') {
+      if (!rolagem || typeof rolagem !== 'object') return null;
+      const mapa = obterMapaPersonagensCampanha();
+      const personagemId = String(obterValorRolagem(rolagem, ['personagemId', 'idPersonagem', 'fichaId', 'characterId', 'idFicha']) || '');
+      const nomeBruto = obterValorRolagem(rolagem, ['personagemNome', 'nomePersonagem', 'personagem', 'characterName', 'nome', 'jogador']) || mapa.porId.get(personagemId) || 'Personagem';
+      const nomeNormalizado = normalizarTextoBusca(nomeBruto);
+      const nome = mapa.porNome.get(nomeNormalizado) || String(nomeBruto);
+      const dadosComunsRolagem = extrairValoresDados(obterValorRolagem(rolagem, ['dadosComuns', 'resultadosComuns', 'comuns', 'dados', 'resultados', 'faces']));
+      const dadosFomeRolagem = extrairValoresDados(obterValorRolagem(rolagem, ['dadosFome', 'resultadosFome', 'fome', 'dadosVermelhos']));
+      const titulo = obterValorRolagem(rolagem, ['titulo', 'teste', 'nomeTeste', 'acao', 'tipo', 'origem']) || origem || 'Rolagem';
+      const data = obterValorRolagem(rolagem, ['data', 'criadoEm', 'createdAt', 'horario', 'timestamp']) || new Date().toISOString();
+      const id = String(obterValorRolagem(rolagem, ['id', 'uid']) || `${origem}-${personagemId}-${nome}-${titulo}-${data}-${JSON.stringify(dadosComunsRolagem)}-${JSON.stringify(dadosFomeRolagem)}`);
+      return {
+        id,
+        campanhaId: String(obterValorRolagem(rolagem, ['campanhaId', 'idCampanha', 'campaignId']) || ''),
+        personagemId,
+        personagemNome: nome,
+        personagemNomeBusca: nomeNormalizado,
+        titulo: String(titulo),
+        data,
+        dadosComuns: dadosComunsRolagem,
+        dadosFome: dadosFomeRolagem,
+        sucessos: obterValorRolagem(rolagem, ['sucessos', 'totalSucessos']),
+        total: obterValorRolagem(rolagem, ['total', 'resultadoTotal', 'resultado']),
+        dificuldade: obterValorRolagem(rolagem, ['dificuldade', 'cd', 'dt']),
+        observacao: obterValorRolagem(rolagem, ['observacao', 'observacoes', 'status', 'mensagem', 'descricao'])
+      };
+    }
+
+    function rolagemPertenceCampanha(rolagem) {
+      if (!rolagem) return false;
+      if (String(rolagem.campanhaId) && String(rolagem.campanhaId) === String(campanhaAtual.id)) return true;
+      const mapa = obterMapaPersonagensCampanha();
+      if (rolagem.personagemId && mapa.ids.has(String(rolagem.personagemId))) return true;
+      if (rolagem.personagemNomeBusca && mapa.nomes.has(rolagem.personagemNomeBusca)) return true;
+      return rolagem.personagemNomeBusca === 'mestre';
+    }
+
+    function obterRolagensCampanha() {
+      const chavesDiretas = [
+        chaveRolagensCampanha(),
+        `campanhaRolagens_${campanhaAtual.id}`,
+        `historicoRolagens_${campanhaAtual.id}`,
+        `diceRolls_${campanhaAtual.id}`
+      ];
+      let candidatas = [];
+      chavesDiretas.forEach((chave) => { candidatas.push(...extrairListaRolagens(lerJsonSeguro(chave))); });
+      candidatas.push(...extrairListaRolagens(campanhaAtual.rolagens));
+      candidatas.push(...extrairListaRolagens(estadoEscudo.rolagens));
+
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const chave = localStorage.key(i);
+        if (!chave || chavesDiretas.includes(chave)) continue;
+        const chaveBusca = normalizarTextoBusca(chave);
+        if (!/(rolagem|rolagens|dice|dados|historico)/.test(chaveBusca)) continue;
+        candidatas.push(...extrairListaRolagens(lerJsonSeguro(chave)));
+      }
+
+      const vistas = new Set();
+      return candidatas
+        .map((rolagem, indice) => normalizarRolagem(rolagem, `Rolagem ${indice + 1}`))
+        .filter(rolagemPertenceCampanha)
+        .filter((rolagem) => {
+          const chave = rolagem.id || JSON.stringify(rolagem);
+          if (vistas.has(chave)) return false;
+          vistas.add(chave);
+          return true;
+        })
+        .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+    }
+
+    function formatarHorarioRolagem(data) {
+      const quando = new Date(data);
+      if (Number.isNaN(quando.getTime())) return 'Agora';
+      return quando.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function renderizarRolagensCampanha() {
+      if (!listaRolagensCampanha) return;
+      const rolagens = obterRolagensCampanha().slice(0, 80);
+      if (!rolagens.length) {
+        listaRolagensCampanha.innerHTML = '<div class="rolagem-vazia">Nenhuma rolagem registrada ainda. Quando os personagens da campanha rolarem dados, o histórico aparecerá aqui.</div>';
+        return;
+      }
+      listaRolagensCampanha.innerHTML = rolagens.map((rolagem) => {
+        const dadosComunsHtml = criarTagsDados(rolagem.dadosComuns || []);
+        const dadosFomeHtml = criarTagsDados(rolagem.dadosFome || [], 'dado-fome');
+        const total = rolagem.sucessos !== '' ? `${rolagem.sucessos} sucesso(s)` : (rolagem.total !== '' ? `Total ${rolagem.total}` : 'Resultado registrado');
+        const dificuldade = rolagem.dificuldade !== '' ? ` · Dif. ${escaparTexto(rolagem.dificuldade)}` : '';
+        const observacao = rolagem.observacao ? `<span>${escaparTexto(rolagem.observacao)}</span>` : '';
+        return `
+          <article class="rolagem-item">
+            <div class="rolagem-meta"><span>${escaparTexto(formatarHorarioRolagem(rolagem.data))}</span><span>${escaparTexto(rolagem.campanhaId ? 'Campanha' : 'Ficha')}</span></div>
+            <div class="rolagem-personagem">${escaparTexto(rolagem.personagemNome)}</div>
+            <div class="rolagem-teste">${escaparTexto(rolagem.titulo)}</div>
+            <div class="rolagem-resultado"><span>${escaparTexto(total)}${dificuldade}</span>${observacao}</div>
+            <div class="rolagem-dados">${dadosComunsHtml || dadosFomeHtml ? `${dadosComunsHtml}${dadosFomeHtml}` : '<span class="texto-muted">Sem dados detalhados</span>'}</div>
+          </article>`;
+      }).join('');
+    }
+
+    function salvarRolagemCampanha(rolagem) {
+      const salvas = extrairListaRolagens(lerJsonSeguro(chaveRolagensCampanha()));
+      const atualizadas = [rolagem, ...salvas].slice(0, 100);
+      localStorage.setItem(chaveRolagensCampanha(), JSON.stringify(atualizadas));
+      estadoEscudo.rolagens = [rolagem, ...extrairListaRolagens(estadoEscudo.rolagens)].slice(0, 100);
+      salvarEstadoEscudo();
+      renderizarRolagensCampanha();
+    }
+
+    function ativarAbaEscudo(nomeAba) {
+      document.querySelectorAll('.tab-btn').forEach((botao) => {
+        const ativo = botao.dataset.tab === nomeAba;
+        botao.classList.toggle('ativo', ativo);
+        botao.setAttribute('aria-selected', ativo ? 'true' : 'false');
+      });
+      document.querySelectorAll('.tab-conteudo').forEach((conteudo) => {
+        conteudo.classList.toggle('ativo', conteudo.id === `tab-${nomeAba}`);
+      });
+    }
+
+    function rolar(faces) { return Math.floor(Math.random() * faces) + 1; }
+    function criarTagsDados(resultados, classe = '') { return resultados.map((valor) => `<span class="dado-tag ${classe}">${valor}</span>`).join(''); }
+
+    function rolarV5() {
+      const comuns = Math.max(0, Math.min(30, Number(dadosComuns.value) || 0));
+      const fome = Math.max(0, Math.min(5, Number(dadosFome.value) || 0));
+      const dificuldade = Math.max(0, Number(dificuldadeV5.value) || 0);
+      if (comuns + fome <= 0) { mostrarAviso('Informe pelo menos 1 dado para rolar.'); return; }
+      const resultadosComuns = Array.from({ length: comuns }, () => rolar(10));
+      const resultadosFome = Array.from({ length: fome }, () => rolar(10));
+      const todos = [...resultadosComuns, ...resultadosFome];
+      const sucessosBase = todos.filter((valor) => valor >= 6).length;
+      const dezenas = todos.filter((valor) => valor === 10).length;
+      const bonusCritico = Math.floor(dezenas / 2) * 2;
+      const sucessos = sucessosBase + bonusCritico;
+      const venceu = sucessos >= dificuldade;
+      const critico = dezenas >= 2;
+      const criticoBaguncado = critico && resultadosFome.includes(10);
+      const falhaBestial = !venceu && resultadosFome.includes(1);
+      const observacoes = [];
+      if (criticoBaguncado) observacoes.push('Crítico bagunçado');
+      else if (critico) observacoes.push('Crítico');
+      if (falhaBestial) observacoes.push('Falha bestial');
+      observacoes.push(venceu ? 'Sucesso' : 'Falha');
+      resultadoV5.innerHTML = `
+        <div><strong>${sucessos} sucesso(s)</strong> contra dificuldade ${dificuldade} — ${observacoes.join(' / ')}</div>
+        <div>Comuns: ${criarTagsDados(resultadosComuns) || 'nenhum'}</div>
+        <div>Fome: ${criarTagsDados(resultadosFome, 'dado-fome') || 'nenhum'}</div>
+      `;
+      salvarRolagemCampanha({
+        id: `mestre-${Date.now()}`,
+        campanhaId: campanhaAtual.id,
+        personagemId: 'mestre',
+        personagemNome: 'Mestre',
+        titulo: 'Rolagem secreta V5',
+        dadosComuns: resultadosComuns,
+        dadosFome: resultadosFome,
+        sucessos,
+        dificuldade,
+        observacao: observacoes.join(' / '),
+        data: new Date().toISOString()
+      });
+    }
+
+    function carregarEscudo() {
+      estadoEscudo = obterEstadoEscudo();
+      Object.entries(camposTexto).forEach(([chave, campo]) => { campo.value = estadoEscudo[chave] || ''; });
+      atualizarContadores();
+      renderizarStatusPersonagens();
+      renderizarRolagensCampanha();
+      linkMesa.href = `mesa_virtual.html?id=${encodeURIComponent(campanhaAtual.id)}`;
+    }
+
+    Object.values(camposTexto).forEach((campo) => campo.addEventListener('input', salvarEstadoEscudo));
+
+    document.querySelectorAll('[data-contador]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const chave = botao.dataset.contador;
+        const acao = botao.dataset.acao;
+        const atual = Number(estadoEscudo[chave]) || 0;
+        estadoEscudo[chave] = Math.max(chave === 'sessao' ? 1 : 0, atual + (acao === 'mais' ? 1 : -1));
+        atualizarContadores();
+        salvarEstadoEscudo();
+      });
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((botao) => botao.addEventListener('click', () => ativarAbaEscudo(botao.dataset.tab)));
+    btnAtualizarRolagens?.addEventListener('click', () => { renderizarRolagensCampanha(); mostrarAviso('Rolagens atualizadas.'); });
+    btnAtualizarPersonagens?.addEventListener('click', () => { renderizarStatusPersonagens(true); mostrarAviso('Fichas atualizadas.'); });
+    window.addEventListener('storage', (evento) => {
+      const chave = normalizarTextoBusca(evento.key || '');
+      if (/(rolagem|rolagens|dice|dados|historico)/.test(chave)) renderizarRolagensCampanha();
+      if (/(personagem|personagens|character|characters|ficha|fichas|campanhascriadas)/.test(chave)) renderizarStatusPersonagens(true);
+    });
+    timerPersonagensAoVivo = setInterval(() => {
+      renderizarStatusPersonagens(false);
+      renderizarRolagensCampanha();
+    }, 1800);
+
+    document.getElementById('btnRolarV5').addEventListener('click', rolarV5);
+    document.getElementById('btnSalvarEscudo').addEventListener('click', () => {
+      salvarEstadoEscudo();
+      mostrarAviso('Escudo salvo.');
+    });
+
+    carregarUsuario();
+    if (carregarCampanhaBase('Escudo do mestre')) carregarEscudo();
+  </script>
+</body>
+</html>

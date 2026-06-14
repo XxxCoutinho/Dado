@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campanha</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --fundo: #030306;
+      --card: rgba(9, 7, 18, 0.78);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --borda: rgba(255, 255, 255, 0.14);
+      --texto: #f4f0ff;
+      --muted: rgba(244, 240, 255, 0.66);
+    }
+
+    html {
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 0, 120, 0.14), transparent 32%),
+        radial-gradient(circle at 86% 74%, rgba(0, 200, 255, 0.13), transparent 34%),
+        radial-gradient(circle at 50% 42%, rgba(138, 43, 226, 0.16), transparent 44%),
+        linear-gradient(180deg, #05030b 0%, #000 100%);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -50%;
+      background:
+        conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(255, 0, 120, 0.065),
+          rgba(0, 200, 255, 0.065),
+          rgba(138, 43, 226, 0.065),
+          transparent
+        );
+      animation: girarBrilho 18s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10) 0 1px, transparent 1px),
+        radial-gradient(circle at 35% 55%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+      background-size: 34px 34px, 58px 58px, 92px 92px;
+      opacity: 0.22;
+      mix-blend-mode: screen;
+      animation: ruido 1.6s steps(2) infinite;
+      z-index: 0;
+    }
+
+    img, svg, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    input, textarea, select, button {
+      max-width: 100%;
+    }
+
+    button, a, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 34px));
+      min-height: 82px;
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      background: rgba(8, 6, 18, 0.72);
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 0 22px rgba(255, 0, 120, 0.14),
+        0 0 42px rgba(0, 200, 255, 0.09),
+        inset 0 0 28px rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+      animation: surgirTopo 0.9s ease forwards;
+    }
+
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #ff0078, #00c8ff, #8a2be2, #ffdd55, #ff0078);
+      background-size: 320% 320%;
+      animation: moverCores 6s linear infinite;
+      opacity: 0.45;
+      pointer-events: none;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    .logo-dado {
+      justify-self: start;
+      color: #f5e6ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      letter-spacing: 0.12em;
+      line-height: 1;
+      animation: brilhoAtrasColorido 4s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .nav-abas {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .nav-abas a {
+      min-width: 138px;
+      text-align: center;
+      padding: 12px 18px;
+      border-radius: 13px;
+      color: rgba(244, 240, 255, 0.72);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 900;
+      transition: 0.25s ease;
+    }
+
+    .nav-abas a:hover,
+    .nav-abas a.ativo {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.64), rgba(0, 200, 255, 0.52), rgba(138, 43, 226, 0.64));
+      background-size: 220% 220%;
+      box-shadow:
+        0 0 16px rgba(255, 0, 120, 0.22),
+        0 0 26px rgba(0, 200, 255, 0.14);
+      animation: moverCores 5s linear infinite;
+    }
+
+    .usuario-area {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .usuario-nome {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #fff;
+      font-weight: 800;
+      text-align: right;
+      text-shadow:
+        0 0 8px rgba(255, 0, 120, 0.34),
+        0 0 14px rgba(0, 200, 255, 0.2);
+    }
+
+    .btn-sair,
+    .btn-primario,
+    .btn-secundario,
+    .aba-botao {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn-sair {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(244, 240, 255, 0.82);
+      padding: 9px 12px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: 0.22s ease;
+    }
+
+    .btn-sair:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+
+    .conteudo {
+      width: min(1180px, calc(100% - 34px));
+      margin: 46px auto 40px;
+      position: relative;
+      z-index: 1;
+      animation: surgirConteudo 1s ease forwards;
+    }
+
+    .painel-campanha {
+      border: 1px solid var(--borda);
+      border-radius: 26px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow:
+        0 0 22px rgba(255, 0, 120, 0.12),
+        0 0 42px rgba(0, 200, 255, 0.08),
+        inset 0 0 28px rgba(255, 255, 255, 0.032);
+      padding: clamp(24px, 5vw, 42px);
+    }
+
+    .campanha-topo {
+      display: grid;
+      grid-template-columns: minmax(190px, 280px) 1fr auto;
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+
+    .campanha-capa {
+      width: 100%;
+      min-height: 160px;
+      aspect-ratio: 16 / 9;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 22px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.12), transparent 26%),
+        linear-gradient(135deg, rgba(48, 42, 146, 0.95), rgba(91, 42, 172, 0.82));
+      color: rgba(255, 255, 255, 0.74);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+      font-weight: 900;
+      box-shadow:
+        inset 0 0 28px rgba(255, 255, 255, 0.055),
+        0 0 22px rgba(0, 200, 255, 0.08);
+    }
+
+    .campanha-capa img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .campanha-identidade {
+      min-width: 0;
+    }
+
+    .titulo-pagina {
+      font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+      font-size: clamp(2.4rem, 7vw, 5.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+      word-break: break-word;
+      text-shadow:
+        0 0 10px rgba(255, 0, 120, 0.45),
+        0 0 24px rgba(0, 200, 255, 0.22),
+        0 0 42px rgba(138, 43, 226, 0.22);
+    }
+
+    .campanha-sistema {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin-top: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.22), rgba(0, 200, 255, 0.14));
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .btn-primario,
+    .btn-secundario {
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.76rem;
+      font-weight: 900;
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primario {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      background: linear-gradient(90deg, rgba(255, 0, 120, 0.72), rgba(0, 200, 255, 0.62), rgba(138, 43, 226, 0.72));
+      background-size: 220% 220%;
+      animation: moverCores 5s linear infinite;
+      box-shadow:
+        0 0 18px rgba(255, 0, 120, 0.22),
+        0 0 26px rgba(0, 200, 255, 0.14);
+    }
+
+    .btn-secundario {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(244, 240, 255, 0.82);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .btn-primario:hover,
+    .btn-secundario:hover {
+      transform: translateY(-2px);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.38);
+    }
+
+    .abas-campanha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    .aba-botao {
+      flex: 1 1 150px;
+      min-height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.045);
+      color: rgba(244, 240, 255, 0.76);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.72rem;
+      font-weight: 900;
+      transition: 0.22s ease;
+    }
+
+    .aba-botao:hover,
+    .aba-botao.ativo {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 18px rgba(0, 200, 255, 0.1);
+    }
+
+    .conteudo-aba {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 22px;
+      min-height: 260px;
+    }
+
+    .conteudo-aba h2 {
+      color: #fff;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 1rem;
+    }
+
+    .descricao-campanha {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.98rem;
+    }
+
+    .descricao-campanha ul,
+    .descricao-campanha ol {
+      margin: 8px 0 8px 22px;
+    }
+
+    .estado-vazio {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mesa-acoes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .mesa-card {
+      min-height: 136px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.07), transparent 28%),
+        rgba(255, 255, 255, 0.045);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.025);
+    }
+
+    .mesa-card strong {
+      display: block;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.86rem;
+    }
+
+    .mesa-card span {
+      display: block;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.88rem;
+    }
+
+    .mesa-card .btn-primario,
+    .mesa-card .btn-secundario {
+      width: 100%;
+    }
+
+    .erro-campanha {
+      text-align: center;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 30px;
+    }
+
+    .erro-campanha h1 {
+      color: #fff;
+      font-size: clamp(1.6rem, 6vw, 3rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .erro-campanha p {
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+
+
+    .conteudo-aba-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .conteudo-aba-cabecalho h2 {
+      margin-bottom: 0;
+    }
+
+    .lista-jogadores {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .jogador-card {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 14px;
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.025);
+    }
+
+    .jogador-card strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .jogador-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+
+    .lista-personagens-campanha,
+    .lista-personagens-modal {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .lista-personagens-modal {
+      max-height: 56vh;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .personagem-card {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 12px;
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.025);
+    }
+
+    .personagem-card-modal {
+      grid-template-columns: 82px minmax(0, 1fr);
+    }
+
+    .personagem-foto {
+      width: 74px;
+      height: 74px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.12), transparent 28%),
+        linear-gradient(135deg, rgba(48, 42, 146, 0.75), rgba(91, 42, 172, 0.52));
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .personagem-card-modal .personagem-foto {
+      width: 82px;
+      height: 82px;
+    }
+
+    .personagem-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .personagem-info {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .personagem-info strong {
+      color: #fff;
+      font-size: 0.95rem;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .personagem-info span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .personagem-acoes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .personagem-acoes .btn-menor {
+      min-height: 32px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .personagem-acoes .btn-menor:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .busca-personagem {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: rgba(244, 240, 255, 0.84);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .busca-personagem input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.26);
+      color: #fff;
+      padding: 13px 14px;
+      outline: none;
+      font: inherit;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-backdrop.aberto {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(760px, 100%);
+      max-height: min(90vh, 860px);
+      overflow: auto;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 0, 120, 0.14), transparent 34%),
+        radial-gradient(circle at 92% 95%, rgba(0, 200, 255, 0.12), transparent 34%),
+        rgba(9, 7, 18, 0.96);
+      box-shadow:
+        0 0 28px rgba(255, 0, 120, 0.18),
+        0 0 52px rgba(0, 200, 255, 0.12),
+        inset 0 0 28px rgba(255, 255, 255, 0.035);
+      padding: clamp(20px, 4vw, 30px);
+    }
+
+    .modal-card h2 {
+      color: #fff;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 1rem;
+    }
+
+    .modal-fechar {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .campo-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: rgba(244, 240, 255, 0.84);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .campo-form.campo-form-largo {
+      grid-column: 1 / -1;
+    }
+
+    .campo-form input,
+    .campo-form select,
+    .campo-form textarea,
+    .convite-input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.26);
+      color: #fff;
+      padding: 13px 14px;
+      outline: none;
+      font: inherit;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .campo-form input[type="file"] {
+      padding: 10px;
+      color: rgba(244, 240, 255, 0.78);
+    }
+
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .editor-toolbar button,
+    .btn-menor {
+      min-height: 34px;
+      padding: 0 11px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.86);
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .editor-campanha {
+      min-height: 160px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.26);
+      color: #fff;
+      padding: 14px;
+      outline: none;
+      line-height: 1.6;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+
+    .editor-campanha:empty::before {
+      content: attr(data-placeholder);
+      color: rgba(244, 240, 255, 0.42);
+    }
+
+    .preview-imagem-campanha {
+      min-height: 150px;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .preview-imagem-campanha img {
+      width: 100%;
+      height: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .editor-imagem-campanha {
+      display: grid;
+      gap: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 14px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .editor-imagem-campanha[hidden] {
+      display: none;
+    }
+
+    .editor-imagem-ajuda {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.82rem;
+      margin: -4px 0 0;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .editor-imagem-area {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      background:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%),
+        rgba(0, 0, 0, 0.28);
+      background-size: 18px 18px;
+      background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+    }
+
+    .editor-imagem-area canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .editor-imagem-controles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .controle-editor-imagem {
+      display: grid;
+      gap: 7px;
+      color: rgba(244, 240, 255, 0.82);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .controle-editor-imagem input[type="range"] {
+      width: 100%;
+      accent-color: #b46cff;
+    }
+
+    .acoes-editor-imagem {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .acoes-imagem-campanha {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .modal-imagem-card {
+      width: min(820px, 100%);
+    }
+
+    .editor-foto-personagem {
+      display: grid;
+      gap: 14px;
+    }
+
+    .editor-foto-area {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      border-radius: 20px;
+      overflow: hidden;
+      background:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%),
+        rgba(0, 0, 0, 0.32);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .editor-foto-area:active {
+      cursor: grabbing;
+    }
+
+    .editor-foto-area canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .editor-foto-moldura {
+      position: absolute;
+      inset: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.82);
+      border-radius: 16px;
+      pointer-events: none;
+      box-shadow:
+        0 0 0 999px rgba(0, 0, 0, 0.18),
+        0 0 18px rgba(0, 200, 255, 0.2);
+    }
+
+    .controle-editor-imagem-unico {
+      max-width: 100%;
+    }
+
+    .acoes-editor-foto {
+      align-items: center;
+    }
+
+    .acoes-modal {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .convite-bloco {
+      display: grid;
+      gap: 12px;
+    }
+
+    .convite-ajuda {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .aviso-flutuante {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 30;
+      transform: translateX(-50%) translateY(20px);
+      max-width: min(520px, calc(100% - 30px));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      background: rgba(9, 7, 18, 0.96);
+      color: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 0 22px rgba(0, 200, 255, 0.14);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .aviso-flutuante.mostrar {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes brilhoAtrasColorido {
+      0% {
+        text-shadow:
+          0 0 8px #ff004c,
+          0 0 18px #ff004c,
+          0 0 34px #ff004c,
+          0 0 58px #8a2be2;
+      }
+
+      25% {
+        text-shadow:
+          0 0 8px #00c8ff,
+          0 0 18px #00c8ff,
+          0 0 34px #00c8ff,
+          0 0 58px #004cff;
+      }
+
+      50% {
+        text-shadow:
+          0 0 8px #00ff85,
+          0 0 18px #00ff85,
+          0 0 34px #00ff85,
+          0 0 58px #00c8ff;
+      }
+
+      75% {
+        text-shadow:
+          0 0 8px #ffe600,
+          0 0 18px #ffe600,
+          0 0 34px #ff9f1c,
+          0 0 58px #ff00ff;
+      }
+
+      100% {
+        text-shadow:
+          0 0 8px #ff004c,
+          0 0 18px #ff004c,
+          0 0 34px #ff004c,
+          0 0 58px #8a2be2;
+      }
+    }
+
+    @keyframes moverCores {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes girarBrilho {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes ruido {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1px, 1px); }
+      100% { transform: translate(1px, -1px); }
+    }
+
+    @keyframes surgirTopo {
+      from { opacity: 0; transform: translateY(-16px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes surgirConteudo {
+      from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        width: min(100% - 24px, 1180px);
+        min-height: 0;
+        margin-top: 12px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        padding: 16px 14px;
+        border-radius: 20px;
+      }
+
+      .logo-dado,
+      .nav-abas,
+      .usuario-area {
+        justify-self: center;
+      }
+
+      .nav-abas {
+        width: 100%;
+      }
+
+      .nav-abas a {
+        min-width: 0;
+        flex: 1 1 0;
+        padding: 11px 8px;
+        font-size: .68rem;
+        letter-spacing: .07em;
+      }
+
+      .usuario-area {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .usuario-nome {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .conteudo {
+        width: min(100% - 24px, 1180px);
+        margin-top: 24px;
+        margin-bottom: 34px;
+      }
+
+      .campanha-topo {
+        grid-template-columns: 1fr;
+      }
+
+      .campanha-capa {
+        min-height: 150px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .campanha-acoes {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-primario,
+      .btn-secundario {
+        width: 100%;
+      }
+
+      .editor-imagem-controles {
+        grid-template-columns: 1fr;
+      }
+
+      .acoes-editor-imagem,
+      .acoes-imagem-campanha {
+        flex-direction: column;
+      }
+
+      .acoes-editor-imagem .btn-menor,
+      .acoes-editor-imagem .btn-secundario,
+      .acoes-imagem-campanha .btn-menor {
+        width: 100%;
+      }
+
+      .acoes-modal {
+        flex-direction: column-reverse;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .conteudo {
+        width: min(100% - 20px, 1180px);
+        margin-top: 18px;
+      }
+
+      .painel-campanha,
+      .conteudo-aba {
+        border-radius: 22px;
+      }
+
+      .titulo-pagina {
+        font-size: clamp(2.2rem, 15vw, 3.6rem);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo-dado">Dado</a>
+
+    <nav class="nav-abas" aria-label="Navegação principal">
+      <a href="personagens.html">Personagens</a>
+      <a href="campanhas.html" class="ativo">Campanhas</a>
+    </nav>
+
+    <div class="usuario-area">
+      <span id="usuarioNome" class="usuario-nome">Carregando...</span>
+      <button type="button" id="btnSair" class="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <main class="conteudo" id="conteudoCampanha">
+    <section class="painel-campanha">
+      <div class="campanha-topo">
+        <div id="capaCampanha" class="campanha-capa" aria-label="Imagem da campanha">
+          <span>Imagem da campanha</span>
+        </div>
+
+        <div class="campanha-identidade">
+          <h1 id="tituloCampanha" class="titulo-pagina">Campanha</h1>
+          <span id="sistemaCampanha" class="campanha-sistema">Sistema</span>
+        </div>
+
+        <div class="campanha-acoes">
+          <a href="campanhas.html" class="btn-secundario">Voltar</a>
+        </div>
+      </div>
+
+      <div class="abas-campanha" role="tablist" aria-label="Abas da campanha">
+        <button type="button" class="aba-botao ativo" data-aba="visao">Visão geral</button>
+        <button type="button" class="aba-botao" data-aba="jogadores">Jogadores</button>
+        <button type="button" class="aba-botao" data-aba="personagens">Personagens</button>
+        <button type="button" class="aba-botao" data-aba="mesa">Mesa</button>
+        <button type="button" class="aba-botao" data-aba="editar">Editar</button>
+      </div>
+
+      <div id="conteudoAba" class="conteudo-aba"></div>
+    </section>
+  </main>
+
+
+  <div id="modalEditarCampanha" class="modal-backdrop" aria-hidden="true">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalEditarCampanha">
+      <button type="button" class="modal-fechar" data-fechar-modal="modalEditarCampanha" aria-label="Fechar">×</button>
+      <h2 id="tituloModalEditarCampanha">Editar campanha</h2>
+
+      <form id="formEditarCampanha">
+        <div class="form-grid">
+          <label class="campo-form">
+            Nome da campanha
+            <input type="text" id="campoNomeCampanha" maxlength="80" required />
+          </label>
+
+          <label class="campo-form">
+            Sistema
+            <select id="campoSistemaCampanha">
+              <option value="Vampiro: A Máscara">Vampiro: A Máscara</option>
+            </select>
+          </label>
+
+          <label class="campo-form campo-form-largo">
+            Imagem da campanha
+            <input type="file" id="campoImagemCampanha" accept="image/*" />
+          </label>
+
+          <div class="campo-form campo-form-largo">
+            <span>Prévia da imagem</span>
+            <div id="previewImagemCampanha" class="preview-imagem-campanha">Nenhuma imagem selecionada.</div>
+            <div class="acoes-imagem-campanha">
+              <button type="button" id="btnEditarImagemCampanha" class="btn-menor" hidden>Editar imagem</button>
+              <button type="button" id="btnRemoverImagemCampanha" class="btn-menor">Remover imagem</button>
+            </div>
+          </div>
+
+          <div class="campo-form campo-form-largo">
+            <span>Descrição</span>
+            <div class="editor-toolbar" aria-label="Editor simples da descrição">
+              <button type="button" data-comando="bold"><strong>B</strong></button>
+              <button type="button" data-comando="italic"><em>I</em></button>
+              <button type="button" data-comando="underline"><u>U</u></button>
+              <button type="button" data-comando="insertUnorderedList">Lista</button>
+            </div>
+            <div id="campoDescricaoCampanha" class="editor-campanha" contenteditable="true" data-placeholder="Escreva a descrição da campanha..."></div>
+          </div>
+        </div>
+
+        <div class="acoes-modal">
+          <button type="button" class="btn-secundario" data-fechar-modal="modalEditarCampanha">Cancelar</button>
+          <button type="submit" class="btn-primario">Salvar alterações</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="modalEditorImagemCampanha" class="modal-backdrop" aria-hidden="true">
+    <section class="modal-card modal-imagem-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalEditorImagemCampanha">
+      <button type="button" class="modal-fechar" data-fechar-modal="modalEditorImagemCampanha" aria-label="Fechar">×</button>
+      <h2 id="tituloModalEditorImagemCampanha">Editar imagem</h2>
+
+      <div class="editor-foto-personagem">
+        <p class="editor-imagem-ajuda">Arraste a imagem para ajustar o enquadramento. Use o zoom para aproximar ou afastar antes de salvar o recorte.</p>
+        <div id="areaEditorImagemCampanha" class="editor-foto-area">
+          <canvas id="canvasEditorImagemCampanha" width="1200" height="675" aria-label="Editor da imagem da campanha"></canvas>
+          <div class="editor-foto-moldura" aria-hidden="true"></div>
+        </div>
+
+        <label class="controle-editor-imagem controle-editor-imagem-unico">
+          Zoom
+          <input type="range" id="controleZoomImagem" min="1" max="3" step="0.01" value="1" />
+        </label>
+
+        <div class="acoes-modal acoes-editor-foto">
+          <button type="button" class="btn-secundario" data-fechar-modal="modalEditorImagemCampanha">Cancelar</button>
+          <button type="button" id="btnCentralizarImagemCampanha" class="btn-menor">Centralizar</button>
+          <button type="button" id="btnAplicarRecorteImagemCampanha" class="btn-primario">Salvar recorte</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="modalConviteJogadores" class="modal-backdrop" aria-hidden="true">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalConviteJogadores">
+      <button type="button" class="modal-fechar" data-fechar-modal="modalConviteJogadores" aria-label="Fechar">×</button>
+      <h2 id="tituloModalConviteJogadores">Convidar jogadores</h2>
+
+      <div class="convite-bloco">
+        <p class="convite-ajuda">Envie este link para os jogadores. Quando eles acessarem o link logados, serão adicionados à campanha.</p>
+        <input type="text" id="campoLinkConvite" class="convite-input" readonly />
+        <div class="acoes-modal">
+          <button type="button" class="btn-secundario" data-fechar-modal="modalConviteJogadores">Fechar</button>
+          <button type="button" id="btnCopiarConvite" class="btn-primario">Copiar link</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  <div id="modalAdicionarPersonagem" class="modal-backdrop" aria-hidden="true">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalAdicionarPersonagem">
+      <button type="button" class="modal-fechar" data-fechar-modal="modalAdicionarPersonagem" aria-label="Fechar">×</button>
+      <h2 id="tituloModalAdicionarPersonagem">Adicionar personagem</h2>
+
+      <label class="busca-personagem">
+        Buscar personagem
+        <input type="search" id="buscaPersonagemCampanha" placeholder="Digite o nome, sistema ou jogador..." autocomplete="off" />
+      </label>
+
+      <div id="listaPersonagensDisponiveis" class="lista-personagens-modal"></div>
+
+      <div class="acoes-modal">
+        <button type="button" class="btn-secundario" data-fechar-modal="modalAdicionarPersonagem">Fechar</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="avisoFlutuante" class="aviso-flutuante" role="status" aria-live="polite"></div>
+
+  <script>
+    const usuarioNome = document.getElementById('usuarioNome');
+    const btnSair = document.getElementById('btnSair');
+    const conteudoCampanha = document.getElementById('conteudoCampanha');
+    const tituloCampanha = document.getElementById('tituloCampanha');
+    const sistemaCampanha = document.getElementById('sistemaCampanha');
+    const capaCampanha = document.getElementById('capaCampanha');
+    const conteudoAba = document.getElementById('conteudoAba');
+    const botoesAbas = document.querySelectorAll('.aba-botao');
+    const modalEditarCampanha = document.getElementById('modalEditarCampanha');
+    const modalConviteJogadores = document.getElementById('modalConviteJogadores');
+    const modalAdicionarPersonagem = document.getElementById('modalAdicionarPersonagem');
+    const modalEditorImagemCampanha = document.getElementById('modalEditorImagemCampanha');
+    const formEditarCampanha = document.getElementById('formEditarCampanha');
+    const campoNomeCampanha = document.getElementById('campoNomeCampanha');
+    const campoSistemaCampanha = document.getElementById('campoSistemaCampanha');
+    const campoImagemCampanha = document.getElementById('campoImagemCampanha');
+    const previewImagemCampanha = document.getElementById('previewImagemCampanha');
+    const btnRemoverImagemCampanha = document.getElementById('btnRemoverImagemCampanha');
+    const btnEditarImagemCampanha = document.getElementById('btnEditarImagemCampanha');
+    const areaEditorImagemCampanha = document.getElementById('areaEditorImagemCampanha');
+    const canvasEditorImagemCampanha = document.getElementById('canvasEditorImagemCampanha');
+    const controleZoomImagem = document.getElementById('controleZoomImagem');
+    const btnCentralizarImagemCampanha = document.getElementById('btnCentralizarImagemCampanha');
+    const btnAplicarRecorteImagemCampanha = document.getElementById('btnAplicarRecorteImagemCampanha');
+    const campoDescricaoCampanha = document.getElementById('campoDescricaoCampanha');
+    const campoLinkConvite = document.getElementById('campoLinkConvite');
+    const btnCopiarConvite = document.getElementById('btnCopiarConvite');
+    const buscaPersonagemCampanha = document.getElementById('buscaPersonagemCampanha');
+    const listaPersonagensDisponiveis = document.getElementById('listaPersonagensDisponiveis');
+    const avisoFlutuante = document.getElementById('avisoFlutuante');
+    const CHAVE_CAMPANHAS = 'campanhasCriadas';
+    const CHAVES_PERSONAGENS = [
+      'personagensCriados',
+      'personagensSalvos',
+      'personagensVampiro',
+      'personagensCriadosVampiro',
+      'fichasCriadas',
+      'fichasVampiro',
+      'characters',
+      'personagens'
+    ];
+
+    let campanhaAtual = null;
+    let abaAtual = 'visao';
+    let imagemTemporariaCampanha = '';
+    let imagemOriginalEditor = null;
+    let estadoEditorImagem = { zoom: 1, x: 0, y: 0, arrastando: false, ultimoX: 0, ultimoY: 0 };
+    let temporizadorAviso = null;
+
+    function carregarUsuario() {
+      const usuario = obterUsuarioAtual();
+
+      if (!usuario) {
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      usuarioNome.textContent = usuario.nome || 'Usuário';
+      btnSair.textContent = 'Sair';
+    }
+
+    function obterUsuarioAtual() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (!usuarioSalvo) return null;
+
+      try {
+        const usuario = JSON.parse(usuarioSalvo);
+
+        if (!usuario || usuario.logado !== true || !usuario.nome) {
+          localStorage.removeItem('usuarioLogado');
+          return null;
+        }
+
+        return usuario;
+      } catch (erro) {
+        localStorage.removeItem('usuarioLogado');
+        return null;
+      }
+    }
+
+    function escaparTexto(texto) {
+      return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function sanitizarDescricao(html) {
+      const temporario = document.createElement('div');
+      temporario.innerHTML = html;
+      const tagsPermitidas = ['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'BR', 'P', 'DIV'];
+
+      temporario.querySelectorAll('script, style, iframe, object, embed, link, meta').forEach((elemento) => elemento.remove());
+
+      temporario.querySelectorAll('*').forEach((elemento) => {
+        if (!tagsPermitidas.includes(elemento.tagName)) {
+          elemento.replaceWith(...Array.from(elemento.childNodes));
+          return;
+        }
+
+        Array.from(elemento.attributes).forEach((atributo) => elemento.removeAttribute(atributo.name));
+      });
+
+      return temporario.innerHTML.trim();
+    }
+
+    function obterCampanhas() {
+      try {
+        const campanhasSalvas = JSON.parse(localStorage.getItem(CHAVE_CAMPANHAS)) || [];
+        return Array.isArray(campanhasSalvas) ? campanhasSalvas : [];
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    function salvarCampanhas(campanhas) {
+      localStorage.setItem(CHAVE_CAMPANHAS, JSON.stringify(campanhas));
+    }
+
+    function salvarCampanhaAtualizada(dadosAtualizados) {
+      if (!campanhaAtual) return;
+
+      const campanhas = obterCampanhas();
+      const indice = campanhas.findIndex((campanha) => campanha.id === campanhaAtual.id);
+
+      if (indice === -1) return;
+
+      campanhas[indice] = {
+        ...campanhas[indice],
+        ...dadosAtualizados,
+        atualizadoEm: new Date().toISOString()
+      };
+
+      salvarCampanhas(campanhas);
+      campanhaAtual = campanhas[indice];
+      atualizarCabecalhoCampanha();
+      renderizarAba();
+    }
+
+    function obterIdCampanha() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || localStorage.getItem('campanhaSelecionada');
+    }
+
+    function obterImagemCampanha(campanha) {
+      return campanha?.imagem || campanha?.imagemCapa || campanha?.capa || '';
+    }
+
+    function mostrarErroCampanha() {
+      conteudoCampanha.innerHTML = `
+        <section class="erro-campanha">
+          <h1>Campanha não encontrada</h1>
+          <p>Crie uma campanha primeiro ou acesse uma campanha existente pela lista.</p>
+          <a href="campanhas.html" class="btn-primario">Voltar para campanhas</a>
+        </section>
+      `;
+    }
+
+    function mostrarAviso(mensagem) {
+      avisoFlutuante.textContent = mensagem;
+      avisoFlutuante.classList.add('mostrar');
+
+      clearTimeout(temporizadorAviso);
+      temporizadorAviso = setTimeout(() => {
+        avisoFlutuante.classList.remove('mostrar');
+      }, 2800);
+    }
+
+    function atualizarCabecalhoCampanha() {
+      if (!campanhaAtual) return;
+
+      document.title = campanhaAtual.nome || 'Campanha';
+      tituloCampanha.textContent = campanhaAtual.nome || 'Campanha';
+      sistemaCampanha.textContent = campanhaAtual.sistema || 'Sistema não informado';
+      renderizarCapaCampanha();
+    }
+
+    function renderizarCapaCampanha() {
+      const imagem = obterImagemCampanha(campanhaAtual);
+
+      if (imagem) {
+        capaCampanha.innerHTML = `<img src="${imagem}" alt="Imagem da campanha ${escaparTexto(campanhaAtual.nome || '')}">`;
+        return;
+      }
+
+      capaCampanha.innerHTML = '<span>Imagem da campanha</span>';
+    }
+
+    function renderizarListaJogadores() {
+      const jogadores = Array.isArray(campanhaAtual.jogadores) ? campanhaAtual.jogadores : [];
+
+      if (!jogadores.length) {
+        return '<p class="estado-vazio">Nenhum jogador entrou na campanha ainda. Use o botão acima para gerar um convite.</p>';
+      }
+
+      return `
+        <div class="lista-jogadores">
+          ${jogadores.map((jogador) => `
+            <article class="jogador-card">
+              <strong>${escaparTexto(jogador.nome || 'Jogador sem nome')}</strong>
+              <span>${escaparTexto(jogador.email || 'E-mail não informado')}</span>
+              <span>Entrada: ${formatarData(jogador.entradaEm)}</span>
+            </article>
+          `).join('')}
+        </div>
+      `;
+    }
+
+
+    function coletarArraysPossiveis(valor) {
+      const colecoes = [];
+
+      if (Array.isArray(valor)) {
+        colecoes.push(valor);
+        return colecoes;
+      }
+
+      if (!valor || typeof valor !== 'object') return colecoes;
+
+      ['personagens', 'characters', 'fichas', 'items', 'lista'].forEach((chave) => {
+        if (Array.isArray(valor[chave])) colecoes.push(valor[chave]);
+      });
+
+      const valores = Object.values(valor);
+      if (valores.length && valores.every((item) => item && typeof item === 'object' && !Array.isArray(item))) {
+        colecoes.push(valores);
+      }
+
+      return colecoes;
+    }
+
+    function personagemPertenceAoUsuario(personagem, usuario) {
+      if (!usuario) return true;
+
+      const camposUsuario = [
+        personagem.usuarioEmail,
+        personagem.emailUsuario,
+        personagem.userEmail,
+        personagem.ownerEmail,
+        personagem.criadoPorEmail,
+        personagem.jogadorEmail,
+        personagem.emailJogador,
+        personagem.usuarioId,
+        personagem.userId,
+        personagem.ownerId,
+        personagem.criadoPorId
+      ].filter(Boolean).map((valor) => String(valor).toLowerCase());
+
+      if (!camposUsuario.length) return true;
+
+      const identificadoresUsuario = [usuario.email, usuario.id, usuario.uid, usuario.nome]
+        .filter(Boolean)
+        .map((valor) => String(valor).toLowerCase());
+
+      return camposUsuario.some((valor) => identificadoresUsuario.includes(valor));
+    }
+
+    function obterInicialPersonagem(nome) {
+      const primeiraLetra = String(nome || 'P').trim().charAt(0);
+      return primeiraLetra ? primeiraLetra.toUpperCase() : 'P';
+    }
+
+    function identificarSistemaPersonagem(personagem) {
+      return personagem.sistema ||
+        personagem.modelo ||
+        personagem.fichaModelo ||
+        personagem.modeloFicha ||
+        personagem.tipoFicha ||
+        personagem.tipo ||
+        personagem.rpg ||
+        'Ficha';
+    }
+
+    function montarPaginaFichaPersonagem(personagem, sistema) {
+      const paginaInformada = personagem.paginaJogo || personagem.paginaFicha || personagem.linkJogo || personagem.linkFicha || '';
+
+      if (paginaInformada && /^[-_a-zA-Z0-9/.]+\.html(?:\?.*)?$/.test(paginaInformada)) {
+        return paginaInformada;
+      }
+
+      const sistemaNormalizado = String(sistema || '').toLowerCase();
+
+      if (sistemaNormalizado.includes('ordem')) {
+        return 'ficha_ordem_paranormal_jogo.html';
+      }
+
+      return 'ficha_vampiro_jogo.html';
+    }
+
+    function normalizarPersonagem(personagem, indice, origem) {
+      if (!personagem || typeof personagem !== 'object') return null;
+
+      const sistema = identificarSistemaPersonagem(personagem);
+      const idOriginal = personagem.id ||
+        personagem.personagemId ||
+        personagem.fichaId ||
+        personagem.uid ||
+        personagem.codigo ||
+        personagem.slug ||
+        `${origem}-${indice}`;
+      const nome = personagem.nome ||
+        personagem.nomePersonagem ||
+        personagem.personagemNome ||
+        personagem.name ||
+        personagem.titulo ||
+        'Personagem sem nome';
+      const imagem = personagem.imagem ||
+        personagem.foto ||
+        personagem.fotoPersonagem ||
+        personagem.avatar ||
+        personagem.retrato ||
+        personagem.imagemPersonagem ||
+        personagem.capa ||
+        '';
+      const jogador = personagem.jogador ||
+        personagem.nomeJogador ||
+        personagem.player ||
+        personagem.usuarioNome ||
+        personagem.criadoPor ||
+        '';
+
+      return {
+        id: String(idOriginal),
+        origem,
+        nome: String(nome),
+        sistema: String(sistema),
+        jogador: String(jogador || ''),
+        imagem: String(imagem || ''),
+        pagina: montarPaginaFichaPersonagem(personagem, sistema),
+        bruto: personagem
+      };
+    }
+
+    function obterTodosPersonagens() {
+      const usuario = obterUsuarioAtual();
+      const personagens = [];
+      const vistos = new Set();
+
+      CHAVES_PERSONAGENS.forEach((chave) => {
+        let valor = null;
+
+        try {
+          valor = JSON.parse(localStorage.getItem(chave));
+        } catch (erro) {
+          valor = null;
+        }
+
+        coletarArraysPossiveis(valor).forEach((colecao) => {
+          colecao.forEach((item, indice) => {
+            if (!item || typeof item !== 'object') return;
+            if (!personagemPertenceAoUsuario(item, usuario)) return;
+
+            const personagem = normalizarPersonagem(item, indice, chave);
+            if (!personagem) return;
+
+            const chaveUnica = `${personagem.origem}:${personagem.id}`;
+            if (vistos.has(chaveUnica)) return;
+
+            vistos.add(chaveUnica);
+            personagens.push(personagem);
+          });
+        });
+      });
+
+      return personagens.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    }
+
+    function obterIdVinculoPersonagem(vinculo) {
+      if (typeof vinculo === 'string' || typeof vinculo === 'number') return String(vinculo);
+      if (!vinculo || typeof vinculo !== 'object') return '';
+
+      return String(vinculo.id || vinculo.personagemId || vinculo.fichaId || vinculo.uid || '');
+    }
+
+    function obterOrigemVinculoPersonagem(vinculo) {
+      if (!vinculo || typeof vinculo !== 'object') return '';
+      return String(vinculo.origem || vinculo.chaveOrigem || vinculo.storageKey || '');
+    }
+
+    function obterVinculosPersonagensCampanha() {
+      return Array.isArray(campanhaAtual?.personagens) ? campanhaAtual.personagens : [];
+    }
+
+    function obterPersonagensVinculados() {
+      const todos = obterTodosPersonagens();
+      const vinculos = obterVinculosPersonagensCampanha();
+
+      return vinculos.map((vinculo, indice) => {
+        const id = obterIdVinculoPersonagem(vinculo);
+        const origem = obterOrigemVinculoPersonagem(vinculo);
+        const encontrado = todos.find((personagem) => personagem.id === id && (!origem || personagem.origem === origem)) ||
+          todos.find((personagem) => personagem.id === id);
+
+        if (encontrado) return encontrado;
+        if (vinculo && typeof vinculo === 'object') return normalizarPersonagem(vinculo, indice, origem || 'campanha');
+        return null;
+      }).filter(Boolean);
+    }
+
+    function montarLinkAcessoFicha(personagem) {
+      const pagina = personagem.pagina || 'ficha_vampiro_jogo.html';
+      const separador = pagina.includes('?') ? '&' : '?';
+      return `${pagina}${separador}id=${encodeURIComponent(personagem.id)}`;
+    }
+
+    function renderizarFotoPersonagem(personagem) {
+      if (personagem.imagem) {
+        return `<img src="${escaparTexto(personagem.imagem)}" alt="Foto de ${escaparTexto(personagem.nome)}">`;
+      }
+
+      return escaparTexto(obterInicialPersonagem(personagem.nome));
+    }
+
+    function renderizarCardPersonagemCampanha(personagem) {
+      return `
+        <article class="personagem-card">
+          <div class="personagem-foto">${renderizarFotoPersonagem(personagem)}</div>
+          <div class="personagem-info">
+            <strong>${escaparTexto(personagem.nome)}</strong>
+            <span>${escaparTexto(personagem.sistema)}</span>
+            ${personagem.jogador ? `<span>Jogador: ${escaparTexto(personagem.jogador)}</span>` : ''}
+            <div class="personagem-acoes">
+              <a href="${escaparTexto(montarLinkAcessoFicha(personagem))}" class="btn-menor">Acessar ficha</a>
+              <button type="button" class="btn-menor" data-remover-personagem-campanha="${escaparTexto(personagem.id)}" data-origem-personagem="${escaparTexto(personagem.origem)}">Remover</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderizarListaPersonagensCampanha() {
+      const personagens = obterPersonagensVinculados();
+
+      if (!personagens.length) {
+        return '<p class="estado-vazio">Nenhum personagem foi adicionado à campanha ainda. Use o botão acima para escolher um personagem salvo.</p>';
+      }
+
+      return `
+        <div class="lista-personagens-campanha">
+          ${personagens.map(renderizarCardPersonagemCampanha).join('')}
+        </div>
+      `;
+    }
+
+    function renderizarListaPersonagensDisponiveis() {
+      const filtro = String(buscaPersonagemCampanha?.value || '').trim().toLowerCase();
+      const todos = obterTodosPersonagens();
+      const idsVinculados = new Set(obterVinculosPersonagensCampanha().map(obterIdVinculoPersonagem));
+      const personagensFiltrados = todos.filter((personagem) => {
+        const textoBusca = `${personagem.nome} ${personagem.sistema} ${personagem.jogador}`.toLowerCase();
+        return !filtro || textoBusca.includes(filtro);
+      });
+
+      if (!listaPersonagensDisponiveis) return;
+
+      if (!todos.length) {
+        listaPersonagensDisponiveis.innerHTML = '<p class="estado-vazio">Não encontrei personagens salvos. Crie um personagem na página Personagens e volte aqui para adicioná-lo à campanha.</p>';
+        return;
+      }
+
+      if (!personagensFiltrados.length) {
+        listaPersonagensDisponiveis.innerHTML = '<p class="estado-vazio">Nenhum personagem encontrado com esse filtro.</p>';
+        return;
+      }
+
+      listaPersonagensDisponiveis.innerHTML = personagensFiltrados.map((personagem) => {
+        const jaAdicionado = idsVinculados.has(personagem.id);
+
+        return `
+          <article class="personagem-card personagem-card-modal">
+            <div class="personagem-foto">${renderizarFotoPersonagem(personagem)}</div>
+            <div class="personagem-info">
+              <strong>${escaparTexto(personagem.nome)}</strong>
+              <span>${escaparTexto(personagem.sistema)}</span>
+              ${personagem.jogador ? `<span>Jogador: ${escaparTexto(personagem.jogador)}</span>` : ''}
+              <div class="personagem-acoes">
+                <button type="button" class="btn-menor" data-add-personagem-campanha="${escaparTexto(personagem.id)}" data-origem-personagem="${escaparTexto(personagem.origem)}" ${jaAdicionado ? 'disabled' : ''}>
+                  ${jaAdicionado ? 'Adicionado' : 'Adicionar'}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      listaPersonagensDisponiveis.querySelectorAll('[data-add-personagem-campanha]').forEach((botao) => {
+        botao.addEventListener('click', () => {
+          const id = botao.dataset.addPersonagemCampanha;
+          const origem = botao.dataset.origemPersonagem;
+          const personagem = obterTodosPersonagens().find((item) => item.id === id && item.origem === origem) ||
+            obterTodosPersonagens().find((item) => item.id === id);
+
+          if (personagem) adicionarPersonagemNaCampanha(personagem);
+        });
+      });
+    }
+
+    function adicionarPersonagemNaCampanha(personagem) {
+      if (!campanhaAtual || !personagem) return;
+
+      const personagens = obterVinculosPersonagensCampanha().slice();
+      const jaAdicionado = personagens.some((vinculo) => obterIdVinculoPersonagem(vinculo) === personagem.id);
+
+      if (jaAdicionado) {
+        mostrarAviso('Este personagem já está na campanha.');
+        renderizarListaPersonagensDisponiveis();
+        return;
+      }
+
+      personagens.push({
+        id: personagem.id,
+        origem: personagem.origem,
+        nome: personagem.nome,
+        sistema: personagem.sistema,
+        jogador: personagem.jogador,
+        imagem: personagem.imagem,
+        pagina: personagem.pagina,
+        vinculadoEm: new Date().toISOString()
+      });
+
+      salvarCampanhaAtualizada({ personagens });
+      renderizarListaPersonagensDisponiveis();
+      mostrarAviso('Personagem adicionado à campanha.');
+    }
+
+    function removerPersonagemDaCampanha(id, origem = '') {
+      if (!campanhaAtual || !id) return;
+
+      const personagens = obterVinculosPersonagensCampanha().filter((vinculo) => {
+        const mesmoId = obterIdVinculoPersonagem(vinculo) === id;
+        const mesmaOrigem = !origem || obterOrigemVinculoPersonagem(vinculo) === origem;
+        return !(mesmoId && mesmaOrigem);
+      });
+
+      salvarCampanhaAtualizada({ personagens });
+      mostrarAviso('Personagem removido da campanha.');
+    }
+
+    function abrirModalAdicionarPersonagem() {
+      if (!campanhaAtual) return;
+
+      if (buscaPersonagemCampanha) buscaPersonagemCampanha.value = '';
+      renderizarListaPersonagensDisponiveis();
+      abrirModal(modalAdicionarPersonagem);
+
+      setTimeout(() => buscaPersonagemCampanha?.focus(), 80);
+    }
+
+    function formatarData(dataISO) {
+      if (!dataISO) return 'não informada';
+
+      const data = new Date(dataISO);
+      if (Number.isNaN(data.getTime())) return 'não informada';
+
+      return data.toLocaleDateString('pt-BR');
+    }
+
+    function renderizarAba() {
+      if (!campanhaAtual) return;
+
+      const descricao = sanitizarDescricao(campanhaAtual.descricao || '') || '<p>Sem descrição cadastrada.</p>';
+
+      const abas = {
+        visao: `
+          <h2>Visão geral</h2>
+          <div class="descricao-campanha">${descricao}</div>
+        `,
+        jogadores: `
+          <div class="conteudo-aba-cabecalho">
+            <h2>Jogadores</h2>
+            <button type="button" id="btnConvidarJogadores" class="btn-primario">Convidar jogadores</button>
+          </div>
+          ${renderizarListaJogadores()}
+        `,
+        personagens: `
+          <div class="conteudo-aba-cabecalho">
+            <h2>Personagens</h2>
+            <button type="button" id="btnAdicionarPersonagemCampanha" class="btn-primario">Adicionar personagem</button>
+          </div>
+          ${renderizarListaPersonagensCampanha()}
+        `,
+        mesa: `
+          <h2>Mesa</h2>
+          <p class="estado-vazio">Escolha para onde deseja ir dentro da campanha.</p>
+          <div class="mesa-acoes">
+            <article class="mesa-card">
+              <div>
+                <strong>Mesa virtual</strong>
+                <span>Abra a área de jogo da campanha.</span>
+              </div>
+              <button type="button" id="btnAbrirMesaVirtual" class="btn-primario">Mesa virtual</button>
+            </article>
+
+            <article class="mesa-card">
+              <div>
+                <strong>Escudo do mestre</strong>
+                <span>Abra o painel reservado para anotações e controles do mestre.</span>
+              </div>
+              <button type="button" id="btnAbrirEscudoMestre" class="btn-secundario">Escudo do mestre</button>
+            </article>
+          </div>
+        `
+      };
+
+      conteudoAba.innerHTML = abas[abaAtual] || abas.visao;
+      vincularEventosDaAba();
+    }
+
+    function abrirPaginaDaCampanha(pagina) {
+      if (!campanhaAtual?.id) return;
+      window.location.href = `${pagina}?id=${encodeURIComponent(campanhaAtual.id)}`;
+    }
+
+    function vincularEventosDaAba() {
+      const btnConvidarJogadores = document.getElementById('btnConvidarJogadores');
+      const btnAdicionarPersonagemCampanha = document.getElementById('btnAdicionarPersonagemCampanha');
+      const btnAbrirMesaVirtual = document.getElementById('btnAbrirMesaVirtual');
+      const btnAbrirEscudoMestre = document.getElementById('btnAbrirEscudoMestre');
+
+      if (btnConvidarJogadores) {
+        btnConvidarJogadores.addEventListener('click', abrirModalConvite);
+      }
+
+      if (btnAdicionarPersonagemCampanha) {
+        btnAdicionarPersonagemCampanha.addEventListener('click', abrirModalAdicionarPersonagem);
+      }
+
+      if (btnAbrirMesaVirtual) {
+        btnAbrirMesaVirtual.addEventListener('click', () => abrirPaginaDaCampanha('mesa_virtual.html'));
+      }
+
+      if (btnAbrirEscudoMestre) {
+        btnAbrirEscudoMestre.addEventListener('click', () => abrirPaginaDaCampanha('escudo_mestre.html'));
+      }
+
+      document.querySelectorAll('[data-remover-personagem-campanha]').forEach((botao) => {
+        botao.addEventListener('click', () => {
+          removerPersonagemDaCampanha(botao.dataset.removerPersonagemCampanha, botao.dataset.origemPersonagem || '');
+        });
+      });
+    }
+
+    function carregarCampanha() {
+      const campanhas = obterCampanhas();
+      const idCampanha = obterIdCampanha();
+      campanhaAtual = campanhas.find((campanha) => campanha.id === idCampanha) || null;
+
+      if (!campanhaAtual) {
+        mostrarErroCampanha();
+        return;
+      }
+
+      localStorage.setItem('campanhaSelecionada', campanhaAtual.id);
+      atualizarCabecalhoCampanha();
+      processarConviteRecebido();
+      renderizarAba();
+    }
+
+    function gerarCodigoConvite() {
+      const parteAleatoria = Math.random().toString(36).slice(2, 10);
+      const parteData = Date.now().toString(36);
+      return `${parteAleatoria}${parteData}`;
+    }
+
+    function garantirCodigoConvite() {
+      if (campanhaAtual.conviteCodigo) return campanhaAtual.conviteCodigo;
+
+      const codigo = gerarCodigoConvite();
+      salvarCampanhaAtualizada({ conviteCodigo: codigo });
+      return codigo;
+    }
+
+    function montarLinkConvite() {
+      const codigo = garantirCodigoConvite();
+      const paginaAtual = window.location.href.split('?')[0];
+      return `${paginaAtual}?id=${encodeURIComponent(campanhaAtual.id)}&convite=${encodeURIComponent(codigo)}`;
+    }
+
+    function abrirModalConvite() {
+      campoLinkConvite.value = montarLinkConvite();
+      abrirModal(modalConviteJogadores);
+      setTimeout(() => {
+        campoLinkConvite.focus();
+        campoLinkConvite.select();
+      }, 80);
+    }
+
+    async function copiarConvite() {
+      const link = campoLinkConvite.value;
+
+      if (!link) return;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(link);
+        } else {
+          campoLinkConvite.focus();
+          campoLinkConvite.select();
+          document.execCommand('copy');
+        }
+
+        mostrarAviso('Link de convite copiado.');
+      } catch (erro) {
+        mostrarAviso('Não consegui copiar automaticamente. Selecione e copie o link.');
+      }
+    }
+
+    function processarConviteRecebido() {
+      const params = new URLSearchParams(window.location.search);
+      const codigoConvite = params.get('convite');
+
+      if (!codigoConvite || !campanhaAtual) return;
+
+      if (codigoConvite !== campanhaAtual.conviteCodigo) {
+        mostrarAviso('Convite inválido ou expirado.');
+        return;
+      }
+
+      const usuario = obterUsuarioAtual();
+
+      if (!usuario) {
+        localStorage.setItem('conviteCampanhaPendente', window.location.href);
+        mostrarAviso('Faça login para entrar na campanha pelo convite.');
+        return;
+      }
+
+      adicionarUsuarioComoJogador(usuario);
+    }
+
+    function adicionarUsuarioComoJogador(usuario) {
+      const jogadores = Array.isArray(campanhaAtual.jogadores) ? [...campanhaAtual.jogadores] : [];
+      const identificador = String(usuario.email || usuario.nome || '').toLowerCase();
+
+      if (!identificador) return;
+
+      const jaEntrou = jogadores.some((jogador) => String(jogador.email || jogador.nome || '').toLowerCase() === identificador);
+
+      if (jaEntrou) {
+        mostrarAviso('Você já está nesta campanha.');
+        return;
+      }
+
+      jogadores.push({
+        id: identificador,
+        nome: usuario.nome,
+        email: usuario.email || '',
+        entradaEm: new Date().toISOString()
+      });
+
+      salvarCampanhaAtualizada({ jogadores });
+      mostrarAviso('Você entrou na campanha.');
+    }
+
+    function abrirModalEditar() {
+      if (!campanhaAtual) return;
+
+      imagemTemporariaCampanha = obterImagemCampanha(campanhaAtual);
+      campoNomeCampanha.value = campanhaAtual.nome || '';
+      campoSistemaCampanha.value = campanhaAtual.sistema || 'Vampiro: A Máscara';
+      campoDescricaoCampanha.innerHTML = sanitizarDescricao(campanhaAtual.descricao || '');
+      campoImagemCampanha.value = '';
+
+      desativarEditorImagem();
+      atualizarPreviewImagemModal();
+      abrirModal(modalEditarCampanha);
+      setTimeout(() => campoNomeCampanha.focus(), 80);
+    }
+
+    function atualizarPreviewImagemModal() {
+      const temImagem = Boolean(imagemTemporariaCampanha);
+
+      if (temImagem) {
+        previewImagemCampanha.innerHTML = `<img src="${imagemTemporariaCampanha}" alt="Prévia da imagem da campanha">`;
+      } else {
+        previewImagemCampanha.textContent = 'Nenhuma imagem selecionada.';
+      }
+
+      btnEditarImagemCampanha.hidden = !temImagem;
+      btnRemoverImagemCampanha.hidden = !temImagem;
+    }
+
+    function resetarControlesEditorImagem() {
+      estadoEditorImagem = { zoom: 1, x: 0, y: 0, arrastando: false, ultimoX: 0, ultimoY: 0 };
+      controleZoomImagem.value = '1';
+    }
+
+    function desativarEditorImagem() {
+      imagemOriginalEditor = null;
+      resetarControlesEditorImagem();
+
+      if (canvasEditorImagemCampanha) {
+        const contexto = canvasEditorImagemCampanha.getContext('2d');
+        contexto.clearRect(0, 0, canvasEditorImagemCampanha.width, canvasEditorImagemCampanha.height);
+      }
+    }
+
+    function prepararEditorComImagem(origemImagem, abrirEditor = true) {
+      if (!origemImagem) {
+        desativarEditorImagem();
+        return;
+      }
+
+      const imagem = new Image();
+
+      imagem.onload = () => {
+        imagemOriginalEditor = imagem;
+        resetarControlesEditorImagem();
+        desenharEditorImagem();
+
+        if (abrirEditor) {
+          abrirModal(modalEditorImagemCampanha);
+        }
+      };
+
+      imagem.onerror = () => {
+        desativarEditorImagem();
+        mostrarAviso('Não consegui abrir a imagem no editor.');
+      };
+
+      imagem.src = origemImagem;
+    }
+
+    function limitarDeslocamentoEditor(larguraDesenho, alturaDesenho) {
+      const larguraCanvas = canvasEditorImagemCampanha.width;
+      const alturaCanvas = canvasEditorImagemCampanha.height;
+      const limiteX = Math.max((larguraDesenho - larguraCanvas) / 2, 0);
+      const limiteY = Math.max((alturaDesenho - alturaCanvas) / 2, 0);
+
+      estadoEditorImagem.x = Math.max(-limiteX, Math.min(limiteX, estadoEditorImagem.x));
+      estadoEditorImagem.y = Math.max(-limiteY, Math.min(limiteY, estadoEditorImagem.y));
+    }
+
+    function desenharEditorImagem() {
+      if (!imagemOriginalEditor || !canvasEditorImagemCampanha) return;
+
+      const canvas = canvasEditorImagemCampanha;
+      const contexto = canvas.getContext('2d');
+      const larguraCanvas = canvas.width;
+      const alturaCanvas = canvas.height;
+      const escalaBase = Math.max(larguraCanvas / imagemOriginalEditor.width, alturaCanvas / imagemOriginalEditor.height);
+      const escala = escalaBase * estadoEditorImagem.zoom;
+      const larguraDesenho = imagemOriginalEditor.width * escala;
+      const alturaDesenho = imagemOriginalEditor.height * escala;
+
+      limitarDeslocamentoEditor(larguraDesenho, alturaDesenho);
+
+      const posicaoX = (larguraCanvas - larguraDesenho) / 2 + estadoEditorImagem.x;
+      const posicaoY = (alturaCanvas - alturaDesenho) / 2 + estadoEditorImagem.y;
+
+      contexto.clearRect(0, 0, larguraCanvas, alturaCanvas);
+      contexto.fillStyle = '#030306';
+      contexto.fillRect(0, 0, larguraCanvas, alturaCanvas);
+      contexto.imageSmoothingEnabled = true;
+      contexto.imageSmoothingQuality = 'high';
+      contexto.drawImage(imagemOriginalEditor, posicaoX, posicaoY, larguraDesenho, alturaDesenho);
+    }
+
+    function aplicarRecorteImagem(mostrarMensagem = true) {
+      if (!imagemOriginalEditor || !canvasEditorImagemCampanha) return;
+
+      desenharEditorImagem();
+      imagemTemporariaCampanha = canvasEditorImagemCampanha.toDataURL('image/jpeg', 0.9);
+      atualizarPreviewImagemModal();
+      fecharModal(modalEditorImagemCampanha);
+
+      if (mostrarMensagem) {
+        mostrarAviso('Recorte salvo.');
+      }
+    }
+
+    function obterPontoEditor(evento) {
+      const retangulo = canvasEditorImagemCampanha.getBoundingClientRect();
+      return {
+        x: (evento.clientX - retangulo.left) * (canvasEditorImagemCampanha.width / retangulo.width),
+        y: (evento.clientY - retangulo.top) * (canvasEditorImagemCampanha.height / retangulo.height)
+      };
+    }
+
+    function iniciarArrasteEditor(evento) {
+      if (!imagemOriginalEditor) return;
+
+      const ponto = obterPontoEditor(evento);
+      estadoEditorImagem.arrastando = true;
+      estadoEditorImagem.ultimoX = ponto.x;
+      estadoEditorImagem.ultimoY = ponto.y;
+      canvasEditorImagemCampanha.setPointerCapture?.(evento.pointerId);
+    }
+
+    function moverArrasteEditor(evento) {
+      if (!estadoEditorImagem.arrastando || !imagemOriginalEditor) return;
+
+      const ponto = obterPontoEditor(evento);
+      estadoEditorImagem.x += ponto.x - estadoEditorImagem.ultimoX;
+      estadoEditorImagem.y += ponto.y - estadoEditorImagem.ultimoY;
+      estadoEditorImagem.ultimoX = ponto.x;
+      estadoEditorImagem.ultimoY = ponto.y;
+      desenharEditorImagem();
+    }
+
+    function finalizarArrasteEditor(evento) {
+      estadoEditorImagem.arrastando = false;
+      canvasEditorImagemCampanha.releasePointerCapture?.(evento.pointerId);
+    }
+
+    function lerImagemComoBase64(arquivo) {
+      return new Promise((resolve, reject) => {
+        const leitor = new FileReader();
+        leitor.onload = () => resolve(leitor.result);
+        leitor.onerror = reject;
+        leitor.readAsDataURL(arquivo);
+      });
+    }
+
+    function abrirModal(modal) {
+      modal.classList.add('aberto');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal(modal) {
+      modal.classList.remove('aberto');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function fecharTodosModais() {
+      document.querySelectorAll('.modal-backdrop.aberto').forEach((modal) => fecharModal(modal));
+    }
+
+    botoesAbas.forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const abaSelecionada = botao.dataset.aba;
+
+        if (abaSelecionada === 'editar') {
+          abrirModalEditar();
+          return;
+        }
+
+        botoesAbas.forEach((item) => item.classList.remove('ativo'));
+        botao.classList.add('ativo');
+        abaAtual = abaSelecionada;
+        renderizarAba();
+      });
+    });
+
+    document.querySelectorAll('[data-fechar-modal]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const idModal = botao.dataset.fecharModal;
+        const modal = document.getElementById(idModal);
+
+        if (modal) fecharModal(modal);
+      });
+    });
+
+    document.querySelectorAll('.modal-backdrop').forEach((modal) => {
+      modal.addEventListener('click', (evento) => {
+        if (evento.target === modal) fecharModal(modal);
+      });
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape') fecharTodosModais();
+    });
+
+    document.querySelectorAll('.editor-toolbar button').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        campoDescricaoCampanha.focus();
+        document.execCommand(botao.dataset.comando, false, null);
+      });
+    });
+
+    campoImagemCampanha.addEventListener('change', async () => {
+      const arquivo = campoImagemCampanha.files?.[0];
+
+      if (!arquivo) return;
+
+      if (!arquivo.type.startsWith('image/')) {
+        mostrarAviso('Selecione um arquivo de imagem válido.');
+        campoImagemCampanha.value = '';
+        return;
+      }
+
+      try {
+        const imagemBase64 = await lerImagemComoBase64(arquivo);
+        prepararEditorComImagem(imagemBase64, true);
+      } catch (erro) {
+        mostrarAviso('Não consegui carregar a imagem selecionada.');
+        campoImagemCampanha.value = '';
+      }
+    });
+
+    btnRemoverImagemCampanha.addEventListener('click', () => {
+      imagemTemporariaCampanha = '';
+      campoImagemCampanha.value = '';
+      desativarEditorImagem();
+      atualizarPreviewImagemModal();
+    });
+
+    controleZoomImagem.addEventListener('input', () => {
+      estadoEditorImagem.zoom = Number(controleZoomImagem.value);
+      desenharEditorImagem();
+    });
+
+    btnEditarImagemCampanha.addEventListener('click', () => {
+      if (imagemTemporariaCampanha) {
+        prepararEditorComImagem(imagemTemporariaCampanha, true);
+        return;
+      }
+
+      campoImagemCampanha.click();
+    });
+
+    canvasEditorImagemCampanha.addEventListener('pointerdown', iniciarArrasteEditor);
+    canvasEditorImagemCampanha.addEventListener('pointermove', moverArrasteEditor);
+    canvasEditorImagemCampanha.addEventListener('pointerup', finalizarArrasteEditor);
+    canvasEditorImagemCampanha.addEventListener('pointercancel', finalizarArrasteEditor);
+    canvasEditorImagemCampanha.addEventListener('pointerleave', finalizarArrasteEditor);
+
+    btnCentralizarImagemCampanha.addEventListener('click', () => {
+      if (!imagemOriginalEditor) return;
+      resetarControlesEditorImagem();
+      desenharEditorImagem();
+      mostrarAviso('Imagem centralizada.');
+    });
+
+    btnAplicarRecorteImagemCampanha.addEventListener('click', () => aplicarRecorteImagem(true));
+
+    formEditarCampanha.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+
+      const nome = campoNomeCampanha.value.trim();
+
+      if (!nome) {
+        mostrarAviso('Informe o nome da campanha.');
+        campoNomeCampanha.focus();
+        return;
+      }
+
+      salvarCampanhaAtualizada({
+        nome,
+        sistema: campoSistemaCampanha.value,
+        descricao: sanitizarDescricao(campoDescricaoCampanha.innerHTML),
+        imagem: imagemTemporariaCampanha
+      });
+
+      fecharModal(modalEditarCampanha);
+      mostrarAviso('Campanha atualizada.');
+    });
+
+    buscaPersonagemCampanha.addEventListener('input', renderizarListaPersonagensDisponiveis);
+
+    btnCopiarConvite.addEventListener('click', copiarConvite);
+
+    btnSair.addEventListener('click', () => {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+
+      if (usuarioSalvo) {
+        localStorage.removeItem('usuarioLogado');
+        usuarioNome.textContent = 'Visitante';
+        btnSair.textContent = 'Login';
+        return;
+      }
+
+      window.location.href = 'login.html';
+    });
+
+    carregarUsuario();
+    carregarCampanha();
+  </script>
+</body>
+</html>
