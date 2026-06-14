@@ -429,12 +429,28 @@
       </form>
 
       <p class="login-rodape">
-        Este login salva o acesso neste navegador. Para autenticação real entre usuários, conecte esta página ao Firebase Authentication.
+        Este login usa Firebase Authentication. Se o e-mail ainda não existir, a conta será criada automaticamente.
       </p>
     </section>
   </main>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      updateProfile,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { firebaseConfig, firebaseEstaConfigurado } from "./firebase-config.js";
+
     const form = document.getElementById('loginForm');
     const nomeInput = document.getElementById('nome');
     const emailInput = document.getElementById('email');
@@ -442,58 +458,208 @@
     const mensagem = document.getElementById('mensagemLogin');
     const toggleSenha = document.getElementById('toggleSenha');
 
+    const firebaseConfigurado = firebaseEstaConfigurado();
+    const app = firebaseConfigurado ? initializeApp(firebaseConfig) : null;
+    const auth = app ? getAuth(app) : null;
+    const db = app ? getFirestore(app) : null;
+
+    function mostrarMensagem(texto, tipo = '') {
+      mensagem.className = 'mensagem';
+      if (tipo) mensagem.classList.add(tipo);
+      mensagem.textContent = texto;
+    }
+
+    function obterDestinoDepoisDoLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const destinoUrl = params.get('redirect');
+      const convitePendente = localStorage.getItem('conviteCampanhaPendente');
+
+      if (destinoUrl) return destinoUrl;
+      if (convitePendente) return convitePendente;
+      return 'personagens.html';
+    }
+
+    function salvarUsuarioLocal(usuarioFirebase, nomeInformado = '') {
+      const usuario = {
+        uid: usuarioFirebase.uid,
+        id: usuarioFirebase.uid,
+        nome: nomeInformado || usuarioFirebase.displayName || usuarioFirebase.email?.split('@')[0] || 'Usuário',
+        email: usuarioFirebase.email || '',
+        logado: true,
+        loginEm: new Date().toISOString()
+      };
+
+      localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+      return usuario;
+    }
+
+    async function salvarUsuarioNoFirestore(usuarioFirebase, nome) {
+      if (!db || !usuarioFirebase?.uid) return;
+
+      try {
+        await setDoc(doc(db, 'users', usuarioFirebase.uid), {
+          uid: usuarioFirebase.uid,
+          nome,
+          email: usuarioFirebase.email || '',
+          atualizadoEm: serverTimestamp(),
+          criadoEm: serverTimestamp()
+        }, { merge: true });
+      } catch (erro) {
+        // O login/cadastro não deve falhar só porque as regras do Firestore
+        // ainda não permitem salvar o perfil do usuário.
+        console.warn('Login realizado, mas não consegui salvar o perfil no Firestore:', erro);
+      }
+    }
+
+    function tratarErroFirebase(erro) {
+      const codigo = erro?.code || '';
+
+      if (codigo === 'auth/wrong-password' || codigo === 'auth/invalid-credential' || codigo === 'auth/invalid-login-credentials') {
+        return 'Não consegui entrar com esses dados. Se o e-mail já existe, confira a senha.';
+      }
+
+      if (codigo === 'auth/invalid-email') {
+        return 'Informe um e-mail válido.';
+      }
+
+      if (codigo === 'auth/weak-password') {
+        return 'A senha precisa ter pelo menos 6 caracteres.';
+      }
+
+      if (codigo === 'auth/email-already-in-use') {
+        return 'Este e-mail já existe. Tente entrar com a senha cadastrada.';
+      }
+
+      if (codigo === 'auth/operation-not-allowed') {
+        return 'Ative Email/senha em Firebase Authentication > Sign-in method.';
+      }
+
+      if (codigo === 'auth/configuration-not-found') {
+        return 'O Firebase Authentication ainda não foi configurado neste projeto.';
+      }
+
+      if (codigo === 'auth/unauthorized-domain') {
+        return 'Este domínio não está autorizado no Firebase Authentication.';
+      }
+
+      if (codigo === 'auth/too-many-requests') {
+        return 'Muitas tentativas. Aguarde um pouco e tente novamente.';
+      }
+
+      return `Não consegui fazer login agora. Código: ${codigo || 'erro desconhecido'}.`;
+    }
+
     toggleSenha.addEventListener('click', () => {
       const senhaEstaOculta = senhaInput.type === 'password';
       senhaInput.type = senhaEstaOculta ? 'text' : 'password';
       toggleSenha.textContent = senhaEstaOculta ? 'Ocultar' : 'Mostrar';
     });
 
-    form.addEventListener('submit', (event) => {
+    if (!firebaseConfigurado) {
+      mostrarMensagem('Configure o arquivo firebase-config.js para ativar o login real pelo Firebase.', 'erro');
+    }
+
+    if (auth) {
+      onAuthStateChanged(auth, (usuarioFirebase) => {
+        if (!usuarioFirebase) return;
+
+        const nomeAtual = usuarioFirebase.displayName || '';
+        if (nomeAtual && !nomeInput.value.trim()) nomeInput.value = nomeAtual;
+        if (usuarioFirebase.email && !emailInput.value.trim()) emailInput.value = usuarioFirebase.email;
+      });
+    }
+
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const nome = nomeInput.value.trim();
       const email = emailInput.value.trim().toLowerCase();
       const senha = senhaInput.value.trim();
 
-      mensagem.className = 'mensagem';
-      mensagem.textContent = '';
+      mostrarMensagem('');
 
       if (nome.length < 2) {
-        mensagem.classList.add('erro');
-        mensagem.textContent = 'Informe um nome válido.';
+        mostrarMensagem('Informe um nome válido.', 'erro');
         nomeInput.focus();
         return;
       }
 
       if (!email.includes('@') || !email.includes('.')) {
-        mensagem.classList.add('erro');
-        mensagem.textContent = 'Informe um e-mail válido.';
+        mostrarMensagem('Informe um e-mail válido.', 'erro');
         emailInput.focus();
         return;
       }
 
       if (senha.length < 6) {
-        mensagem.classList.add('erro');
-        mensagem.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
+        mostrarMensagem('A senha precisa ter pelo menos 6 caracteres.', 'erro');
         senhaInput.focus();
         return;
       }
 
-      const usuario = {
-        nome,
-        email,
-        logado: true,
-        loginEm: new Date().toISOString()
-      };
+      if (!firebaseConfigurado || !auth || !db) {
+        mostrarMensagem('Firebase ainda não configurado. Preencha o firebase-config.js.', 'erro');
+        return;
+      }
 
-      localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+      form.querySelector('button[type="submit"]').disabled = true;
+      mostrarMensagem('Conectando ao Firebase...');
 
-      mensagem.classList.add('ok');
-      mensagem.textContent = 'Login realizado. Redirecionando...';
+      try {
+        let credencial;
 
-      setTimeout(() => {
-        window.location.href = 'personagens.html';
-      }, 700);
+        try {
+          credencial = await signInWithEmailAndPassword(auth, email, senha);
+        } catch (erroLogin) {
+          const codigoLogin = erroLogin?.code || '';
+
+          // Em versões recentes do Firebase, quando o e-mail não existe,
+          // o erro pode vir como auth/invalid-credential em vez de auth/user-not-found.
+          // Por isso tentamos criar a conta. Se o e-mail já existir, o Firebase
+          // devolve auth/email-already-in-use e mostramos a mensagem correta.
+          if (
+            codigoLogin === 'auth/user-not-found' ||
+            codigoLogin === 'auth/invalid-credential' ||
+            codigoLogin === 'auth/invalid-login-credentials'
+          ) {
+            try {
+              mostrarMensagem('Conta não encontrada. Criando cadastro...');
+              credencial = await createUserWithEmailAndPassword(auth, email, senha);
+            } catch (erroCadastro) {
+              if (erroCadastro?.code === 'auth/email-already-in-use') {
+                throw erroLogin;
+              }
+
+              throw erroCadastro;
+            }
+          } else {
+            throw erroLogin;
+          }
+        }
+
+        if (credencial.user.displayName !== nome) {
+          try {
+            await updateProfile(credencial.user, { displayName: nome });
+          } catch (erroPerfil) {
+            console.warn('Login realizado, mas não consegui atualizar o nome do perfil:', erroPerfil);
+          }
+        }
+
+        await salvarUsuarioNoFirestore(credencial.user, nome);
+        salvarUsuarioLocal(credencial.user, nome);
+
+        mostrarMensagem('Login realizado. Redirecionando...', 'ok');
+
+        const destino = obterDestinoDepoisDoLogin();
+        localStorage.removeItem('conviteCampanhaPendente');
+
+        setTimeout(() => {
+          window.location.href = destino;
+        }, 500);
+      } catch (erro) {
+        console.error('Erro no login Firebase:', erro);
+        mostrarMensagem(tratarErroFirebase(erro), 'erro');
+        form.querySelector('button[type="submit"]').disabled = false;
+      }
     });
   </script>
 </body>

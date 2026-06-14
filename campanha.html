@@ -1355,7 +1355,29 @@
 
   <div id="avisoFlutuante" class="aviso-flutuante" role="status" aria-live="polite"></div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+      runTransaction,
+      serverTimestamp,
+      collection,
+      query,
+      where,
+      getDocs,
+      limit
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { firebaseConfig, firebaseEstaConfigurado } from "./firebase-config.js";
+
     const usuarioNome = document.getElementById('usuarioNome');
     const btnSair = document.getElementById('btnSair');
     const conteudoCampanha = document.getElementById('conteudoCampanha');
@@ -1375,7 +1397,6 @@
     const previewImagemCampanha = document.getElementById('previewImagemCampanha');
     const btnRemoverImagemCampanha = document.getElementById('btnRemoverImagemCampanha');
     const btnEditarImagemCampanha = document.getElementById('btnEditarImagemCampanha');
-    const areaEditorImagemCampanha = document.getElementById('areaEditorImagemCampanha');
     const canvasEditorImagemCampanha = document.getElementById('canvasEditorImagemCampanha');
     const controleZoomImagem = document.getElementById('controleZoomImagem');
     const btnCentralizarImagemCampanha = document.getElementById('btnCentralizarImagemCampanha');
@@ -1386,7 +1407,11 @@
     const buscaPersonagemCampanha = document.getElementById('buscaPersonagemCampanha');
     const listaPersonagensDisponiveis = document.getElementById('listaPersonagensDisponiveis');
     const avisoFlutuante = document.getElementById('avisoFlutuante');
+
     const CHAVE_CAMPANHAS = 'campanhasCriadas';
+    const COLECOES_CAMPANHAS = ['campaigns', 'campanhas'];
+    const COLECAO_CAMPANHAS_PADRAO = 'campaigns';
+    const COLECOES_PERSONAGENS_FIREBASE = ['characters', 'personagens'];
     const CHAVES_PERSONAGENS = [
       'personagensCriados',
       'personagensSalvos',
@@ -1398,12 +1423,33 @@
       'personagens'
     ];
 
+    const firebaseConfigurado = firebaseEstaConfigurado();
+    const app = firebaseConfigurado ? initializeApp(firebaseConfig) : null;
+    const auth = app ? getAuth(app) : null;
+    const db = app ? getFirestore(app) : null;
+
     let campanhaAtual = null;
     let abaAtual = 'visao';
     let imagemTemporariaCampanha = '';
     let imagemOriginalEditor = null;
     let estadoEditorImagem = { zoom: 1, x: 0, y: 0, arrastando: false, ultimoX: 0, ultimoY: 0 };
     let temporizadorAviso = null;
+    let usuarioFirebaseAtual = null;
+    let personagensFirebaseCache = [];
+    let carregandoCampanha = false;
+
+    function usuarioDoFirebase(usuarioFirebase) {
+      if (!usuarioFirebase) return null;
+
+      return {
+        uid: usuarioFirebase.uid,
+        id: usuarioFirebase.uid,
+        nome: usuarioFirebase.displayName || usuarioFirebase.email?.split('@')[0] || 'Usuário',
+        email: usuarioFirebase.email || '',
+        logado: true,
+        loginEm: new Date().toISOString()
+      };
+    }
 
     function carregarUsuario() {
       const usuario = obterUsuarioAtual();
@@ -1414,19 +1460,20 @@
         return;
       }
 
-      usuarioNome.textContent = usuario.nome || 'Usuário';
+      usuarioNome.textContent = usuario.nome || usuario.email || 'Usuário';
       btnSair.textContent = 'Sair';
     }
 
     function obterUsuarioAtual() {
-      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (usuarioFirebaseAtual) return usuarioFirebaseAtual;
 
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
       if (!usuarioSalvo) return null;
 
       try {
         const usuario = JSON.parse(usuarioSalvo);
 
-        if (!usuario || usuario.logado !== true || !usuario.nome) {
+        if (!usuario || usuario.logado !== true || (!usuario.nome && !usuario.email)) {
           localStorage.removeItem('usuarioLogado');
           return null;
         }
@@ -1449,7 +1496,7 @@
 
     function sanitizarDescricao(html) {
       const temporario = document.createElement('div');
-      temporario.innerHTML = html;
+      temporario.innerHTML = html || '';
       const tagsPermitidas = ['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'BR', 'P', 'DIV'];
 
       temporario.querySelectorAll('script, style, iframe, object, embed, link, meta').forEach((elemento) => elemento.remove());
@@ -1466,7 +1513,35 @@
       return temporario.innerHTML.trim();
     }
 
-    function obterCampanhas() {
+    function normalizarData(valor) {
+      if (!valor) return '';
+      if (typeof valor?.toDate === 'function') return valor.toDate().toISOString();
+      if (valor instanceof Date) return valor.toISOString();
+      return valor;
+    }
+
+    function formatarData(dataISO) {
+      if (!dataISO) return 'não informada';
+
+      const data = new Date(normalizarData(dataISO));
+      if (Number.isNaN(data.getTime())) return 'não informada';
+
+      return data.toLocaleDateString('pt-BR');
+    }
+
+    function mostrarAviso(mensagem) {
+      if (!avisoFlutuante) return;
+
+      avisoFlutuante.textContent = mensagem;
+      avisoFlutuante.classList.add('mostrar');
+
+      clearTimeout(temporizadorAviso);
+      temporizadorAviso = setTimeout(() => {
+        avisoFlutuante.classList.remove('mostrar');
+      }, 3200);
+    }
+
+    function obterCampanhasLocais() {
       try {
         const campanhasSalvas = JSON.parse(localStorage.getItem(CHAVE_CAMPANHAS)) || [];
         return Array.isArray(campanhasSalvas) ? campanhasSalvas : [];
@@ -1475,28 +1550,24 @@
       }
     }
 
-    function salvarCampanhas(campanhas) {
+    function salvarCampanhasLocais(campanhas) {
       localStorage.setItem(CHAVE_CAMPANHAS, JSON.stringify(campanhas));
     }
 
-    function salvarCampanhaAtualizada(dadosAtualizados) {
-      if (!campanhaAtual) return;
+    function salvarCampanhaLocal(campanha) {
+      if (!campanha?.id) return;
 
-      const campanhas = obterCampanhas();
-      const indice = campanhas.findIndex((campanha) => campanha.id === campanhaAtual.id);
+      const campanhaLimpa = removerMetadadosInternos(campanha);
+      const campanhas = obterCampanhasLocais();
+      const indice = campanhas.findIndex((item) => String(item.id) === String(campanha.id));
 
-      if (indice === -1) return;
+      if (indice >= 0) {
+        campanhas[indice] = { ...campanhas[indice], ...campanhaLimpa };
+      } else {
+        campanhas.push(campanhaLimpa);
+      }
 
-      campanhas[indice] = {
-        ...campanhas[indice],
-        ...dadosAtualizados,
-        atualizadoEm: new Date().toISOString()
-      };
-
-      salvarCampanhas(campanhas);
-      campanhaAtual = campanhas[indice];
-      atualizarCabecalhoCampanha();
-      renderizarAba();
+      salvarCampanhasLocais(campanhas);
     }
 
     function obterIdCampanha() {
@@ -1508,24 +1579,129 @@
       return campanha?.imagem || campanha?.imagemCapa || campanha?.capa || '';
     }
 
-    function mostrarErroCampanha() {
+    function removerMetadadosInternos(campanha) {
+      const { _origem, _colecaoFirebase, ...dados } = campanha || {};
+      return dados;
+    }
+
+    function normalizarCampanha(dados, id, origem = 'local', colecaoFirebase = '') {
+      const campanha = {
+        ...dados,
+        id: String(dados?.id || id || ''),
+        nome: dados?.nome || dados?.titulo || 'Campanha',
+        sistema: dados?.sistema || 'Vampiro: A Máscara',
+        descricao: dados?.descricao || '',
+        imagem: dados?.imagem || dados?.imagemCapa || dados?.capa || '',
+        jogadores: Array.isArray(dados?.jogadores) ? dados.jogadores : [],
+        personagens: Array.isArray(dados?.personagens) ? dados.personagens : [],
+        membros: dados?.membros && typeof dados.membros === 'object' ? dados.membros : {},
+        conviteCodigo: dados?.conviteCodigo || dados?.inviteCode || '',
+        criadoEm: normalizarData(dados?.criadoEm),
+        atualizadoEm: normalizarData(dados?.atualizadoEm),
+        _origem: origem,
+        _colecaoFirebase: colecaoFirebase
+      };
+
+      return campanha;
+    }
+
+    async function buscarCampanhaFirestore(idCampanha) {
+      if (!db || !idCampanha) return null;
+
+      for (const nomeColecao of COLECOES_CAMPANHAS) {
+        const referencia = doc(db, nomeColecao, idCampanha);
+        const snapshot = await getDoc(referencia);
+
+        if (snapshot.exists()) {
+          return normalizarCampanha(snapshot.data(), snapshot.id, 'firebase', nomeColecao);
+        }
+      }
+
+      return null;
+    }
+
+    function buscarCampanhaLocal(idCampanha) {
+      const campanhas = obterCampanhasLocais();
+      const encontrada = campanhas.find((campanha) => String(campanha.id) === String(idCampanha));
+      return encontrada ? normalizarCampanha(encontrada, encontrada.id, 'local') : null;
+    }
+
+    function obterReferenciaCampanhaFirebase() {
+      if (!db || !campanhaAtual?.id) return null;
+      return doc(db, campanhaAtual._colecaoFirebase || COLECAO_CAMPANHAS_PADRAO, campanhaAtual.id);
+    }
+
+    function prepararDadosFirebase(dados) {
+      const dadosLimpos = removerMetadadosInternos(dados);
+      delete dadosLimpos.id;
+      return dadosLimpos;
+    }
+
+    async function migrarCampanhaLocalParaFirebase(campanha) {
+      if (!db || !campanha?.id || campanha._origem === 'firebase') return campanha;
+
+      const usuario = obterUsuarioAtual();
+      if (!usuario?.uid) return campanha;
+
+      const referencia = doc(db, COLECAO_CAMPANHAS_PADRAO, campanha.id);
+      const membros = { ...(campanha.membros || {}), [usuario.uid]: true };
+      const dadosFirebase = prepararDadosFirebase({
+        ...campanha,
+        ownerUid: campanha.ownerUid || campanha.mestreUid || usuario.uid,
+        ownerEmail: campanha.ownerEmail || campanha.mestreEmail || usuario.email || '',
+        ownerNome: campanha.ownerNome || campanha.mestreNome || usuario.nome || '',
+        membros,
+        atualizadoEm: serverTimestamp(),
+        criadoEm: campanha.criadoEm || serverTimestamp()
+      });
+
+      await setDoc(referencia, dadosFirebase, { merge: true });
+      return normalizarCampanha({ ...campanha, ...dadosFirebase, membros }, campanha.id, 'firebase', COLECAO_CAMPANHAS_PADRAO);
+    }
+
+    async function salvarCampanhaAtualizada(dadosAtualizados) {
+      if (!campanhaAtual) return;
+
+      const atualizadaLocal = {
+        ...campanhaAtual,
+        ...dadosAtualizados,
+        atualizadoEm: new Date().toISOString()
+      };
+
+      campanhaAtual = normalizarCampanha(atualizadaLocal, campanhaAtual.id, campanhaAtual._origem, campanhaAtual._colecaoFirebase);
+      salvarCampanhaLocal(campanhaAtual);
+
+      if (db) {
+        try {
+          if (campanhaAtual._origem !== 'firebase') {
+            campanhaAtual = await migrarCampanhaLocalParaFirebase(campanhaAtual);
+          }
+
+          const referencia = obterReferenciaCampanhaFirebase();
+          if (referencia) {
+            await updateDoc(referencia, {
+              ...prepararDadosFirebase(dadosAtualizados),
+              atualizadoEm: serverTimestamp()
+            });
+          }
+        } catch (erro) {
+          console.error('Erro ao salvar campanha no Firebase:', erro);
+          mostrarAviso('Não consegui salvar no Firebase. Salvei neste navegador por enquanto.');
+        }
+      }
+
+      atualizarCabecalhoCampanha();
+      renderizarAba();
+    }
+
+    function mostrarErroCampanha(mensagem = 'Crie uma campanha primeiro ou acesse uma campanha existente pela lista.') {
       conteudoCampanha.innerHTML = `
         <section class="erro-campanha">
           <h1>Campanha não encontrada</h1>
-          <p>Crie uma campanha primeiro ou acesse uma campanha existente pela lista.</p>
+          <p>${escaparTexto(mensagem)}</p>
           <a href="campanhas.html" class="btn-primario">Voltar para campanhas</a>
         </section>
       `;
-    }
-
-    function mostrarAviso(mensagem) {
-      avisoFlutuante.textContent = mensagem;
-      avisoFlutuante.classList.add('mostrar');
-
-      clearTimeout(temporizadorAviso);
-      temporizadorAviso = setTimeout(() => {
-        avisoFlutuante.classList.remove('mostrar');
-      }, 2800);
     }
 
     function atualizarCabecalhoCampanha() {
@@ -1541,7 +1717,7 @@
       const imagem = obterImagemCampanha(campanhaAtual);
 
       if (imagem) {
-        capaCampanha.innerHTML = `<img src="${imagem}" alt="Imagem da campanha ${escaparTexto(campanhaAtual.nome || '')}">`;
+        capaCampanha.innerHTML = `<img src="${escaparTexto(imagem)}" alt="Imagem da campanha ${escaparTexto(campanhaAtual.nome || '')}">`;
         return;
       }
 
@@ -1567,7 +1743,6 @@
         </div>
       `;
     }
-
 
     function coletarArraysPossiveis(valor) {
       const colecoes = [];
@@ -1605,7 +1780,9 @@
         personagem.usuarioId,
         personagem.userId,
         personagem.ownerId,
-        personagem.criadoPorId
+        personagem.criadoPorId,
+        personagem.ownerUid,
+        personagem.uidUsuario
       ].filter(Boolean).map((valor) => String(valor).toLowerCase());
 
       if (!camposUsuario.length) return true;
@@ -1693,10 +1870,48 @@
       };
     }
 
+    async function carregarPersonagensFirebase() {
+      personagensFirebaseCache = [];
+
+      if (!db) return;
+
+      const usuario = obterUsuarioAtual();
+      if (!usuario) return;
+
+      const encontrados = [];
+      const vistos = new Set();
+
+      for (const nomeColecao of COLECOES_PERSONAGENS_FIREBASE) {
+        const filtros = [];
+        if (usuario.uid) filtros.push(where('ownerUid', '==', usuario.uid));
+        if (usuario.uid) filtros.push(where('userId', '==', usuario.uid));
+        if (usuario.email) filtros.push(where('ownerEmail', '==', usuario.email));
+        if (usuario.email) filtros.push(where('usuarioEmail', '==', usuario.email));
+
+        for (const filtro of filtros) {
+          try {
+            const consulta = query(collection(db, nomeColecao), filtro, limit(60));
+            const snapshot = await getDocs(consulta);
+            snapshot.forEach((documento) => {
+              const chave = `${nomeColecao}:${documento.id}`;
+              if (vistos.has(chave)) return;
+
+              vistos.add(chave);
+              encontrados.push(normalizarPersonagem({ ...documento.data(), id: documento.id }, encontrados.length, nomeColecao));
+            });
+          } catch (erro) {
+            console.warn(`Não consegui buscar personagens em ${nomeColecao}:`, erro);
+          }
+        }
+      }
+
+      personagensFirebaseCache = encontrados.filter(Boolean);
+    }
+
     function obterTodosPersonagens() {
       const usuario = obterUsuarioAtual();
-      const personagens = [];
-      const vistos = new Set();
+      const personagens = [...personagensFirebaseCache];
+      const vistos = new Set(personagens.map((personagem) => `${personagem.origem}:${personagem.id}`));
 
       CHAVES_PERSONAGENS.forEach((chave) => {
         let valor = null;
@@ -1762,7 +1977,7 @@
     function montarLinkAcessoFicha(personagem) {
       const pagina = personagem.pagina || 'ficha_vampiro_jogo.html';
       const separador = pagina.includes('?') ? '&' : '?';
-      return `${pagina}${separador}id=${encodeURIComponent(personagem.id)}`;
+      return `${pagina}${separador}id=${encodeURIComponent(personagem.id)}&campanha=${encodeURIComponent(campanhaAtual?.id || '')}`;
     }
 
     function renderizarFotoPersonagem(personagem) {
@@ -1846,18 +2061,18 @@
       }).join('');
 
       listaPersonagensDisponiveis.querySelectorAll('[data-add-personagem-campanha]').forEach((botao) => {
-        botao.addEventListener('click', () => {
+        botao.addEventListener('click', async () => {
           const id = botao.dataset.addPersonagemCampanha;
           const origem = botao.dataset.origemPersonagem;
           const personagem = obterTodosPersonagens().find((item) => item.id === id && item.origem === origem) ||
             obterTodosPersonagens().find((item) => item.id === id);
 
-          if (personagem) adicionarPersonagemNaCampanha(personagem);
+          if (personagem) await adicionarPersonagemNaCampanha(personagem);
         });
       });
     }
 
-    function adicionarPersonagemNaCampanha(personagem) {
+    async function adicionarPersonagemNaCampanha(personagem) {
       if (!campanhaAtual || !personagem) return;
 
       const personagens = obterVinculosPersonagensCampanha().slice();
@@ -1880,12 +2095,12 @@
         vinculadoEm: new Date().toISOString()
       });
 
-      salvarCampanhaAtualizada({ personagens });
+      await salvarCampanhaAtualizada({ personagens });
       renderizarListaPersonagensDisponiveis();
       mostrarAviso('Personagem adicionado à campanha.');
     }
 
-    function removerPersonagemDaCampanha(id, origem = '') {
+    async function removerPersonagemDaCampanha(id, origem = '') {
       if (!campanhaAtual || !id) return;
 
       const personagens = obterVinculosPersonagensCampanha().filter((vinculo) => {
@@ -1894,7 +2109,7 @@
         return !(mesmoId && mesmaOrigem);
       });
 
-      salvarCampanhaAtualizada({ personagens });
+      await salvarCampanhaAtualizada({ personagens });
       mostrarAviso('Personagem removido da campanha.');
     }
 
@@ -1904,21 +2119,11 @@
       if (buscaPersonagemCampanha) buscaPersonagemCampanha.value = '';
       renderizarListaPersonagensDisponiveis();
       abrirModal(modalAdicionarPersonagem);
-
       setTimeout(() => buscaPersonagemCampanha?.focus(), 80);
     }
 
-    function formatarData(dataISO) {
-      if (!dataISO) return 'não informada';
-
-      const data = new Date(dataISO);
-      if (Number.isNaN(data.getTime())) return 'não informada';
-
-      return data.toLocaleDateString('pt-BR');
-    }
-
     function renderizarAba() {
-      if (!campanhaAtual) return;
+      if (!campanhaAtual || !conteudoAba) return;
 
       const descricao = sanitizarDescricao(campanhaAtual.descricao || '') || '<p>Sem descrição cadastrada.</p>';
 
@@ -1996,26 +2201,77 @@
       }
 
       document.querySelectorAll('[data-remover-personagem-campanha]').forEach((botao) => {
-        botao.addEventListener('click', () => {
-          removerPersonagemDaCampanha(botao.dataset.removerPersonagemCampanha, botao.dataset.origemPersonagem || '');
+        botao.addEventListener('click', async () => {
+          await removerPersonagemDaCampanha(botao.dataset.removerPersonagemCampanha, botao.dataset.origemPersonagem || '');
         });
       });
     }
 
-    function carregarCampanha() {
-      const campanhas = obterCampanhas();
-      const idCampanha = obterIdCampanha();
-      campanhaAtual = campanhas.find((campanha) => campanha.id === idCampanha) || null;
+    function redirecionarParaLoginComRetorno() {
+      const destino = window.location.href;
+      localStorage.setItem('conviteCampanhaPendente', destino);
+      window.location.href = `login.html?redirect=${encodeURIComponent(destino)}`;
+    }
 
-      if (!campanhaAtual) {
-        mostrarErroCampanha();
-        return;
+    async function carregarCampanha() {
+      if (carregandoCampanha) return;
+      carregandoCampanha = true;
+
+      try {
+        const idCampanha = obterIdCampanha();
+        const params = new URLSearchParams(window.location.search);
+        const codigoConvite = params.get('convite');
+
+        if (!idCampanha) {
+          mostrarErroCampanha();
+          return;
+        }
+
+        if (codigoConvite && firebaseConfigurado && !obterUsuarioAtual()) {
+          redirecionarParaLoginComRetorno();
+          return;
+        }
+
+        let campanha = null;
+
+        if (db) {
+          try {
+            campanha = await buscarCampanhaFirestore(idCampanha);
+          } catch (erro) {
+            console.error('Erro ao buscar campanha no Firebase:', erro);
+            mostrarAviso('Não consegui buscar a campanha no Firebase. Tentando dados locais.');
+          }
+        }
+
+        if (!campanha) {
+          campanha = buscarCampanhaLocal(idCampanha);
+        }
+
+        if (!campanha) {
+          mostrarErroCampanha(firebaseConfigurado ? 'A campanha não foi encontrada no Firebase. Verifique se o link está correto e se as regras do Firestore permitem leitura para usuários logados.' : 'A campanha não foi encontrada. Configure o Firebase para que convites funcionem entre usuários.');
+          return;
+        }
+
+        campanhaAtual = campanha;
+
+        if (db && campanhaAtual._origem !== 'firebase' && obterUsuarioAtual()?.uid) {
+          try {
+            campanhaAtual = await migrarCampanhaLocalParaFirebase(campanhaAtual);
+            mostrarAviso('Campanha conectada ao Firebase.');
+          } catch (erro) {
+            console.error('Erro ao migrar campanha para Firebase:', erro);
+          }
+        }
+
+        localStorage.setItem('campanhaSelecionada', campanhaAtual.id);
+        salvarCampanhaLocal(campanhaAtual);
+        await carregarPersonagensFirebase();
+        atualizarCabecalhoCampanha();
+        await processarConviteRecebido();
+        renderizarAba();
+      } finally {
+        carregandoCampanha = false;
       }
-
-      localStorage.setItem('campanhaSelecionada', campanhaAtual.id);
-      atualizarCabecalhoCampanha();
-      processarConviteRecebido();
-      renderizarAba();
     }
 
     function gerarCodigoConvite() {
@@ -2024,23 +2280,36 @@
       return `${parteAleatoria}${parteData}`;
     }
 
-    function garantirCodigoConvite() {
+    async function garantirCodigoConvite() {
       if (campanhaAtual.conviteCodigo) return campanhaAtual.conviteCodigo;
 
       const codigo = gerarCodigoConvite();
-      salvarCampanhaAtualizada({ conviteCodigo: codigo });
+      await salvarCampanhaAtualizada({ conviteCodigo: codigo });
       return codigo;
     }
 
-    function montarLinkConvite() {
-      const codigo = garantirCodigoConvite();
+    async function montarLinkConvite() {
+      const codigo = await garantirCodigoConvite();
       const paginaAtual = window.location.href.split('?')[0];
       return `${paginaAtual}?id=${encodeURIComponent(campanhaAtual.id)}&convite=${encodeURIComponent(codigo)}`;
     }
 
-    function abrirModalConvite() {
-      campoLinkConvite.value = montarLinkConvite();
+    async function abrirModalConvite() {
+      if (!firebaseConfigurado) {
+        mostrarAviso('Configure o Firebase para que o convite funcione em outro computador.');
+      }
+
+      campoLinkConvite.value = 'Gerando link...';
       abrirModal(modalConviteJogadores);
+
+      try {
+        campoLinkConvite.value = await montarLinkConvite();
+      } catch (erro) {
+        console.error('Erro ao gerar convite:', erro);
+        campoLinkConvite.value = '';
+        mostrarAviso('Não consegui gerar o convite. Verifique o Firebase.');
+      }
+
       setTimeout(() => {
         campoLinkConvite.focus();
         campoLinkConvite.select();
@@ -2050,7 +2319,7 @@
     async function copiarConvite() {
       const link = campoLinkConvite.value;
 
-      if (!link) return;
+      if (!link || link === 'Gerando link...') return;
 
       try {
         if (navigator.clipboard && window.isSecureContext) {
@@ -2067,49 +2336,107 @@
       }
     }
 
-    function processarConviteRecebido() {
+    async function processarConviteRecebido() {
       const params = new URLSearchParams(window.location.search);
       const codigoConvite = params.get('convite');
 
       if (!codigoConvite || !campanhaAtual) return;
 
-      if (codigoConvite !== campanhaAtual.conviteCodigo) {
+      const usuario = obterUsuarioAtual();
+
+      if (!usuario) {
+        redirecionarParaLoginComRetorno();
+        return;
+      }
+
+      if (String(codigoConvite) !== String(campanhaAtual.conviteCodigo)) {
         mostrarAviso('Convite inválido ou expirado.');
         return;
       }
 
-      const usuario = obterUsuarioAtual();
-
-      if (!usuario) {
-        localStorage.setItem('conviteCampanhaPendente', window.location.href);
-        mostrarAviso('Faça login para entrar na campanha pelo convite.');
-        return;
-      }
-
-      adicionarUsuarioComoJogador(usuario);
+      await adicionarUsuarioComoJogador(usuario);
+      params.delete('convite');
+      const novaQuery = params.toString();
+      const novaUrl = `${window.location.pathname}${novaQuery ? `?${novaQuery}` : ''}`;
+      window.history.replaceState({}, document.title, novaUrl);
     }
 
-    function adicionarUsuarioComoJogador(usuario) {
-      const jogadores = Array.isArray(campanhaAtual.jogadores) ? [...campanhaAtual.jogadores] : [];
-      const identificador = String(usuario.email || usuario.nome || '').toLowerCase();
+    function usuarioJaEstaNaCampanha(jogadores, usuario) {
+      const uid = String(usuario.uid || usuario.id || '').toLowerCase();
+      const email = String(usuario.email || '').toLowerCase();
+      const nome = String(usuario.nome || '').toLowerCase();
 
-      if (!identificador) return;
+      return jogadores.some((jogador) => {
+        const uidJogador = String(jogador.uid || jogador.id || '').toLowerCase();
+        const emailJogador = String(jogador.email || '').toLowerCase();
+        const nomeJogador = String(jogador.nome || '').toLowerCase();
+        return (uid && uidJogador === uid) || (email && emailJogador === email) || (!email && nome && nomeJogador === nome);
+      });
+    }
 
-      const jaEntrou = jogadores.some((jogador) => String(jogador.email || jogador.nome || '').toLowerCase() === identificador);
+    async function adicionarUsuarioComoJogador(usuario) {
+      if (!campanhaAtual || !usuario) return;
 
-      if (jaEntrou) {
+      const jogador = {
+        uid: usuario.uid || usuario.id || '',
+        id: usuario.uid || usuario.id || usuario.email || usuario.nome,
+        nome: usuario.nome || usuario.email || 'Jogador',
+        email: usuario.email || '',
+        entradaEm: new Date().toISOString()
+      };
+
+      if (!jogador.id) return;
+
+      const jogadoresAtuais = Array.isArray(campanhaAtual.jogadores) ? [...campanhaAtual.jogadores] : [];
+
+      if (usuarioJaEstaNaCampanha(jogadoresAtuais, usuario)) {
         mostrarAviso('Você já está nesta campanha.');
         return;
       }
 
-      jogadores.push({
-        id: identificador,
-        nome: usuario.nome,
-        email: usuario.email || '',
-        entradaEm: new Date().toISOString()
-      });
+      if (db && campanhaAtual._origem === 'firebase') {
+        const referencia = obterReferenciaCampanhaFirebase();
 
-      salvarCampanhaAtualizada({ jogadores });
+        try {
+          await runTransaction(db, async (transacao) => {
+            const snapshot = await transacao.get(referencia);
+            if (!snapshot.exists()) throw new Error('Campanha não encontrada no Firebase.');
+
+            const dados = snapshot.data();
+            const jogadores = Array.isArray(dados.jogadores) ? [...dados.jogadores] : [];
+            const membros = dados.membros && typeof dados.membros === 'object' ? { ...dados.membros } : {};
+
+            if (!usuarioJaEstaNaCampanha(jogadores, usuario)) {
+              jogadores.push(jogador);
+            }
+
+            if (jogador.uid) membros[jogador.uid] = true;
+
+            transacao.update(referencia, {
+              jogadores,
+              membros,
+              atualizadoEm: serverTimestamp()
+            });
+
+            campanhaAtual = normalizarCampanha({ ...dados, jogadores, membros }, snapshot.id, 'firebase', campanhaAtual._colecaoFirebase);
+          });
+
+          salvarCampanhaLocal(campanhaAtual);
+          atualizarCabecalhoCampanha();
+          renderizarAba();
+          mostrarAviso('Você entrou na campanha.');
+          return;
+        } catch (erro) {
+          console.error('Erro ao entrar na campanha:', erro);
+          mostrarAviso('Não consegui adicionar você no Firebase. Verifique as regras do Firestore.');
+          return;
+        }
+      }
+
+      jogadoresAtuais.push(jogador);
+      const membros = { ...(campanhaAtual.membros || {}) };
+      if (jogador.uid) membros[jogador.uid] = true;
+      await salvarCampanhaAtualizada({ jogadores: jogadoresAtuais, membros });
       mostrarAviso('Você entrou na campanha.');
     }
 
@@ -2132,7 +2459,7 @@
       const temImagem = Boolean(imagemTemporariaCampanha);
 
       if (temImagem) {
-        previewImagemCampanha.innerHTML = `<img src="${imagemTemporariaCampanha}" alt="Prévia da imagem da campanha">`;
+        previewImagemCampanha.innerHTML = `<img src="${escaparTexto(imagemTemporariaCampanha)}" alt="Prévia da imagem da campanha">`;
       } else {
         previewImagemCampanha.textContent = 'Nenhuma imagem selecionada.';
       }
@@ -2169,9 +2496,7 @@
         resetarControlesEditorImagem();
         desenharEditorImagem();
 
-        if (abrirEditor) {
-          abrirModal(modalEditorImagemCampanha);
-        }
+        if (abrirEditor) abrirModal(modalEditorImagemCampanha);
       };
 
       imagem.onerror = () => {
@@ -2221,13 +2546,11 @@
       if (!imagemOriginalEditor || !canvasEditorImagemCampanha) return;
 
       desenharEditorImagem();
-      imagemTemporariaCampanha = canvasEditorImagemCampanha.toDataURL('image/jpeg', 0.9);
+      imagemTemporariaCampanha = canvasEditorImagemCampanha.toDataURL('image/jpeg', 0.72);
       atualizarPreviewImagemModal();
       fecharModal(modalEditorImagemCampanha);
 
-      if (mostrarMensagem) {
-        mostrarAviso('Recorte salvo.');
-      }
+      if (mostrarMensagem) mostrarAviso('Recorte salvo.');
     }
 
     function obterPontoEditor(evento) {
@@ -2387,7 +2710,7 @@
 
     btnAplicarRecorteImagemCampanha.addEventListener('click', () => aplicarRecorteImagem(true));
 
-    formEditarCampanha.addEventListener('submit', (evento) => {
+    formEditarCampanha.addEventListener('submit', async (evento) => {
       evento.preventDefault();
 
       const nome = campoNomeCampanha.value.trim();
@@ -2398,7 +2721,7 @@
         return;
       }
 
-      salvarCampanhaAtualizada({
+      await salvarCampanhaAtualizada({
         nome,
         sistema: campoSistemaCampanha.value,
         descricao: sanitizarDescricao(campoDescricaoCampanha.innerHTML),
@@ -2410,24 +2733,49 @@
     });
 
     buscaPersonagemCampanha.addEventListener('input', renderizarListaPersonagensDisponiveis);
-
     btnCopiarConvite.addEventListener('click', copiarConvite);
 
-    btnSair.addEventListener('click', () => {
-      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+    btnSair.addEventListener('click', async () => {
+      const usuario = obterUsuarioAtual();
 
-      if (usuarioSalvo) {
+      if (usuario) {
+        if (auth && usuarioFirebaseAtual) {
+          await signOut(auth);
+        }
+
+        usuarioFirebaseAtual = null;
         localStorage.removeItem('usuarioLogado');
         usuarioNome.textContent = 'Visitante';
         btnSair.textContent = 'Login';
         return;
       }
 
-      window.location.href = 'login.html';
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
     });
 
-    carregarUsuario();
-    carregarCampanha();
+    async function iniciarPagina() {
+      carregarUsuario();
+
+      if (!firebaseConfigurado) {
+        mostrarAviso('Firebase ainda não configurado. A página usará apenas dados locais.');
+        await carregarCampanha();
+        return;
+      }
+
+      onAuthStateChanged(auth, async (usuarioFirebase) => {
+        usuarioFirebaseAtual = usuarioDoFirebase(usuarioFirebase);
+
+        if (usuarioFirebaseAtual) {
+          localStorage.setItem('usuarioLogado', JSON.stringify(usuarioFirebaseAtual));
+        }
+
+        carregarUsuario();
+        await carregarCampanha();
+      });
+    }
+
+    iniciarPagina();
+
   </script>
 </body>
 </html>
