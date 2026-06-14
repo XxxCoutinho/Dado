@@ -794,6 +794,174 @@
     }
 
 
+
+    /* =========================================================
+       Editor simples de foto do personagem
+       ========================================================= */
+    body.modal-foto-aberta {
+      overflow: hidden;
+    }
+
+    .modal-foto-fundo {
+      position: fixed;
+      inset: 0;
+      z-index: 94;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+
+    .modal-foto-fundo.aberto {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-foto {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 95;
+      width: min(720px, calc(100vw - 28px));
+      max-height: min(92vh, 820px);
+      transform: translate(-50%, -46%) scale(.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 24px;
+      background: rgba(9, 7, 18, .96);
+      box-shadow: 0 0 34px rgba(255,0,120,.22), 0 0 60px rgba(0,200,255,.14), inset 0 0 30px rgba(255,255,255,.04);
+      overflow: hidden;
+    }
+
+    .modal-foto.aberto {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-foto-cabecalho {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .modal-foto-cabecalho h2 {
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-foto-cabecalho p {
+      color: rgba(244,240,255,.64);
+      line-height: 1.45;
+      font-size: .9rem;
+    }
+
+    .modal-foto-corpo {
+      padding: 18px 22px 22px;
+      overflow-y: auto;
+      max-height: calc(min(92vh, 820px) - 104px);
+      display: grid;
+      gap: 16px;
+    }
+
+    .foto-editor-palco {
+      width: min(380px, 100%);
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 35% 25%, rgba(255,0,120,.12), transparent 36%),
+        radial-gradient(circle at 75% 80%, rgba(0,200,255,.10), transparent 42%),
+        rgba(0,0,0,.28);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 24px rgba(255,255,255,.035);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .foto-editor-palco.arrastando {
+      cursor: grabbing;
+    }
+
+    #fotoEditorCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .foto-editor-controles {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      padding: 14px;
+    }
+
+    .foto-editor-botoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .foto-editor-botoes .btn-pequeno {
+      width: auto;
+      min-width: 138px;
+    }
+
+    .foto-editor-controles input[type="range"] {
+      padding: 0;
+      accent-color: var(--rosa);
+    }
+
+    .foto-editor-dica {
+      color: rgba(244,240,255,.62);
+      line-height: 1.45;
+      font-size: .86rem;
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      .modal-foto {
+        width: calc(100vw - 20px);
+        max-height: 90vh;
+      }
+
+      .modal-foto-cabecalho,
+      .modal-foto-corpo {
+        padding: 16px;
+      }
+
+      .foto-editor-palco {
+        width: min(320px, 100%);
+      }
+
+      .foto-editor-botoes {
+        justify-content: stretch;
+      }
+
+      .foto-editor-botoes .btn-pequeno {
+        width: 100%;
+      }
+    }
+
+
     /* =========================================================
        Campos de orientação, bolinhas e listas dinâmicas
        ========================================================= */
@@ -809,7 +977,7 @@
       box-shadow: inset 0 0 22px rgba(255,255,255,.025);
     }
 
-    .orientacao-etapa strong {
+    .orientacao-etapa > strong {
       color: #fff;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -817,6 +985,43 @@
       display: block;
       margin-bottom: 4px;
     }
+    .orientacao-etapa ul {
+      list-style-position: inside;
+      padding-left: 0;
+      margin: 6px 0;
+      display: grid;
+      gap: 4px;
+    }
+
+    .orientacao-etapa li {
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .orientacao-opcoes {
+      display: grid;
+      gap: 7px;
+      margin: 8px 0;
+    }
+
+    .orientacao-opcao {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,.16);
+      padding: 9px 10px;
+      color: rgba(244,240,255,.78);
+      line-height: 1.42;
+    }
+
+    .orientacao-opcao strong {
+      display: inline;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: .76rem;
+      margin: 0 4px 0 0;
+    }
+
 
     .grupo-titulo {
       grid-column: 1 / -1;
@@ -1030,8 +1235,9 @@
     .contador-vantagens {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 340px);
       gap: 12px;
+      justify-content: start;
     }
 
     .contador-vantagens-card {
@@ -1168,9 +1374,12 @@
 
     .catalogo-vd-card {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 132px auto;
-      gap: 12px;
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "info controles"
+        "info acao";
+      gap: 12px 16px;
+      align-items: start;
       border: 1px solid rgba(255,255,255,.1);
       border-radius: 18px;
       padding: 13px;
@@ -1222,12 +1431,162 @@
       border-radius: 12px;
     }
 
+
+    .vd-item {
+      align-items: start;
+      background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,0,120,.035), rgba(0,200,255,.03));
+    }
+
+    .vd-card-conteudo {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .vd-linha-titulo {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .vd-titulo-area {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .vd-etiqueta {
+      width: max-content;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #fff;
+      background: rgba(0,0,0,.22);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: .68rem;
+      font-weight: 950;
+      box-shadow: inset 0 0 14px rgba(255,255,255,.035);
+    }
+
+    .vd-etiqueta.defeito {
+      border-color: rgba(255,0,120,.3);
+      background: rgba(255,0,120,.1);
+    }
+
+    .vd-pontos-area {
+      display: grid;
+      justify-items: end;
+      gap: 5px;
+      min-width: 132px;
+    }
+
+    .vd-pontos-area label {
+      color: rgba(244,240,255,.7);
+      font-size: .66rem;
+      text-align: right;
+    }
+
+    .vd-pontos-area .bolinhas {
+      margin-top: 0;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .vd-pontos-area .bolinha {
+      width: 24px;
+      height: 24px;
+    }
+
+    .vd-pontos-area .bolinha.bloqueada {
+      opacity: .55;
+    }
+
+    .vd-pontos-area .valor-bolinhas {
+      font-size: .78rem;
+    }
+
+    .vd-descricao-nivel {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: rgba(0,0,0,.22);
+      color: rgba(244,240,255,.78);
+      padding: 12px 13px;
+      line-height: 1.45;
+      font-size: .88rem;
+      box-shadow: inset 0 0 18px rgba(255,255,255,.025);
+    }
+
+    .catalogo-vd-card .vd-descricao-nivel {
+      margin-top: 8px;
+    }
+
+    .catalogo-vd-card .vd-pontos-area {
+      min-width: 170px;
+    }
+
+    .catalogo-vd-card .vd-pontos-area .bolinha {
+      width: 22px;
+      height: 22px;
+    }
+
+    .catalogo-vd-card .vd-card-info {
+      grid-area: info;
+    }
+
+    .catalogo-vd-card .vd-card-controle {
+      grid-area: controles;
+      align-self: start;
+      justify-self: end;
+    }
+
+    .catalogo-vd-card .vd-card-adicionar {
+      grid-area: acao;
+      align-self: end;
+      justify-self: end;
+      min-width: 118px;
+    }
+
+    @media (max-width: 760px) {
+      .vd-linha-titulo {
+        grid-template-columns: 1fr;
+      }
+
+      .vd-pontos-area,
+      .catalogo-vd-card .vd-pontos-area {
+        justify-items: start;
+        min-width: 0;
+      }
+
+      .vd-pontos-area label {
+        text-align: left;
+      }
+
+      .vd-pontos-area .bolinhas {
+        justify-content: flex-start;
+      }
+    }
+
     @media (max-width: 760px) {
       .contador-vantagens,
       .listas-vd-grid,
-      .filtros-vd,
+      .filtros-vd {
+        grid-template-columns: 1fr;
+      }
+
       .catalogo-vd-card {
         grid-template-columns: 1fr;
+        grid-template-areas:
+          "info"
+          "controles"
+          "acao";
+      }
+
+      .catalogo-vd-card .vd-card-controle,
+      .catalogo-vd-card .vd-card-adicionar {
+        justify-self: start;
       }
 
       .modal-vd-cabecalho {
@@ -1319,7 +1678,10 @@
               <div class="campo">
                 <label for="imagemPersonagem">Foto do personagem</label>
                 <input id="imagemPersonagem" type="file" accept="image/*" />
-                <p class="dica">A imagem será salva no navegador junto com a ficha atual.</p>
+                <div class="toolbar">
+                  <button type="button" id="btnEditarFoto" class="btn-pequeno">Editar foto</button>
+                </div>
+                <p class="dica">Ao adicionar uma imagem, ajuste o enquadramento, zoom e recorte antes de salvar.</p>
               </div>
             </div>
 
@@ -1389,22 +1751,23 @@
               <label for="claSelect">Clã</label>
               <select id="claSelect" data-campo="claSelect">
                 <option value="">Selecione o clã</option>
-                <option>Brujah</option>
-                <option>Gangrel</option>
-                <option>Malkavian</option>
-                <option>Nosferatu</option>
-                <option>Toreador</option>
-                <option>Tremere</option>
-                <option>Ventrue</option>
-                <option>Banu Haqim</option>
-                <option>Lasombra</option>
-                <option>Ministry</option>
-                <option>Ravnos</option>
-                <option>Tzimisce</option>
-                <option>Hecata</option>
-                <option>Caitiff</option>
-                <option>Sangue-Fraco</option>
+                <option value="Brujah">Brujah — rebeldes passionais, físicos e explosivos contra autoridade.</option>
+                <option value="Gangrel">Gangrel — predadores ferais, ligados à sobrevivência, instinto e natureza.</option>
+                <option value="Malkavian">Malkavian — visionários perturbadores, marcados por percepções fragmentadas.</option>
+                <option value="Nosferatu">Nosferatu — monstros ocultos, espiões e mestres dos segredos subterrâneos.</option>
+                <option value="Toreador">Toreador — sedutores e artistas, obcecados por beleza, emoção e perfeição.</option>
+                <option value="Tremere">Tremere — feiticeiros do sangue, estudiosos, ritualistas e controladores.</option>
+                <option value="Ventrue">Ventrue — líderes aristocráticos, dominadores e seletivos em sua alimentação.</option>
+                <option value="Banu Haqim">Banu Haqim — juízes e caçadores, ligados à justiça, culpa e punição.</option>
+                <option value="Lasombra">Lasombra — ambiciosos senhores das sombras, poder e controle implacável.</option>
+                <option value="Ministry">Ministry — corruptores carismáticos, libertadores e manipuladores do desejo.</option>
+                <option value="Ravnos">Ravnos — errantes ilusórios, inquietos, astutos e difíceis de prender.</option>
+                <option value="Tzimisce">Tzimisce — possessivos e monstruosos, ligados a domínio, corpo e território.</option>
+                <option value="Hecata">Hecata — necromantes familiares, associados à morte, dor e pactos sombrios.</option>
+                <option value="Caitiff">Caitiff — sem clã reconhecido, independentes e vistos com desconfiança.</option>
+                <option value="Sangue-Fraco">Sangue-Fraco — vampiros incompletos, frágeis, instáveis e próximos da mortalidade.</option>
               </select>
+              <p id="claDescricaoTexto" class="dica">Selecione um clã para ver uma breve descrição.</p>
             </div>
 
             <div class="campo">
@@ -1634,12 +1997,12 @@
           <div class="grade-habilidades" data-grupo="habilidades">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Clique nas bolinhas para indicar o quanto o personagem sabe fazer cada coisa. As habilidades podem ser preenchidas de duas formas:
-              <ul>
-                <li><strong>Especialista</strong> — 1 habilidade com 4 pontos, 3 habilidades com 3 pontos, 3 habilidades com 3 pontos e 3 habilidades com 1 ponto;</li>
-                <li><strong>Equilibrado</strong> — 3 habilidades com 3 pontos, 5 habilidades com 2 pontos e 7 habilidades com 1 ponto.</li>
-              </ul>
-              Zero significa sem treino relevante. Uma especialização pode ser anotada no campo abaixo e usada quando a mesa permitir.
+              Clique nas bolinhas para indicar o quanto o personagem sabe fazer cada coisa.
+              <div class="orientacao-opcoes">
+                <p class="orientacao-opcao"><strong>Especialista:</strong> 1 habilidade com 4 pontos, 3 com 3, 3 com 2 e 3 com 1.</p>
+                <p class="orientacao-opcao"><strong>Equilibrado:</strong> 3 habilidades com 3 pontos, 5 com 2 e 7 com 1.</p>
+              </div>
+              Zero significa sem treino relevante. Anote especializações no campo abaixo quando a mesa permitir.
             </div>
             <h3 class="grupo-titulo">Físicas</h3>
               <div class="mini-card card-bolinhas" data-bolinhas-card>
@@ -2055,20 +2418,10 @@
           <div class="campos">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Escolha uma vantagem ou desvantagem na lista, informe pontos e descreva como ela aparece em jogo. Use vantagem para recursos positivos e desvantagem para problemas que podem gerar conflito, custo ou risco.
+              Escolha uma vantagem ou desvantagem na lista e clique nas bolinhas para definir o nível. Lembre-se de que deve ter no minímo 2 defeitos.
             </div>
 
-            <div class="contador-vantagens" aria-label="Contador de vantagens e defeitos">
-              <div class="contador-vantagens-card">
-                <span>Vantagens</span>
-                <strong id="contadorVantagens">0 / 7</strong>
-                <small id="contadorVantagensRestante">7 pontos restantes</small>
-              </div>
-              <div class="contador-vantagens-card">
-                <span>Defeitos</span>
-                <strong id="contadorDefeitos">0 / 2</strong>
-                <small id="contadorDefeitosRestante">2 pontos restantes</small>
-              </div>
+            <div class="contador-vantagens" aria-label="Saldo de vantagens e defeitos">
               <div class="contador-vantagens-card">
                 <span>Saldo</span>
                 <strong id="contadorSaldo">+0</strong>
@@ -2108,10 +2461,10 @@
           <div class="grade-jogo">
             <div class="orientacao-etapa">
               <strong>Como preencher</strong>
-              Estes campos são calculados automaticamente pela ficha: Vitalidade = Vigor + 3; Força de Vontade = Autocontrole + Determinação; Fome começa em 1/5; Humanidade começa em 7/10; Potência do Sangue começa em 1/10. Altere as bolinhas dos atributos para atualizar os valores.
+              Estes campos são calculados automaticamente pela ficha: Vitalidade aparece como (Vigor + 3)/10; Força de Vontade aparece como (Autocontrole + Determinação)/10; Fome começa em 1/5; Humanidade começa em 7/10; Potência do Sangue começa em 1/10. Altere as bolinhas dos atributos para atualizar os valores.
             </div>
-            <div class="mini-card"><h3>Vitalidade</h3><input data-campo="vitalidade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Vigor + 3</p></div>
-            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="forcaVontade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Autocontrole + Determinação</p></div>
+            <div class="mini-card"><h3>Vitalidade</h3><input data-campo="vitalidade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Vigor + 3, exibido em /10</p></div>
+            <div class="mini-card"><h3>Força de vontade</h3><input data-campo="forcaVontade" data-auto-jogo="true" type="text" readonly placeholder="Calculado" /><p class="dica">Autocontrole + Determinação, exibido em /10</p></div>
             <div class="mini-card"><h3>Fome</h3><input data-campo="fome" data-auto-jogo="true" type="text" readonly value="1/5" /></div>
             <div class="mini-card"><h3>Ressonância</h3><input data-campo="ressonancia" type="text" placeholder="Ex.: colérica" /></div>
             <div class="mini-card"><h3>Humanidade</h3><input data-campo="humanidade" data-auto-jogo="true" type="text" readonly value="7/10" /></div>
@@ -2138,12 +2491,42 @@
   <button type="button" id="btnEtapasFlutuante" class="btn-etapas-flutuante" aria-controls="sumarioEtapas" aria-expanded="false">Etapas</button>
 
 
+
+  <div id="fundoEditorFoto" class="modal-foto-fundo" aria-hidden="true"></div>
+  <section id="modalEditorFoto" class="modal-foto" role="dialog" aria-modal="true" aria-labelledby="tituloEditorFoto" aria-hidden="true" tabindex="-1">
+    <div class="modal-foto-cabecalho">
+      <div>
+        <h2 id="tituloEditorFoto">Editar foto</h2>
+        <p>Arraste a imagem para ajustar o enquadramento. Use o zoom para aproximar ou afastar antes de aplicar o recorte.</p>
+      </div>
+      <button type="button" id="btnFecharEditorFoto" class="btn-fechar-etapas" aria-label="Fechar editor de foto">×</button>
+    </div>
+    <div class="modal-foto-corpo">
+      <div id="fotoEditorPalco" class="foto-editor-palco">
+        <canvas id="fotoEditorCanvas" width="600" height="600" aria-label="Área de recorte da foto"></canvas>
+      </div>
+
+      <div class="foto-editor-controles">
+        <div class="campo">
+          <label for="fotoEditorZoom">Zoom</label>
+          <input id="fotoEditorZoom" type="range" min="1" max="3" step="0.01" value="1" />
+        </div>
+        <div class="foto-editor-botoes">
+          <button type="button" id="btnCentralizarFoto" class="btn-pequeno">Centralizar</button>
+          <button type="button" id="btnAplicarFoto" class="btn-pequeno">Aplicar recorte</button>
+        </div>
+      </div>
+
+      <p class="foto-editor-dica">O recorte é quadrado para encaixar melhor na ficha do personagem.</p>
+    </div>
+  </section>
+
   <div id="fundoVantagens" class="modal-vd-fundo" aria-hidden="true"></div>
   <section id="modalVantagens" class="modal-vd" role="dialog" aria-modal="true" aria-labelledby="tituloModalVantagens" aria-hidden="true" tabindex="-1">
     <div class="modal-vd-cabecalho">
       <div>
         <h2 id="tituloModalVantagens">Adicionar vantagens e defeitos</h2>
-        <p>Filtre, escolha a quantidade de pontos quando houver variação e adicione à ficha.</p>
+        <p>Filtre, clique nas bolinhas para escolher o nível e adicione à ficha. A descrição muda conforme a quantidade marcada.</p>
       </div>
       <button type="button" id="btnFecharVantagens" class="btn-fechar-etapas" aria-label="Fechar vantagens e defeitos">×</button>
     </div>
@@ -2174,6 +2557,22 @@
 
   <div id="avisoSalvo" class="aviso-salvo">Ficha salva.</div>
 
+
+  <!-- Firebase: preencha este bloco com a configuração do seu projeto -->
+  <script>
+    window.DADO_FIREBASE_CONFIG = window.DADO_FIREBASE_CONFIG || window.firebaseConfig || {
+      apiKey: "COLE_AQUI_SUA_API_KEY",
+      authDomain: "COLE_AQUI_SEU_AUTH_DOMAIN",
+      projectId: "COLE_AQUI_SEU_PROJECT_ID",
+      storageBucket: "COLE_AQUI_SEU_STORAGE_BUCKET",
+      messagingSenderId: "COLE_AQUI_SEU_MESSAGING_SENDER_ID",
+      appId: "COLE_AQUI_SEU_APP_ID"
+    };
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
     const btnSair = document.getElementById('btnSair');
@@ -2181,6 +2580,15 @@
     const avisoSalvo = document.getElementById('avisoSalvo');
     const imagemPersonagem = document.getElementById('imagemPersonagem');
     const fotoPreview = document.getElementById('fotoPreview');
+    const btnEditarFoto = document.getElementById('btnEditarFoto');
+    const fundoEditorFoto = document.getElementById('fundoEditorFoto');
+    const modalEditorFoto = document.getElementById('modalEditorFoto');
+    const btnFecharEditorFoto = document.getElementById('btnFecharEditorFoto');
+    const fotoEditorPalco = document.getElementById('fotoEditorPalco');
+    const fotoEditorCanvas = document.getElementById('fotoEditorCanvas');
+    const fotoEditorZoom = document.getElementById('fotoEditorZoom');
+    const btnCentralizarFoto = document.getElementById('btnCentralizarFoto');
+    const btnAplicarFoto = document.getElementById('btnAplicarFoto');
     const botoesSalvar = [document.getElementById('btnSalvarTopo'), document.getElementById('btnSalvarFinal')].filter(Boolean);
     const botoesFinalizar = [document.getElementById('btnFinalizarTopo'), document.getElementById('btnFinalizarFinal')].filter(Boolean);
     const btnEtapasFlutuante = document.getElementById('btnEtapasFlutuante');
@@ -2188,6 +2596,7 @@
     const sumarioEtapas = document.getElementById('sumarioEtapas');
     const btnFecharEtapas = document.getElementById('btnFecharEtapas');
     const claSelect = document.getElementById('claSelect');
+    const claDescricaoTexto = document.getElementById('claDescricaoTexto');
     const perdicaoCla = document.getElementById('perdicaoCla');
     const predadorSelect = document.getElementById('predadorSelect');
     const predadorDescricaoTexto = document.getElementById('predadorDescricaoTexto');
@@ -2215,6 +2624,32 @@
     const desvantagensLista = document.getElementById('desvantagensLista');
     const listaDesvantagens = document.getElementById('listaDesvantagens');
     let imagemBase64 = '';
+    let fotoEditorImagem = null;
+    let fotoEditorFonteOriginal = '';
+    let fotoEditorEscala = 1;
+    let fotoEditorOffsetX = 0;
+    let fotoEditorOffsetY = 0;
+    let fotoEditorArrastando = false;
+    let fotoEditorUltimoX = 0;
+    let fotoEditorUltimoY = 0;
+
+    const descricoesCla = {
+      'Brujah': 'Brujah — rebeldes passionais, físicos e explosivos contra autoridade.',
+      'Gangrel': 'Gangrel — predadores ferais, ligados à sobrevivência, instinto e natureza.',
+      'Malkavian': 'Malkavian — visionários perturbadores, marcados por percepções fragmentadas.',
+      'Nosferatu': 'Nosferatu — monstros ocultos, espiões e mestres dos segredos subterrâneos.',
+      'Toreador': 'Toreador — sedutores e artistas, obcecados por beleza, emoção e perfeição.',
+      'Tremere': 'Tremere — feiticeiros do sangue, estudiosos, ritualistas e controladores.',
+      'Ventrue': 'Ventrue — líderes aristocráticos, dominadores e seletivos em sua alimentação.',
+      'Banu Haqim': 'Banu Haqim — juízes e caçadores, ligados à justiça, culpa e punição.',
+      'Lasombra': 'Lasombra — ambiciosos senhores das sombras, poder e controle implacável.',
+      'Ministry': 'Ministry — corruptores carismáticos, libertadores e manipuladores do desejo.',
+      'Ravnos': 'Ravnos — errantes ilusórios, inquietos, astutos e difíceis de prender.',
+      'Tzimisce': 'Tzimisce — possessivos e monstruosos, ligados a domínio, corpo e território.',
+      'Hecata': 'Hecata — necromantes familiares, associados à morte, dor e pactos sombrios.',
+      'Caitiff': 'Caitiff — sem clã reconhecido, independentes e vistos com desconfiança.',
+      'Sangue-Fraco': 'Sangue-Fraco — vampiros incompletos, frágeis, instáveis e próximos da mortalidade.'
+    };
 
     const disciplinasPorCla = {
       'Brujah': ['Potência', 'Rapidez', 'Presença'],
@@ -2359,9 +2794,300 @@
       { tipo: 'defeito', categoria: 'Especial', nome: 'Outro defeito', min: 1, max: 5, descricao: 'Espaço para defeito personalizado da mesa.' }
     ];
 
+
+    const descricoesVantagensPorNivel = {
+      'Aliados': {
+        1: '1 ponto: um aliado mortal útil, mas limitado, capaz de ajudar em situações específicas.',
+        2: '2 pontos: um aliado confiável ou pequeno grupo com recursos modestos e presença recorrente.',
+        3: '3 pontos: um aliado influente, especialista ou grupo capaz de resolver problemas importantes.',
+        4: '4 pontos: aliados poderosos com alcance na cidade, acesso institucional ou força organizada.',
+        5: '5 pontos: apoio excepcional, como uma organização forte ou pessoa muito poderosa e comprometida.'
+      },
+      'Inimigo': {
+        1: '1 ponto: um rival mortal com recursos pequenos, mas motivado a incomodar o personagem.',
+        2: '2 pontos: um inimigo persistente com contatos, informações ou meios reais de atrapalhar.',
+        3: '3 pontos: adversário perigoso, com recursos e capacidade de causar dano sério.',
+        4: '4 pontos: inimigo influente, organizado e capaz de atacar a vida social, refúgio ou aliados.',
+        5: '5 pontos: ameaça mortal de grande escala, com poder suficiente para transformar a crônica.'
+      },
+      'Contatos': {
+        1: '1 ponto: um contato confiável em uma área específica.',
+        2: '2 pontos: vários contatos úteis ou uma fonte bem posicionada.',
+        3: '3 pontos: rede ampla de informações, favores e serviços em múltiplos círculos.'
+      },
+      'Fama': {
+        1: '1 ponto: reconhecimento pequeno dentro de um nicho, bairro ou cena social.',
+        2: '2 pontos: conhecido por quem frequenta uma cena específica; portas começam a se abrir.',
+        3: '3 pontos: fama relevante na cidade, com admiradores, convites e atenção indesejada.',
+        4: '4 pontos: figura pública muito reconhecida, difícil de ignorar ou esconder.',
+        5: '5 pontos: celebridade ampla; a fama traz enorme influência e grande risco à Máscara.'
+      },
+      'Infâmia': {
+        1: '1 ponto: má reputação em um círculo pequeno ou por um boato incômodo.',
+        2: '2 pontos: reputação ruim conhecida em uma cena social relevante.',
+        3: '3 pontos: nome associado a escândalo, violência ou traição na cidade.',
+        4: '4 pontos: fama negativa intensa; muitos evitam, temem ou perseguem o personagem.',
+        5: '5 pontos: infâmia extrema, capaz de atrair caçadores, rivais e punições políticas.'
+      },
+      'Segredo sombrio': {
+        1: '1 ponto: segredo grave que causaria problemas sociais, emocionais ou políticos se revelado.',
+        2: '2 pontos: segredo devastador, capaz de destruir alianças, status ou a segurança do personagem.'
+      },
+      'Influência': {
+        1: '1 ponto: influência pequena em um bairro, grupo ou instituição limitada.',
+        2: '2 pontos: acesso confiável a pessoas e decisões dentro de uma área específica.',
+        3: '3 pontos: influência forte, capaz de mover recursos, bloquear ações e abrir portas.',
+        4: '4 pontos: poder social amplo, com presença em instituições importantes da cidade.',
+        5: '5 pontos: controle extraordinário sobre uma esfera decisiva da cidade.'
+      },
+      'Refúgio': {
+        1: '1 ponto: abrigo simples, discreto e funcional para sobreviver ao dia.',
+        2: '2 pontos: refúgio seguro, confortável ou bem escondido, com proteção razoável.',
+        3: '3 pontos: refúgio grande, estratégico ou muito seguro, capaz de sustentar planos maiores.'
+      },
+      'Rebanho': {
+        1: '1 ponto: uma ou duas fontes de sangue acessíveis, mas frágeis ou limitadas.',
+        2: '2 pontos: pequeno grupo de fontes relativamente confiáveis.',
+        3: '3 pontos: rebanho estável, com variedade e menor risco imediato.',
+        4: '4 pontos: rebanho amplo, bem organizado e difícil de esgotar rapidamente.',
+        5: '5 pontos: rede excepcional de alimentação, quase uma infraestrutura pessoal.'
+      },
+      'Máscara': {
+        1: '1 ponto: identidade falsa básica ou cobertura mortal simples.',
+        2: '2 pontos: identidade sólida, com documentos, histórico e proteção contra investigação comum.'
+      },
+      'Mawla': {
+        1: '1 ponto: mentor ou patrono menor, útil para conselhos e favores pequenos.',
+        2: '2 pontos: mawla experiente, com algum prestígio e disposição para ajudar.',
+        3: '3 pontos: patrono influente, capaz de proteger, ensinar e interceder por você.',
+        4: '4 pontos: figura poderosa da sociedade vampírica, com peso político real.',
+        5: '5 pontos: mawla excepcionalmente poderoso, cuja atenção muda o equilíbrio da crônica.'
+      },
+      'Adversário': {
+        1: '1 ponto: Membro rival com influência limitada, mas intenção clara de atrapalhar.',
+        2: '2 pontos: adversário perigoso, com contatos e posição para criar obstáculos.',
+        3: '3 pontos: inimigo vampírico sério, capaz de atacar política, território e aliados.',
+        4: '4 pontos: ameaça poderosa dentro da sociedade dos Membros.',
+        5: '5 pontos: adversário devastador, antigo ou extremamente influente.'
+      },
+      'Recursos': {
+        1: '1 ponto: renda pequena, moradia simples e acesso a bens básicos.',
+        2: '2 pontos: estabilidade financeira, conforto moderado e alguns luxos.',
+        3: '3 pontos: riqueza confortável, propriedades ou negócios sustentáveis.',
+        4: '4 pontos: grande fortuna, acesso a especialistas, segurança e influência material.',
+        5: '5 pontos: riqueza extraordinária, capaz de financiar operações inteiras.'
+      },
+      'Retentor': {
+        1: '1 ponto: ajudante leal com capacidades comuns.',
+        2: '2 pontos: retentor treinado, competente ou com função especializada.',
+        3: '3 pontos: servo excepcional, perigoso ou muito bem posicionado.'
+      },
+      'Status': {
+        1: '1 ponto: reconhecido e respeitado em um círculo pequeno dos Membros.',
+        2: '2 pontos: reputação sólida; sua palavra começa a ter peso.',
+        3: '3 pontos: posição respeitada na corte, seita ou comunidade vampírica.',
+        4: '4 pontos: autoridade significativa, capaz de influenciar decisões importantes.',
+        5: '5 pontos: prestígio altíssimo, próximo do centro de poder da crônica.'
+      },
+      'Linguística': {
+        1: '1 ponto: um idioma adicional útil.',
+        2: '2 pontos: dois idiomas adicionais ou fluência social em vários círculos.',
+        3: '3 pontos: vários idiomas, incluindo leitura, escrita e uso em situações complexas.'
+      },
+      'Loresheet': {
+        1: '1 ponto: ligação pequena com uma lenda, linhagem, facção ou segredo.',
+        2: '2 pontos: conexão notável que concede acesso ou vantagem ocasional.',
+        3: '3 pontos: vínculo importante, reconhecido e útil dentro da crônica.',
+        4: '4 pontos: relação poderosa com eventos, personagens ou forças do metaplot.',
+        5: '5 pontos: conexão lendária, rara e capaz de mudar o rumo da história.'
+      },
+      'Outra vantagem': {
+        1: '1 ponto: benefício simples, útil em situações específicas.',
+        2: '2 pontos: benefício recorrente com impacto claro em jogo.',
+        3: '3 pontos: vantagem forte, com peso narrativo e mecânico frequente.',
+        4: '4 pontos: recurso muito poderoso, capaz de alterar cenas importantes.',
+        5: '5 pontos: vantagem excepcional, rara e central para o personagem.'
+      },
+      'Outro defeito': {
+        1: '1 ponto: complicação leve, mas recorrente.',
+        2: '2 pontos: problema sério que cria risco ou custo frequente.',
+        3: '3 pontos: defeito perigoso, capaz de prejudicar planos importantes.',
+        4: '4 pontos: fraqueza grave, explorável por inimigos e difícil de esconder.',
+        5: '5 pontos: defeito devastador, central para o drama e a sobrevivência do personagem.'
+      }
+    };
+
     let listaDisc = [];
     let listaVant = [];
     let listaDesvant = [];
+
+
+    const COLECAO_PERSONAGENS_FIREBASE = 'characters';
+    let dbPersonagensFirebase = null;
+    let timerSalvarFirebase = null;
+
+    function firebaseConfigEstaPreenchida(config) {
+      if (!config || typeof config !== 'object') return false;
+      const obrigatorios = ['apiKey', 'authDomain', 'projectId', 'appId'];
+      return obrigatorios.every((chave) => {
+        const valor = String(config[chave] || '').trim();
+        return valor && !/COLE_AQUI|YOUR_|undefined|null/i.test(valor);
+      });
+    }
+
+    function obterDbPersonagensFirebase() {
+      const config = window.DADO_FIREBASE_CONFIG || window.firebaseConfig;
+      if (!window.firebase || typeof firebase.initializeApp !== 'function') return null;
+      if (!firebaseConfigEstaPreenchida(config)) return null;
+
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(config);
+        dbPersonagensFirebase = dbPersonagensFirebase || firebase.firestore();
+        return dbPersonagensFirebase;
+      } catch (erro) {
+        console.warn('Não foi possível iniciar o Firebase:', erro);
+        return null;
+      }
+    }
+
+
+    function aguardarAuthFirebase() {
+      const db = obterDbPersonagensFirebase();
+      if (!db || !firebase.auth) return Promise.resolve(null);
+
+      try {
+        const auth = firebase.auth();
+        if (auth.currentUser) return Promise.resolve(auth.currentUser);
+
+        return new Promise((resolve) => {
+          let resolvido = false;
+          const encerrar = (usuario) => {
+            if (resolvido) return;
+            resolvido = true;
+            try { cancelar(); } catch (erro) {}
+            resolve(usuario || auth.currentUser || null);
+          };
+          const cancelar = auth.onAuthStateChanged(encerrar, () => encerrar(null));
+          window.setTimeout(() => encerrar(auth.currentUser || null), 1500);
+        });
+      } catch (erro) {
+        return Promise.resolve(null);
+      }
+    }
+
+    function obterUsuarioAtualParaFirebase() {
+      let usuarioLocal = {};
+      try {
+        usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado') || '{}') || {};
+      } catch (erro) {
+        usuarioLocal = {};
+      }
+
+      let usuarioAuth = null;
+      try {
+        const db = obterDbPersonagensFirebase();
+        if (db && firebase.auth) usuarioAuth = firebase.auth().currentUser;
+      } catch (erro) {
+        usuarioAuth = null;
+      }
+
+      const uid = usuarioAuth?.uid || usuarioLocal.uid || usuarioLocal.userId || usuarioLocal.id || usuarioLocal.email || usuarioLocal.nome || 'visitante';
+      return {
+        uid,
+        nome: usuarioAuth?.displayName || usuarioLocal.nome || usuarioLocal.displayName || 'Visitante',
+        email: usuarioAuth?.email || usuarioLocal.email || ''
+      };
+    }
+
+    function limparIndefinidosFirebase(valor) {
+      return JSON.parse(JSON.stringify(valor || {}));
+    }
+
+    function montarFichaAPartirDoFirebase(dados = {}) {
+      return {
+        id: dados.id || dados.characterId || gerarIdSeguro?.() || crypto.randomUUID(),
+        modelo: dados.modeloNome || dados.modelo || 'Vampiro: A Máscara',
+        criadoEm: dados.criadoEm || dados.createdAtLocal || new Date().toISOString(),
+        atualizadoEm: dados.atualizadoEm || dados.updatedAtLocal || new Date().toISOString(),
+        imagem: dados.imagem || '',
+        campos: dados.campos || {},
+        listas: dados.listas || {},
+        resumo: dados.resumo || {
+          nome: dados.nome || dados.campos?.nome || 'Personagem sem nome',
+          jogador: dados.campos?.jogador || '',
+          cla: dados.campos?.claFinal || dados.campos?.claSelect || '',
+          predador: dados.campos?.predadorFinal || dados.campos?.predadorSelect || '',
+          cronica: dados.campos?.cronicaNome || ''
+        }
+      };
+    }
+
+    function montarPayloadFirebase(ficha) {
+      const usuario = obterUsuarioAtualParaFirebase();
+      return limparIndefinidosFirebase({
+        id: ficha.id,
+        ownerId: usuario.uid,
+        ownerName: usuario.nome,
+        ownerEmail: usuario.email,
+        modelo: 'vampiro-a-mascara',
+        modeloNome: 'Vampiro: A Máscara',
+        nome: ficha.resumo?.nome || ficha.campos?.nome || 'Personagem sem nome',
+        resumo: ficha.resumo || {},
+        imagem: ficha.imagem || '',
+        campos: ficha.campos || {},
+        listas: ficha.listas || {},
+        criadoEm: ficha.criadoEm || new Date().toISOString(),
+        atualizadoEm: new Date().toISOString(),
+        updatedAtMs: Date.now()
+      });
+    }
+
+    async function salvarFichaFirebase(ficha, silencioso = true) {
+      await aguardarAuthFirebase();
+      const db = obterDbPersonagensFirebase();
+      if (!db || !ficha || !ficha.id) return false;
+
+      try {
+        await db.collection(COLECAO_PERSONAGENS_FIREBASE).doc(ficha.id).set(montarPayloadFirebase(ficha), { merge: true });
+        if (!silencioso) mostrarAviso('Ficha salva no Firebase.');
+        return true;
+      } catch (erro) {
+        console.warn('Não foi possível salvar no Firebase:', erro);
+        if (!silencioso) mostrarAviso('Ficha salva localmente. Verifique as regras/configuração do Firebase.');
+        return false;
+      }
+    }
+
+    function agendarSalvarFichaFirebase(ficha, silencioso = true) {
+      if (!ficha || !ficha.id) return;
+      window.clearTimeout(timerSalvarFirebase);
+      timerSalvarFirebase = window.setTimeout(() => salvarFichaFirebase(ficha, silencioso), silencioso ? 1200 : 120);
+    }
+
+    async function carregarFichaFirebasePorId(id) {
+      await aguardarAuthFirebase();
+      const db = obterDbPersonagensFirebase();
+      if (!db || !id) return null;
+
+      try {
+        const doc = await db.collection(COLECAO_PERSONAGENS_FIREBASE).doc(id).get();
+        if (!doc.exists) return null;
+        return montarFichaAPartirDoFirebase({ id: doc.id, ...(doc.data() || {}) });
+      } catch (erro) {
+        console.warn('Não foi possível carregar a ficha do Firebase:', erro);
+        return null;
+      }
+    }
+
+    function obterFichaLocalPorId(id) {
+      if (!id) return null;
+      try {
+        const lista = JSON.parse(localStorage.getItem('personagensVampiro') || '[]');
+        return lista.find((item) => item && item.id === id) || null;
+      } catch (erro) {
+        return null;
+      }
+    }
 
     function carregarUsuario() {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
@@ -2574,8 +3300,9 @@
       return `vampiro-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     }
 
-    function redirecionarParaFichaJogavel() {
-      const destinoFichaJogavel = 'ficha_vampiro_jogo.html';
+    function redirecionarParaFichaJogavel(idFicha = '') {
+      const parametroId = idFicha ? `?id=${encodeURIComponent(idFicha)}` : '';
+      const destinoFichaJogavel = `ficha_vampiro_jogo.html${parametroId}`;
       try {
         window.location.href = destinoFichaJogavel;
       } catch (erroHref) {
@@ -2593,14 +3320,16 @@
       }, 80);
     }
 
-    function finalizarFicha(evento) {
+    async function finalizarFicha(evento) {
       if (evento && typeof evento.preventDefault === 'function') evento.preventDefault();
+      let ficha = null;
       try {
-        salvarFicha(true);
+        ficha = salvarFicha(true, false);
+        await salvarFichaFirebase(ficha, false);
       } catch (erro) {
         console.warn('Não foi possível salvar antes de abrir a ficha jogável:', erro);
       }
-      redirecionarParaFichaJogavel();
+      redirecionarParaFichaJogavel(ficha?.id || localStorage.getItem('personagemVampiroIdAtual') || '');
     }
 
     window.finalizarFichaDireta = function(evento) {
@@ -2641,13 +3370,14 @@
       };
     }
 
-    function salvarFicha(silencioso = false) {
+    function salvarFicha(silencioso = false, salvarRemoto = true) {
       atualizarValoresJogoAutomaticos();
       sincronizarListasOcultas();
       const ficha = coletarFicha();
       localStorage.setItem('personagemVampiroIdAtual', ficha.id);
       localStorage.setItem('personagemVampiroAtual', JSON.stringify(ficha));
       salvarNaLista(ficha);
+      if (salvarRemoto) agendarSalvarFichaFirebase(ficha, silencioso);
       if (!silencioso) mostrarAviso('Rascunho salvo.');
       return ficha;
     }
@@ -2660,11 +3390,32 @@
       localStorage.setItem('personagensVampiro', JSON.stringify(lista));
     }
 
-    function restaurarRascunho() {
-      const salvo = localStorage.getItem('personagemVampiroAtual');
-      if (!salvo) return;
+    async function restaurarRascunho() {
+      const params = new URLSearchParams(window.location.search);
+      const idUrl = params.get('id') || params.get('characterId');
+      const criarNovo = params.get('novo') === '1';
+
+      if (criarNovo) {
+        localStorage.removeItem('personagemVampiroIdAtual');
+        localStorage.removeItem('personagemVampiroAtual');
+        return;
+      }
+
+      let ficha = null;
+      if (idUrl) ficha = await carregarFichaFirebasePorId(idUrl) || obterFichaLocalPorId(idUrl);
+
+      if (!ficha) {
+        const salvo = localStorage.getItem('personagemVampiroAtual');
+        if (!salvo) return;
+        try {
+          ficha = JSON.parse(salvo);
+        } catch (erro) {
+          console.warn('Não foi possível restaurar a ficha:', erro);
+          return;
+        }
+      }
+
       try {
-        const ficha = JSON.parse(salvo);
         if (ficha && ficha.campos) {
           const campos = aplicarCompatibilidadeFichaCriacao({ ...ficha.campos });
           if (!campos.disciplinasSelecionadas && Array.isArray(ficha.listas?.disciplinasAdicionadas)) {
@@ -2693,43 +3444,14 @@
           imagemBase64 = ficha.imagem;
           fotoPreview.innerHTML = `<img src="${imagemBase64}" alt="Imagem do personagem" />`;
         }
-        if (ficha && ficha.id) localStorage.setItem('personagemVampiroIdAtual', ficha.id);
+        if (ficha && ficha.id) {
+          localStorage.setItem('personagemVampiroIdAtual', ficha.id);
+          localStorage.setItem('personagemVampiroAtual', JSON.stringify(ficha));
+          salvarNaLista(ficha);
+        }
       } catch (erro) {
         console.warn('Não foi possível restaurar a ficha:', erro);
       }
-    }
-
-    function iniciarBolinhas() {
-      document.querySelectorAll('[data-bolinhas]').forEach((grupo) => {
-        grupo.querySelectorAll('.bolinha').forEach((botao) => {
-          botao.addEventListener('click', () => {
-            const campoNome = grupo.dataset.bolinhas;
-            const campo = document.querySelector(`[data-campo="${campoNome}"]`);
-            const valorClicado = Number(botao.dataset.valor || 0);
-            const valorAtual = Number(campo.value || 0);
-            campo.value = valorAtual === valorClicado ? 0 : valorClicado;
-            atualizarGrupoBolinhas(grupo);
-            atualizarValoresJogoAutomaticos();
-            campo.dispatchEvent(new Event('input', { bubbles: true }));
-          });
-        });
-        atualizarGrupoBolinhas(grupo);
-      });
-    }
-
-    function atualizarGrupoBolinhas(grupo) {
-      const campoNome = grupo.dataset.bolinhas;
-      const campo = document.querySelector(`[data-campo="${campoNome}"]`);
-      const valor = Number(campo && campo.value ? campo.value : 0);
-      grupo.querySelectorAll('.bolinha').forEach((botao) => {
-        botao.classList.toggle('ativa', Number(botao.dataset.valor) <= valor);
-      });
-      const marcador = grupo.querySelector('.valor-bolinhas');
-      if (marcador) marcador.textContent = String(valor);
-    }
-
-    function atualizarTodasBolinhas() {
-      document.querySelectorAll('[data-bolinhas]').forEach(atualizarGrupoBolinhas);
     }
 
     function numeroCampoFicha(nome) {
@@ -2749,8 +3471,8 @@
       const autocontrole = numeroCampoFicha('atributo_autocontrole');
       const determinacao = numeroCampoFicha('atributo_determinacao');
 
-      definirValorAutomatico('vitalidade', vigor + 3);
-      definirValorAutomatico('forcaVontade', autocontrole + determinacao);
+      definirValorAutomatico('vitalidade', `${vigor + 3}/10`);
+      definirValorAutomatico('forcaVontade', `${autocontrole + determinacao}/10`);
       definirValorAutomatico('fome', '1/5');
       definirValorAutomatico('humanidade', '7/10');
       definirValorAutomatico('potenciaSangue', '1/10');
@@ -2795,6 +3517,12 @@
         perdicaoCla.value = texto;
         perdicaoCla.dataset.textoAutomatico = texto;
       }
+    }
+
+    function atualizarDescricaoCla() {
+      if (!claSelect || !claDescricaoTexto) return;
+      const cla = claSelect.value;
+      claDescricaoTexto.textContent = descricoesCla[cla] || 'Selecione um clã para ver uma breve descrição.';
     }
 
     function atualizarDescricaoPredador() {
@@ -2927,26 +3655,66 @@
         container.appendChild(vazio);
         return;
       }
+
+      const tipoNormalizado = tipoCatalogoVD(tipo);
       lista.forEach((item, indice) => {
+        const catalogoItem = catalogoPorItemVD(item, tipoNormalizado);
+        const pontosValor = pontosVDValor(catalogoItem, Number(item.pontos || item.pontosValor || catalogoItem.min));
+        item.pontos = String(pontosValor);
+        item.categoria = item.categoria || catalogoItem.categoria || '';
+        item.descricao = descricaoVantagemNivel(catalogoItem, pontosValor);
+
         const card = document.createElement('div');
-        card.className = 'item-lista';
-        const info = document.createElement('div');
+        card.className = 'item-lista vd-item';
+
+        const conteudo = document.createElement('div');
+        conteudo.className = 'vd-card-conteudo';
+
+        const topo = document.createElement('div');
+        topo.className = 'vd-linha-titulo';
+
+        const tituloArea = document.createElement('div');
+        tituloArea.className = 'vd-titulo-area';
         const titulo = document.createElement('strong');
         titulo.textContent = item.nome || 'Item';
-        const detalhe = document.createElement('span');
-        const pontosValor = Math.abs(Number(item.pontos || item.pontosValor || 0)) || 0;
-        const pontos = pontosValor ? `${pontosValor} ponto(s)` : 'sem pontos definidos';
-        const descricao = item.descricao ? ` — ${item.descricao}` : '';
-        detalhe.textContent = `${pontos}${descricao}`;
-        info.appendChild(titulo);
-        info.appendChild(detalhe);
+        const etiqueta = document.createElement('span');
+        etiqueta.className = `vd-etiqueta ${tipoNormalizado === 'defeito' ? 'defeito' : 'qualidade'}`;
+        etiqueta.textContent = tipoNormalizado === 'defeito' ? 'Defeito' : 'Qualidade';
+        tituloArea.appendChild(titulo);
+        tituloArea.appendChild(etiqueta);
+
+        const descricao = document.createElement('div');
+        descricao.className = 'vd-descricao-nivel';
+        descricao.textContent = item.descricao;
+
+        const controle = criarBolinhasVD({
+          item: catalogoItem,
+          pontosInicial: pontosValor,
+          rotulo: '',
+          chamarAoInicial: false,
+          aoAlterar: (novoValor) => {
+            item.pontos = String(novoValor);
+            item.descricao = descricaoVantagemNivel(catalogoItem, novoValor);
+            descricao.textContent = item.descricao;
+            sincronizarListasOcultas();
+            atualizarContadorVantagens();
+            salvarFicha(true);
+          }
+        });
+
+        topo.appendChild(tituloArea);
+        topo.appendChild(controle.pontosArea);
+        conteudo.appendChild(topo);
+        conteudo.appendChild(descricao);
+
         const remover = document.createElement('button');
         remover.type = 'button';
         remover.className = 'btn-remover-item';
         remover.textContent = '×';
         remover.setAttribute('aria-label', 'Remover item');
         remover.addEventListener('click', () => removerItem(tipo, indice));
-        card.appendChild(info);
+
+        card.appendChild(conteudo);
         card.appendChild(remover);
         container.appendChild(card);
       });
@@ -3005,6 +3773,97 @@
       return `${item.min}–${item.max} ponto(s)`;
     }
 
+
+    function tipoCatalogoVD(tipo) {
+      return tipo === 'vantagem' ? 'vantagem' : 'defeito';
+    }
+
+    function catalogoPorItemVD(item, tipo) {
+      const tipoNormalizado = tipoCatalogoVD(tipo);
+      const nome = String(item?.nome || '').trim();
+      const categoria = String(item?.categoria || '').trim();
+      return catalogoVantagensDefeitos.find((catalogoItem) => {
+        const mesmoNome = catalogoItem.nome === nome;
+        const mesmoTipo = catalogoItem.tipo === tipoNormalizado;
+        const mesmaCategoria = !categoria || catalogoItem.categoria === categoria;
+        return mesmoNome && mesmoTipo && mesmaCategoria;
+      }) || catalogoVantagensDefeitos.find((catalogoItem) => catalogoItem.nome === nome && catalogoItem.tipo === tipoNormalizado) || {
+        tipo: tipoNormalizado,
+        categoria: item?.categoria || 'Personalizado',
+        nome: nome || (tipoNormalizado === 'vantagem' ? 'Outra vantagem' : 'Outro defeito'),
+        min: 1,
+        max: 5,
+        descricao: item?.descricao || (tipoNormalizado === 'vantagem' ? 'Vantagem personalizada da mesa.' : 'Defeito personalizado da mesa.')
+      };
+    }
+
+    function pontosVDValor(item, valor) {
+      const minimo = Math.max(1, Number(item?.min || 1));
+      const maximo = Math.max(minimo, Number(item?.max || minimo));
+      const numero = Number(valor || minimo);
+      if (!Number.isFinite(numero)) return minimo;
+      return Math.max(minimo, Math.min(maximo, numero));
+    }
+
+    function descricaoVantagemNivel(item, pontos) {
+      const catalogoItem = item || {};
+      const nivel = pontosVDValor(catalogoItem, pontos);
+      const mapa = descricoesVantagensPorNivel[catalogoItem.nome];
+      if (mapa && mapa[nivel]) return mapa[nivel];
+      const descricaoBase = catalogoItem.descricao || 'Descrição definida pela mesa.';
+      if (Number(catalogoItem.min) === Number(catalogoItem.max)) return `${nivel} ponto(s): ${descricaoBase}`;
+      return `${nivel} ponto(s): ${descricaoBase} A intensidade aumenta conforme mais bolinhas forem preenchidas.`;
+    }
+
+    function criarBolinhasVD({ item, pontosInicial, rotulo, aoAlterar, chamarAoInicial = true }) {
+      const pontosArea = document.createElement('div');
+      pontosArea.className = 'vd-pontos-area';
+
+      const labelTexto = String(rotulo || '').trim();
+      if (labelTexto) {
+        const label = document.createElement('label');
+        label.textContent = labelTexto;
+        pontosArea.appendChild(label);
+      }
+
+      const grupo = document.createElement('div');
+      grupo.className = 'bolinhas vd-bolinhas';
+      grupo.setAttribute('aria-label', labelTexto || 'Pontos');
+      pontosArea.appendChild(grupo);
+
+      const marcador = document.createElement('span');
+      marcador.className = 'valor-bolinhas';
+
+      const maximo = Math.max(1, Number(item?.max || 1));
+      const minimo = Math.max(1, Number(item?.min || 1));
+      let pontosAtuais = pontosVDValor(item, pontosInicial);
+
+      function atualizar(novoValor, executarCallback = true) {
+        pontosAtuais = pontosVDValor(item, novoValor);
+        grupo.querySelectorAll('.bolinha').forEach((botao) => {
+          const valorBotao = Number(botao.dataset.valor || 0);
+          botao.classList.toggle('ativa', valorBotao <= pontosAtuais);
+          botao.classList.toggle('bloqueada', valorBotao < minimo);
+        });
+        marcador.textContent = `${pontosAtuais}/${maximo}`;
+        if (executarCallback && typeof aoAlterar === 'function') aoAlterar(pontosAtuais);
+      }
+
+      for (let valor = 1; valor <= maximo; valor += 1) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'bolinha';
+        botao.dataset.valor = String(valor);
+        botao.setAttribute('aria-label', `${rotulo || 'Pontos'} ${valor}`);
+        if (valor < minimo) botao.title = `Mínimo ${minimo} ponto(s)`;
+        botao.addEventListener('click', () => atualizar(valor));
+        grupo.appendChild(botao);
+      }
+      grupo.appendChild(marcador);
+      atualizar(pontosAtuais, chamarAoInicial);
+      return { pontosArea, atualizar, valor: () => pontosAtuais };
+    }
+
     function categoriasCatalogo() {
       return [...new Set(catalogoVantagensDefeitos.map((item) => item.categoria))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }
@@ -3048,11 +3907,14 @@
         const card = document.createElement('div');
         card.className = 'catalogo-vd-card';
 
+        let pontosSelecionados = pontosVDValor(item, item.min);
+
         const info = document.createElement('div');
+        info.className = 'vd-card-conteudo vd-card-info';
         const titulo = document.createElement('h3');
         titulo.textContent = item.nome;
-        const descricao = document.createElement('p');
-        descricao.textContent = item.descricao;
+        const descricao = document.createElement('div');
+        descricao.className = 'vd-descricao-nivel';
         const tags = document.createElement('div');
         tags.className = 'catalogo-vd-tags';
         const tagTipo = document.createElement('span');
@@ -3063,39 +3925,33 @@
         tagCategoria.textContent = item.categoria;
         const tagPontos = document.createElement('span');
         tagPontos.className = 'tag-vd';
-        tagPontos.textContent = pontosTextoCatalogo(item);
         tags.appendChild(tagTipo);
         tags.appendChild(tagCategoria);
         tags.appendChild(tagPontos);
         info.appendChild(titulo);
-        info.appendChild(descricao);
         info.appendChild(tags);
+        info.appendChild(descricao);
 
-        const pontosArea = document.createElement('div');
-        pontosArea.className = 'campo catalogo-vd-pontos';
-        const label = document.createElement('label');
-        label.setAttribute('for', `catalogoPontos${indice}`);
-        label.textContent = 'Pontos';
-        const select = document.createElement('select');
-        select.id = `catalogoPontos${indice}`;
-        for (let valor = item.min; valor <= item.max; valor += 1) {
-          const option = document.createElement('option');
-          option.value = String(valor);
-          option.textContent = `${valor}`;
-          select.appendChild(option);
-        }
-        select.value = String(item.min);
-        pontosArea.appendChild(label);
-        pontosArea.appendChild(select);
+        const controle = criarBolinhasVD({
+          item,
+          pontosInicial: pontosSelecionados,
+          rotulo: `${item.nome} — pontos`,
+          aoAlterar: (novoValor) => {
+            pontosSelecionados = novoValor;
+            tagPontos.textContent = `${item.tipo === 'vantagem' ? 'Custo' : 'Valor'} ${pontosTextoCatalogo(item)} • marcado ${pontosSelecionados}`;
+            descricao.textContent = descricaoVantagemNivel(item, pontosSelecionados);
+          }
+        });
+        controle.pontosArea.classList.add('catalogo-vd-pontos', 'vd-card-controle');
 
         const adicionar = document.createElement('button');
         adicionar.type = 'button';
-        adicionar.className = 'btn-pequeno';
+        adicionar.className = 'btn-pequeno vd-card-adicionar';
         adicionar.textContent = 'Adicionar';
-        adicionar.addEventListener('click', () => adicionarVantagemDefeitoDoCatalogo(item, Number(select.value || item.min)));
+        adicionar.addEventListener('click', () => adicionarVantagemDefeitoDoCatalogo(item, pontosSelecionados));
 
         card.appendChild(info);
-        card.appendChild(pontosArea);
+        card.appendChild(controle.pontosArea);
         card.appendChild(adicionar);
         catalogoVantagens.appendChild(card);
       });
@@ -3103,11 +3959,14 @@
 
     function adicionarVantagemDefeitoDoCatalogo(item, pontos) {
       if (!item) return;
+      const pontosSelecionados = pontosVDValor(item, pontos || item.min || 1);
       const novoItem = {
         nome: item.nome,
-        pontos: String(pontos || item.min || 1),
-        descricao: item.descricao || '',
-        categoria: item.categoria || ''
+        pontos: String(pontosSelecionados),
+        descricao: descricaoVantagemNivel(item, pontosSelecionados),
+        categoria: item.categoria || '',
+        min: item.min,
+        max: item.max
       };
       if (item.tipo === 'vantagem') {
         listaVant.push(novoItem);
@@ -3165,18 +4024,185 @@
       renderizarListas();
     }
 
+
+    function alternarModalFoto(forcarEstado) {
+      if (!modalEditorFoto || !fundoEditorFoto) return;
+      const abrir = typeof forcarEstado === 'boolean' ? forcarEstado : !modalEditorFoto.classList.contains('aberto');
+      modalEditorFoto.classList.toggle('aberto', abrir);
+      fundoEditorFoto.classList.toggle('aberto', abrir);
+      document.body.classList.toggle('modal-foto-aberta', abrir);
+      modalEditorFoto.setAttribute('aria-hidden', String(!abrir));
+      fundoEditorFoto.setAttribute('aria-hidden', String(!abrir));
+      if (abrir) {
+        setTimeout(() => {
+          modalEditorFoto.focus();
+          desenharEditorFoto();
+        }, 40);
+      }
+    }
+
+    function abrirEditorFotoComFonte(fonte) {
+      if (!fonte) {
+        mostrarAviso('Adicione uma imagem primeiro.');
+        return;
+      }
+
+      const imagem = new Image();
+      imagem.onload = () => {
+        fotoEditorImagem = imagem;
+        fotoEditorFonteOriginal = fonte;
+        fotoEditorZoom.value = '1';
+        fotoEditorEscala = 1;
+        centralizarEditorFoto();
+        alternarModalFoto(true);
+      };
+      imagem.onerror = () => mostrarAviso('Não foi possível carregar a imagem.');
+      imagem.src = fonte;
+    }
+
+    function tamanhoCanvasFoto() {
+      if (!fotoEditorCanvas) return 600;
+      return fotoEditorCanvas.width || 600;
+    }
+
+    function escalaBaseFoto() {
+      if (!fotoEditorImagem) return 1;
+      const tamanho = tamanhoCanvasFoto();
+      return Math.max(tamanho / fotoEditorImagem.width, tamanho / fotoEditorImagem.height);
+    }
+
+    function limitarOffsetFoto() {
+      if (!fotoEditorImagem) return;
+      const tamanho = tamanhoCanvasFoto();
+      const escalaTotal = escalaBaseFoto() * fotoEditorEscala;
+      const largura = fotoEditorImagem.width * escalaTotal;
+      const altura = fotoEditorImagem.height * escalaTotal;
+      const limiteX = Math.max(0, (largura - tamanho) / 2);
+      const limiteY = Math.max(0, (altura - tamanho) / 2);
+      fotoEditorOffsetX = Math.min(limiteX, Math.max(-limiteX, fotoEditorOffsetX));
+      fotoEditorOffsetY = Math.min(limiteY, Math.max(-limiteY, fotoEditorOffsetY));
+    }
+
+    function desenharEditorFoto() {
+      if (!fotoEditorCanvas) return;
+      const contexto = fotoEditorCanvas.getContext('2d');
+      const tamanho = tamanhoCanvasFoto();
+      contexto.clearRect(0, 0, tamanho, tamanho);
+      contexto.fillStyle = '#05030b';
+      contexto.fillRect(0, 0, tamanho, tamanho);
+
+      if (!fotoEditorImagem) return;
+
+      limitarOffsetFoto();
+
+      const escalaTotal = escalaBaseFoto() * fotoEditorEscala;
+      const largura = fotoEditorImagem.width * escalaTotal;
+      const altura = fotoEditorImagem.height * escalaTotal;
+      const x = (tamanho - largura) / 2 + fotoEditorOffsetX;
+      const y = (tamanho - altura) / 2 + fotoEditorOffsetY;
+
+      contexto.drawImage(fotoEditorImagem, x, y, largura, altura);
+
+      contexto.save();
+      contexto.strokeStyle = 'rgba(255,255,255,.9)';
+      contexto.lineWidth = 4;
+      contexto.strokeRect(2, 2, tamanho - 4, tamanho - 4);
+      contexto.strokeStyle = 'rgba(255,255,255,.18)';
+      contexto.lineWidth = 1;
+      contexto.beginPath();
+      contexto.moveTo(tamanho / 3, 0);
+      contexto.lineTo(tamanho / 3, tamanho);
+      contexto.moveTo((tamanho / 3) * 2, 0);
+      contexto.lineTo((tamanho / 3) * 2, tamanho);
+      contexto.moveTo(0, tamanho / 3);
+      contexto.lineTo(tamanho, tamanho / 3);
+      contexto.moveTo(0, (tamanho / 3) * 2);
+      contexto.lineTo(tamanho, (tamanho / 3) * 2);
+      contexto.stroke();
+      contexto.restore();
+    }
+
+    function centralizarEditorFoto() {
+      fotoEditorOffsetX = 0;
+      fotoEditorOffsetY = 0;
+      limitarOffsetFoto();
+      desenharEditorFoto();
+    }
+
+    function aplicarRecorteFoto() {
+      if (!fotoEditorCanvas || !fotoEditorImagem) {
+        mostrarAviso('Adicione uma imagem primeiro.');
+        return;
+      }
+      imagemBase64 = fotoEditorCanvas.toDataURL('image/jpeg', 0.92);
+      fotoPreview.innerHTML = `<img src="${imagemBase64}" alt="Imagem do personagem" />`;
+      salvarFicha(true);
+      alternarModalFoto(false);
+      mostrarAviso('Foto ajustada e salva.');
+    }
+
+    function posicaoPonteiroFoto(evento) {
+      const toque = evento.touches && evento.touches[0] ? evento.touches[0] : evento;
+      return { x: toque.clientX, y: toque.clientY };
+    }
+
+    function iniciarArrasteFoto(evento) {
+      if (!fotoEditorImagem) return;
+      evento.preventDefault();
+      const posicao = posicaoPonteiroFoto(evento);
+      fotoEditorArrastando = true;
+      fotoEditorUltimoX = posicao.x;
+      fotoEditorUltimoY = posicao.y;
+      fotoEditorPalco.classList.add('arrastando');
+    }
+
+    function moverArrasteFoto(evento) {
+      if (!fotoEditorArrastando || !fotoEditorImagem) return;
+      evento.preventDefault();
+      const posicao = posicaoPonteiroFoto(evento);
+      const canvasRect = fotoEditorCanvas.getBoundingClientRect();
+      const fator = tamanhoCanvasFoto() / Math.max(1, canvasRect.width);
+      fotoEditorOffsetX += (posicao.x - fotoEditorUltimoX) * fator;
+      fotoEditorOffsetY += (posicao.y - fotoEditorUltimoY) * fator;
+      fotoEditorUltimoX = posicao.x;
+      fotoEditorUltimoY = posicao.y;
+      desenharEditorFoto();
+    }
+
+    function finalizarArrasteFoto() {
+      fotoEditorArrastando = false;
+      if (fotoEditorPalco) fotoEditorPalco.classList.remove('arrastando');
+    }
+
+
     imagemPersonagem.addEventListener('change', () => {
       const arquivo = imagemPersonagem.files && imagemPersonagem.files[0];
       if (!arquivo) return;
       const leitor = new FileReader();
-      leitor.onload = () => {
-        imagemBase64 = leitor.result;
-        fotoPreview.innerHTML = `<img src="${imagemBase64}" alt="Imagem do personagem" />`;
-        salvarFicha(true);
-        mostrarAviso('Imagem adicionada.');
-      };
+      leitor.onload = () => abrirEditorFotoComFonte(leitor.result);
       leitor.readAsDataURL(arquivo);
     });
+
+    btnEditarFoto.addEventListener('click', () => {
+      abrirEditorFotoComFonte(imagemBase64 || fotoEditorFonteOriginal);
+    });
+
+    btnFecharEditorFoto.addEventListener('click', () => alternarModalFoto(false));
+    fundoEditorFoto.addEventListener('click', () => alternarModalFoto(false));
+    btnAplicarFoto.addEventListener('click', aplicarRecorteFoto);
+    btnCentralizarFoto.addEventListener('click', centralizarEditorFoto);
+
+    fotoEditorZoom.addEventListener('input', () => {
+      fotoEditorEscala = Number(fotoEditorZoom.value || 1);
+      desenharEditorFoto();
+    });
+
+    fotoEditorPalco.addEventListener('mousedown', iniciarArrasteFoto);
+    document.addEventListener('mousemove', moverArrasteFoto);
+    document.addEventListener('mouseup', finalizarArrasteFoto);
+    fotoEditorPalco.addEventListener('touchstart', iniciarArrasteFoto, { passive: false });
+    document.addEventListener('touchmove', moverArrasteFoto, { passive: false });
+    document.addEventListener('touchend', finalizarArrasteFoto);
 
     formFicha.addEventListener('input', () => {
       atualizarValoresJogoAutomaticos();
@@ -3197,6 +4223,7 @@
     filtroCategoriaVantagem.addEventListener('change', renderizarCatalogoVantagens);
     buscaVantagem.addEventListener('input', renderizarCatalogoVantagens);
     claSelect.addEventListener('change', () => {
+      atualizarDescricaoCla();
       atualizarDisciplinasPorCla();
       const opcoesValidas = disciplinasPorCla[claSelect.value] || [];
       listaDisc = listaDisc.filter((item) => opcoesValidas.includes(item.nome));
@@ -3233,6 +4260,7 @@
       if (evento.key === 'Escape') {
         alternarEtapas(false);
         alternarModalVantagens(false);
+        alternarModalFoto(false);
       }
     });
 
@@ -3248,14 +4276,16 @@
     });
 
     carregarUsuario();
-    restaurarRascunho();
     iniciarBolinhas();
-    atualizarTodasBolinhas();
-    atualizarValoresJogoAutomaticos();
-    atualizarDisciplinasPorCla();
-    atualizarPerdicaoPorCla(false);
-    atualizarDescricaoPredador();
-    restaurarListasDinamicas();
+    restaurarRascunho().finally(() => {
+      atualizarTodasBolinhas();
+      atualizarValoresJogoAutomaticos();
+      atualizarDescricaoCla();
+      atualizarDisciplinasPorCla();
+      atualizarPerdicaoPorCla(false);
+      atualizarDescricaoPredador();
+      restaurarListasDinamicas();
+    });
   </script>
 </body>
 </html>

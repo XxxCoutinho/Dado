@@ -1532,26 +1532,37 @@
       text-align: center;
     }
 
-    .vantagem-ficha-card {
-      border: 1px solid rgba(255,255,255,.68);
-      background: rgba(255,255,255,.035);
-      padding: 9px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+    .vantagem-ficha-card,
+    .vantagem-card {
+      border: 2px solid rgba(255,255,255,.76);
+      background: rgba(0,0,0,.58);
+      padding: 10px 12px 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
     }
 
-    .vantagem-ficha-topo {
+    .vantagem-card {
+      display: block;
+    }
+
+    .vantagem-ficha-topo,
+    .vantagem-card-topo {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 7px;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .vantagem-titulo-area {
+      flex: 1;
+      min-width: 0;
     }
 
     .vantagem-ficha-nome,
     .vantagem-nome {
       display: block;
       color: #fff;
-      font-size: .96rem;
+      font-size: 1.02rem;
       font-weight: 1000;
       line-height: 1;
       margin-bottom: 6px;
@@ -1561,7 +1572,7 @@
     .vantagem-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 5px;
     }
 
     .tag-vantagem-tipo,
@@ -1571,11 +1582,11 @@
       min-height: 18px;
       border: 1px solid rgba(255,255,255,.62);
       background: rgba(255,255,255,.11);
-      padding: 2px 6px;
+      padding: 2px 7px;
       color: #fff;
-      font-size: .56rem;
+      font-size: .58rem;
       font-weight: 1000;
-      letter-spacing: .03em;
+      letter-spacing: .04em;
       line-height: 1;
       text-transform: uppercase;
     }
@@ -1584,17 +1595,75 @@
       background: rgba(255,255,255,.05);
     }
 
+    .vantagem-nivel-bloco {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+      min-width: max-content;
+    }
+
+    .vantagem-nivel-label {
+      color: rgba(255,255,255,.8);
+      font-size: .58rem;
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .vantagem-bolinhas {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .vantagem-bolinha {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.96);
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, opacity .16s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .vantagem-bolinha:hover {
+      transform: translateY(-1px);
+    }
+
+    .vantagem-bolinha.active {
+      background: #fff;
+      box-shadow: 0 0 9px rgba(255,255,255,.16);
+    }
+
+    .vantagem-bolinha.indisponivel {
+      opacity: .28;
+      cursor: default;
+      transform: none;
+    }
+
+    .vantagem-ficha-controles {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
     .btn-remover-vantagem {
-      min-width: 22px;
-      height: 22px;
-      border: 1px solid rgba(255,255,255,.62);
+      min-width: 28px;
+      height: 28px;
+      border: 1px solid rgba(255,255,255,.72);
       background: rgba(0,0,0,.45);
       color: #fff;
       cursor: pointer;
-      font-size: .78rem;
+      font-size: .9rem;
       font-weight: 1000;
       line-height: 1;
-      opacity: .82;
+      opacity: .86;
+      flex: 0 0 auto;
     }
 
     .btn-remover-vantagem:hover {
@@ -1604,20 +1673,30 @@
 
     .vantagem-ficha-texto,
     .vantagem-descricao {
-      color: rgba(255,255,255,.9) !important;
-      font-size: .72rem;
-      line-height: 1.28;
+      width: 100%;
+      min-height: 84px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(0,0,0,.46);
+      color: rgba(255,255,255,.92) !important;
+      padding: 10px;
+      font-size: .78rem;
+      font-weight: 800;
+      line-height: 1.34;
       margin: 0;
+      white-space: pre-wrap;
     }
 
-    .vantagem-ficha-texto {
-      width: 100%;
-      min-height: 30px;
-      border: 1px solid rgba(255,255,255,.32);
-      background: rgba(0,0,0,.26);
-      padding: 7px;
-      font-weight: 800;
-      white-space: pre-wrap;
+    .vantagem-card-rodape {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 9px;
+      flex-wrap: wrap;
+    }
+
+    .vantagem-card-rodape .btn-modal-add {
+      margin-left: auto;
     }
 
     .vantagens-notas {
@@ -1657,46 +1736,9 @@
 
     .vantagens-lista-modal {
       display: grid;
-      gap: 9px;
+      gap: 10px;
     }
 
-    .vantagem-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      border: 1px solid rgba(255,255,255,.5);
-      background: rgba(255,255,255,.035);
-      padding: 10px;
-    }
-
-
-    .vantagem-pontos-escolha {
-      display: grid;
-      gap: 4px;
-      margin-top: 8px;
-      max-width: 150px;
-    }
-
-    .vantagem-pontos-escolha label {
-      color: #fff;
-      font-size: .62rem;
-      font-weight: 1000;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
-    .vantagem-pontos-select {
-      min-height: 30px;
-      border: 1px solid rgba(255,255,255,.68);
-      background: rgba(0,0,0,.65);
-      color: #fff;
-      padding: 0 8px;
-      font: inherit;
-      font-size: .76rem;
-      font-weight: 900;
-      outline: none;
-    }
 
 
     /* Aba Inventário: botões, cards, categorias e janela de itens */
@@ -3118,7 +3160,7 @@
 
         <div class="tracker tracker-experiencia">
           <div class="tracker-title">Experiência</div>
-          <div class="tracker-bar experiencia"><button type="button" data-dec="experiencia">&lt;</button><input data-campo="experiencia" type="text" placeholder="12/34" /><button type="button" data-inc="experiencia">&gt;</button></div>
+          <div class="tracker-bar experiencia"><button type="button" data-dec="experiencia">&lt;</button><input data-campo="experiencia" type="text" value="0/0" placeholder="0/0" /><button type="button" data-inc="experiencia">&gt;</button></div>
         </div>
 
         <div class="tracker">
@@ -3456,7 +3498,7 @@
         <h2 id="tituloModalDado">Rolar dado</h2>
         <button type="button" class="modal-fechar" data-modal-close="dado" aria-label="Fechar">×</button>
       </div>
-      <p class="modal-descricao">Selecione um atributo e uma habilidade. Os dois valores serão somados para formar a parada de dados. A Fome atual vira dados vermelhos.</p>
+      <p class="modal-descricao">Selecione um atributo e uma habilidade. Os dois valores serão somados para formar a parada de dados. A Fome atual vira dados vermelhos. Use Rouse Check para testar o sangue: 6+ mantém a Fome, 1–5 aumenta a Fome em 1.</p>
       <div class="rolagem-manual-grid">
         <label>Atributo
           <select id="dadoAtributo"></select>
@@ -3472,11 +3514,28 @@
         </div>
         <div class="modal-acoes">
           <button type="button" class="btn-modal-cancelar" data-modal-close="dado">Cancelar</button>
+          <button type="button" id="btnRouseCheck" class="btn-modal-cancelar">Rouse Check</button>
           <button type="button" id="btnRolarDadoManual" class="btn-modal-salvar">Rolar</button>
         </div>
       </div>
     </div>
   </div>
+
+
+  <!-- Firebase: preencha este bloco com a configuração do seu projeto -->
+  <script>
+    window.DADO_FIREBASE_CONFIG = window.DADO_FIREBASE_CONFIG || window.firebaseConfig || {
+      apiKey: "COLE_AQUI_SUA_API_KEY",
+      authDomain: "COLE_AQUI_SEU_AUTH_DOMAIN",
+      projectId: "COLE_AQUI_SEU_PROJECT_ID",
+      storageBucket: "COLE_AQUI_SEU_STORAGE_BUCKET",
+      messagingSenderId: "COLE_AQUI_SEU_MESSAGING_SENDER_ID",
+      appId: "COLE_AQUI_SEU_APP_ID"
+    };
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
@@ -3538,15 +3597,185 @@
     const btnAdicionarDadoManual = document.getElementById('btnAdicionarDadoManual');
     const btnRemoverDadoManual = document.getElementById('btnRemoverDadoManual');
     const btnRolarDadoManual = document.getElementById('btnRolarDadoManual');
+    const btnRouseCheck = document.getElementById('btnRouseCheck');
     let imagemBase64 = '';
     let fichaAtual = null;
     let disciplinasAdicionadas = [];
     let vantagensDefeitosAdicionados = [];
+    let selecaoNivelVantagensModal = {};
     let itensInventarioAdicionados = [];
     let categoriaItemAtual = 'Todos';
     let fotoEditorEstado = null;
     let rolagemAtributoTimer = null;
     let dadosExtrasManual = 0;
+
+
+    const COLECAO_PERSONAGENS_FIREBASE = 'characters';
+    let dbPersonagensFirebase = null;
+    let timerSalvarFirebase = null;
+
+    function firebaseConfigEstaPreenchida(config) {
+      if (!config || typeof config !== 'object') return false;
+      const obrigatorios = ['apiKey', 'authDomain', 'projectId', 'appId'];
+      return obrigatorios.every((chave) => {
+        const valor = String(config[chave] || '').trim();
+        return valor && !/COLE_AQUI|YOUR_|undefined|null/i.test(valor);
+      });
+    }
+
+    function obterDbPersonagensFirebase() {
+      const config = window.DADO_FIREBASE_CONFIG || window.firebaseConfig;
+      if (!window.firebase || typeof firebase.initializeApp !== 'function') return null;
+      if (!firebaseConfigEstaPreenchida(config)) return null;
+
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(config);
+        dbPersonagensFirebase = dbPersonagensFirebase || firebase.firestore();
+        return dbPersonagensFirebase;
+      } catch (erro) {
+        console.warn('Não foi possível iniciar o Firebase:', erro);
+        return null;
+      }
+    }
+
+
+    function aguardarAuthFirebase() {
+      const db = obterDbPersonagensFirebase();
+      if (!db || !firebase.auth) return Promise.resolve(null);
+
+      try {
+        const auth = firebase.auth();
+        if (auth.currentUser) return Promise.resolve(auth.currentUser);
+
+        return new Promise((resolve) => {
+          let resolvido = false;
+          const encerrar = (usuario) => {
+            if (resolvido) return;
+            resolvido = true;
+            try { cancelar(); } catch (erro) {}
+            resolve(usuario || auth.currentUser || null);
+          };
+          const cancelar = auth.onAuthStateChanged(encerrar, () => encerrar(null));
+          window.setTimeout(() => encerrar(auth.currentUser || null), 1500);
+        });
+      } catch (erro) {
+        return Promise.resolve(null);
+      }
+    }
+
+    function obterUsuarioAtualParaFirebase() {
+      let usuarioLocal = {};
+      try {
+        usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado') || '{}') || {};
+      } catch (erro) {
+        usuarioLocal = {};
+      }
+
+      let usuarioAuth = null;
+      try {
+        const db = obterDbPersonagensFirebase();
+        if (db && firebase.auth) usuarioAuth = firebase.auth().currentUser;
+      } catch (erro) {
+        usuarioAuth = null;
+      }
+
+      const uid = usuarioAuth?.uid || usuarioLocal.uid || usuarioLocal.userId || usuarioLocal.id || usuarioLocal.email || usuarioLocal.nome || 'visitante';
+      return {
+        uid,
+        nome: usuarioAuth?.displayName || usuarioLocal.nome || usuarioLocal.displayName || 'Visitante',
+        email: usuarioAuth?.email || usuarioLocal.email || ''
+      };
+    }
+
+    function limparIndefinidosFirebase(valor) {
+      return JSON.parse(JSON.stringify(valor || {}));
+    }
+
+    function montarFichaAPartirDoFirebase(dados = {}) {
+      return {
+        id: dados.id || dados.characterId || crypto.randomUUID(),
+        modelo: dados.modeloNome || dados.modelo || 'Vampiro: A Máscara',
+        criadoEm: dados.criadoEm || dados.createdAtLocal || new Date().toISOString(),
+        atualizadoEm: dados.atualizadoEm || dados.updatedAtLocal || new Date().toISOString(),
+        imagem: dados.imagem || '',
+        campos: dados.campos || {},
+        listas: dados.listas || {},
+        resumo: dados.resumo || {
+          nome: dados.nome || dados.campos?.nome || 'Personagem sem nome',
+          jogador: dados.campos?.jogador || '',
+          cla: dados.campos?.claFinal || dados.campos?.claSelect || '',
+          predador: dados.campos?.predadorFinal || dados.campos?.predadorSelect || '',
+          cronica: dados.campos?.cronicaNome || ''
+        }
+      };
+    }
+
+    function montarPayloadFirebase(ficha) {
+      const usuario = obterUsuarioAtualParaFirebase();
+      return limparIndefinidosFirebase({
+        id: ficha.id,
+        ownerId: usuario.uid,
+        ownerName: usuario.nome,
+        ownerEmail: usuario.email,
+        modelo: 'vampiro-a-mascara',
+        modeloNome: 'Vampiro: A Máscara',
+        nome: ficha.resumo?.nome || ficha.campos?.nome || 'Personagem sem nome',
+        resumo: ficha.resumo || {},
+        imagem: ficha.imagem || '',
+        campos: ficha.campos || {},
+        listas: ficha.listas || {},
+        criadoEm: ficha.criadoEm || new Date().toISOString(),
+        atualizadoEm: new Date().toISOString(),
+        updatedAtMs: Date.now()
+      });
+    }
+
+    async function salvarFichaFirebase(ficha, silencioso = true) {
+      await aguardarAuthFirebase();
+      const db = obterDbPersonagensFirebase();
+      if (!db || !ficha || !ficha.id) return false;
+
+      try {
+        await db.collection(COLECAO_PERSONAGENS_FIREBASE).doc(ficha.id).set(montarPayloadFirebase(ficha), { merge: true });
+        if (!silencioso) mostrarAviso('Ficha salva no Firebase.');
+        return true;
+      } catch (erro) {
+        console.warn('Não foi possível salvar no Firebase:', erro);
+        if (!silencioso) mostrarAviso('Ficha salva localmente. Verifique as regras/configuração do Firebase.');
+        return false;
+      }
+    }
+
+    function agendarSalvarFichaFirebase(ficha, silencioso = true) {
+      if (!ficha || !ficha.id) return;
+      window.clearTimeout(timerSalvarFirebase);
+      timerSalvarFirebase = window.setTimeout(() => salvarFichaFirebase(ficha, silencioso), silencioso ? 1200 : 120);
+    }
+
+    async function carregarFichaFirebasePorId(id) {
+      await aguardarAuthFirebase();
+      const db = obterDbPersonagensFirebase();
+      if (!db || !id) return null;
+
+      try {
+        const doc = await db.collection(COLECAO_PERSONAGENS_FIREBASE).doc(id).get();
+        if (!doc.exists) return null;
+        return montarFichaAPartirDoFirebase({ id: doc.id, ...(doc.data() || {}) });
+      } catch (erro) {
+        console.warn('Não foi possível carregar a ficha do Firebase:', erro);
+        return null;
+      }
+    }
+
+    function obterFichaLocalPorId(id) {
+      if (!id) return null;
+      try {
+        const lista = JSON.parse(localStorage.getItem('personagensVampiro') || '[]');
+        return lista.find((item) => item && item.id === id) || null;
+      } catch (erro) {
+        return null;
+      }
+    }
 
     const atributosRolagem = [
       ['FOR', 'atributo_forca'],
@@ -4469,9 +4698,139 @@
       let valorTexto = valoresPontosDaVantagem(pontos)[0] || 0;
       if (valorTexto !== 0 && tipo === 'defeito' && valorTexto > 0) valorTexto *= -1;
 
-      // Corrige vantagens/defeitos salvos com 0 por versões anteriores.
       if (temValorDireto && !(valorDireto === 0 && valorTexto !== 0)) return valorDireto;
       return valorTexto;
+    }
+
+    function normalizarPesquisa(texto) {
+      return String(texto || '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    function nomeBaseDaVantagem(nome = '') {
+      return String(nome || '').replace(/\s*-\s*\d+\s*pontos?$/i, '').trim();
+    }
+
+    function nivelDoNomeVantagem(nome = '') {
+      const correspondencia = String(nome || '').match(/-\s*(\d+)\s*pontos?$/i);
+      return correspondencia ? Number(correspondencia[1]) : null;
+    }
+
+    function construirCatalogoVantagens(lista = []) {
+      const mapa = new Map();
+
+      lista.forEach((item, indice) => {
+        const tipo = item?.tipo || 'qualidade';
+        const nomeBase = nomeBaseDaVantagem(item?.nome || 'Vantagem');
+        const chave = `${tipo}::${normalizarPesquisa(nomeBase)}`;
+        const pontosValor = valorPontosSeguro(item?.pontosValor, item?.pontos || item?.nome || '', tipo);
+        const nivel = nivelDoNomeVantagem(item?.nome || '') || Math.max(1, Math.abs(pontosValor) || 1);
+
+        if (!mapa.has(chave)) {
+          mapa.set(chave, {
+            id: chave,
+            nome: nomeBase,
+            tipo,
+            maxNivel: 1,
+            niveis: []
+          });
+        }
+
+        const grupo = mapa.get(chave);
+        grupo.niveis.push({
+          nivel,
+          pontosValor,
+          pontos: formatarPontos(pontosValor),
+          descricao: String(item?.descricao || '').trim(),
+          nomeOriginal: String(item?.nome || nomeBase).trim(),
+          indiceOriginal: indice
+        });
+        grupo.maxNivel = Math.max(grupo.maxNivel, nivel);
+      });
+
+      return [...mapa.values()].map((grupo) => {
+        grupo.niveis.sort((a, b) => a.nivel - b.nivel);
+        grupo.niveisDisponiveis = grupo.niveis.map((nivel) => nivel.nivel);
+        grupo.minNivel = grupo.niveisDisponiveis[0] || 1;
+        grupo.maxNivel = Math.max(grupo.maxNivel, grupo.niveisDisponiveis.at(-1) || 1);
+        return grupo;
+      });
+    }
+
+    const vantagensDefeitosCatalogo = construirCatalogoVantagens(vantagensDefeitosV5);
+    const mapaCatalogoVantagens = new Map(vantagensDefeitosCatalogo.map((item) => [item.id, item]));
+
+    function obterCatalogoVantagem(catalogoId) {
+      return mapaCatalogoVantagens.get(catalogoId) || null;
+    }
+
+    function nivelDisponivelMaisProximo(catalogo, nivelDesejado) {
+      const niveis = catalogo?.niveisDisponiveis || [];
+      if (!niveis.length) return Math.max(1, Number(nivelDesejado || 1));
+      const alvo = Math.max(1, Number(nivelDesejado || niveis[0] || 1));
+      if (niveis.includes(alvo)) return alvo;
+      return niveis.reduce((maisProximo, atual) => (
+        Math.abs(atual - alvo) < Math.abs(maisProximo - alvo) ? atual : maisProximo
+      ), niveis[0]);
+    }
+
+    function dadosNivelCatalogo(catalogo, nivelDesejado) {
+      if (!catalogo) return null;
+      const nivel = nivelDisponivelMaisProximo(catalogo, nivelDesejado);
+      return catalogo.niveis.find((item) => item.nivel === nivel) || catalogo.niveis[0] || null;
+    }
+
+    function dadosItemCustomizado(item) {
+      const tipo = item?.tipo || 'qualidade';
+      const valorBase = Math.abs(valorPontosSeguro(item?.pontosValor, item?.pontos || '', tipo)) || Math.abs(Number(item?.nivel || 0)) || 1;
+      const maxNivel = Math.max(1, Math.min(5, Number(item?.maxNivel || valorBase || 1)));
+      const nivel = Math.max(1, Math.min(maxNivel, Number(item?.nivel || valorBase || 1)));
+      const sinal = tipo === 'defeito' ? -1 : tipo === 'qualidade' ? 1 : (Number(item?.pontosValor || 0) < 0 ? -1 : 1);
+      const pontosValor = sinal * nivel;
+
+      return {
+        nome: nomeBaseDaVantagem(item?.nome || 'Vantagem ou defeito sem nome'),
+        tipo,
+        nivel,
+        maxNivel,
+        pontosValor,
+        pontos: formatarPontos(pontosValor),
+        descricao: String(item?.descricao || '').trim(),
+        catalogoId: item?.catalogoId || ''
+      };
+    }
+
+    function sincronizarItemVantagem(item) {
+      const catalogoId = item?.catalogoId || `${item?.tipo || 'qualidade'}::${normalizarPesquisa(nomeBaseDaVantagem(item?.nome || ''))}`;
+      const catalogo = obterCatalogoVantagem(catalogoId);
+
+      if (catalogo) {
+        const nivelItem = Number(item?.nivel || 0) || nivelDoNomeVantagem(item?.nome || '') || Math.abs(valorPontosSeguro(item?.pontosValor, item?.pontos || item?.nome || '', item?.tipo || '')) || catalogo.minNivel;
+        const dadosNivel = dadosNivelCatalogo(catalogo, nivelItem);
+
+        return {
+          ...item,
+          nome: catalogo.nome,
+          tipo: catalogo.tipo,
+          catalogoId: catalogo.id,
+          nivel: dadosNivel?.nivel || catalogo.minNivel,
+          maxNivel: catalogo.maxNivel,
+          pontos: formatarPontos(dadosNivel?.pontosValor || 0),
+          pontosValor: dadosNivel?.pontosValor || 0,
+          pontosSelecionados: formatarPontos(dadosNivel?.pontosValor || 0),
+          descricao: dadosNivel?.descricao || ''
+        };
+      }
+
+      const dadosCustomizados = dadosItemCustomizado(item);
+      return {
+        ...item,
+        ...dadosCustomizados,
+        pontosSelecionados: dadosCustomizados.pontos
+      };
     }
 
     function pontosSelecionados(item) {
@@ -4500,6 +4859,7 @@
     function textoVantagem(item) {
       const linhas = [item.nome || 'Vantagem ou defeito sem nome'];
       if (item.tipo) linhas.push(`Tipo: ${tipoVantagemLabel(item.tipo)}`);
+      if (item.nivel) linhas.push(`Nível: ${item.nivel}`);
       linhas.push(`Pontos: ${formatarPontos(pontosSelecionados(item))}`);
       if (item.descricao) linhas.push(item.descricao);
       return linhas.join('\n');
@@ -4512,8 +4872,25 @@
       atualizarPontosVantagensDefeitos();
     }
 
+    function bolinhasVantagemHtml({ nivelAtual = 1, maxNivel = 5, niveisDisponiveis = [], dataAtributoIndice = '', dataAtributoNivel = '', ariaBase = 'Alterar nível' }) {
+      const listaDisponiveis = Array.isArray(niveisDisponiveis) && niveisDisponiveis.length
+        ? niveisDisponiveis
+        : Array.from({ length: maxNivel }, (_, indice) => indice + 1);
+
+      return Array.from({ length: maxNivel }, (_, indice) => {
+        const nivel = indice + 1;
+        const ativa = nivel <= nivelAtual;
+        const disponivel = listaDisponiveis.includes(nivel);
+        const classes = ['vantagem-bolinha', ativa ? 'active' : '', disponivel ? '' : 'indisponivel'].filter(Boolean).join(' ');
+        if (!disponivel) return `<span class="${classes}" aria-hidden="true"></span>`;
+        return `<button type="button" class="${classes}" ${dataAtributoIndice} ${dataAtributoNivel}="${nivel}" aria-label="${escapeHtml(ariaBase)} ${nivel}"></button>`;
+      }).join('');
+    }
+
     function renderizarVantagensFicha() {
       if (!listaVantagensFicha) return;
+
+      vantagensDefeitosAdicionados = vantagensDefeitosAdicionados.map((item) => sincronizarItemVantagem(item));
 
       if (!vantagensDefeitosAdicionados.length) {
         listaVantagensFicha.innerHTML = '<div class="vantagens-vazio">Nenhuma vantagem ou defeito adicionado ainda.</div>';
@@ -4521,38 +4898,63 @@
         return;
       }
 
-      listaVantagensFicha.innerHTML = vantagensDefeitosAdicionados.map((item, indice) => `
-        <article class="vantagem-ficha-card">
-          <div class="vantagem-ficha-topo">
-            <div>
-              <strong class="vantagem-ficha-nome">${escapeHtml(item.nome || 'Vantagem ou defeito sem nome')}</strong>
-              <div class="vantagem-meta">
-                <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
-                <span class="tag-vantagem-pontos">${escapeHtml(formatarPontos(pontosSelecionados(item)))}</span>
+      listaVantagensFicha.innerHTML = vantagensDefeitosAdicionados.map((item, indice) => {
+        const catalogo = item.catalogoId ? obterCatalogoVantagem(item.catalogoId) : null;
+        const niveisDisponiveis = catalogo?.niveisDisponiveis || Array.from({ length: item.maxNivel || 1 }, (_, posicao) => posicao + 1);
+        const maxNivel = catalogo?.maxNivel || item.maxNivel || Math.max(1, item.nivel || 1);
+
+        return `
+          <article class="vantagem-ficha-card">
+            <div class="vantagem-ficha-topo">
+              <div class="vantagem-titulo-area">
+                <strong class="vantagem-ficha-nome">${escapeHtml(item.nome || 'Vantagem ou defeito sem nome')}</strong>
+                <div class="vantagem-meta">
+                  <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
+                  <span class="tag-vantagem-pontos">Nível ${escapeHtml(String(item.nivel || 1))} • ${escapeHtml(formatarPontos(pontosSelecionados(item)))}</span>
+                </div>
+              </div>
+              <div class="vantagem-ficha-controles">
+                <div class="vantagem-nivel-bloco">
+                  <span class="vantagem-nivel-label">Nível</span>
+                  <div class="vantagem-bolinhas">
+                    ${bolinhasVantagemHtml({
+                      nivelAtual: Number(item.nivel || 1),
+                      maxNivel,
+                      niveisDisponiveis,
+                      dataAtributoIndice: `data-vantagem-ficha="${indice}"`,
+                      dataAtributoNivel: 'data-vantagem-ficha-nivel',
+                      ariaBase: `${item.nome} nível`
+                    })}
+                  </div>
+                </div>
+                <button type="button" class="btn-remover-vantagem" data-remover-vantagem="${indice}" aria-label="Remover vantagem ou defeito">×</button>
               </div>
             </div>
-            <button type="button" class="btn-remover-vantagem" data-remover-vantagem="${indice}" aria-label="Remover vantagem ou defeito">×</button>
-          </div>
-          <div class="vantagem-ficha-texto">${escapeHtml(item.descricao || 'Sem descrição cadastrada.')}</div>
-        </article>
-      `).join('');
+            <div class="vantagem-ficha-texto">${escapeHtml(item.descricao || 'Sem descrição cadastrada.')}</div>
+          </article>
+        `;
+      }).join('');
       sincronizarCampoVantagens();
     }
 
-    function adicionarVantagemNaFicha({ nome, tipo = 'qualidade', pontos = '', pontosValor = null, descricao = '' }) {
-      const nomeLimpo = String(nome || '').trim();
+    function adicionarVantagemNaFicha({ nome, tipo = 'qualidade', pontos = '', pontosValor = null, descricao = '', catalogoId = '', nivel = null, maxNivel = null }) {
+      const nomeLimpo = nomeBaseDaVantagem(nome || '').trim();
       if (!nomeLimpo) return;
 
       const valorEscolhido = valorPontosSeguro(pontosValor, pontos, tipo);
+      const nivelInicial = Math.max(1, Number(nivel || 0) || Math.abs(valorEscolhido) || 1);
 
-      vantagensDefeitosAdicionados.push({
+      vantagensDefeitosAdicionados.push(sincronizarItemVantagem({
         nome: nomeLimpo,
         tipo: String(tipo || 'qualidade'),
         pontos: String(pontos || ''),
         pontosValor: valorEscolhido,
         pontosSelecionados: formatarPontos(valorEscolhido),
-        descricao: String(descricao || '').trim()
-      });
+        descricao: String(descricao || '').trim(),
+        catalogoId: catalogoId || '',
+        nivel: nivelInicial,
+        maxNivel: maxNivel || Math.max(1, nivelInicial)
+      }));
 
       renderizarVantagensFicha();
       salvarFicha(true);
@@ -4562,24 +4964,31 @@
       if (Array.isArray(lista) && lista.length) {
         vantagensDefeitosAdicionados = lista.map((item) => {
           const valorEscolhido = valorPontosSeguro(item?.pontosValor, item?.pontos || item?.nome || '', item?.tipo || '');
+          const nivel = Number(item?.nivel || 0) || nivelDoNomeVantagem(item?.nome || '') || Math.abs(valorEscolhido) || 1;
 
-          return {
+          return sincronizarItemVantagem({
             nome: item?.nome || 'Vantagem ou defeito sem nome',
             tipo: item?.tipo || 'personalizado',
             pontos: item?.pontos || '',
             pontosValor: valorEscolhido,
             pontosSelecionados: formatarPontos(valorEscolhido),
-            descricao: item?.descricao || ''
-          };
+            descricao: item?.descricao || '',
+            catalogoId: item?.catalogoId || '',
+            nivel,
+            maxNivel: item?.maxNivel || nivel
+          });
         });
       } else if (String(textoAntigo || '').trim()) {
         vantagensDefeitosAdicionados = [{
           nome: 'Vantagens e defeitos antigos',
           tipo: 'personalizado',
           pontos: '',
-          pontosValor: 0,
-          pontosSelecionados: '0',
-          descricao: String(textoAntigo || '').trim()
+          pontosValor: 1,
+          pontosSelecionados: '+1',
+          descricao: String(textoAntigo || '').trim(),
+          catalogoId: '',
+          nivel: 1,
+          maxNivel: 1
         }];
       } else {
         vantagensDefeitosAdicionados = [];
@@ -4594,12 +5003,12 @@
       mostrarAviso('Vantagem ou defeito removido.');
     }
 
-    function normalizarPesquisa(texto) {
-      return String(texto || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim();
+    function alterarNivelVantagemFicha(indice, nivel) {
+      const item = vantagensDefeitosAdicionados[indice];
+      if (!item) return;
+      vantagensDefeitosAdicionados[indice] = sincronizarItemVantagem({ ...item, nivel: Number(nivel || item.nivel || 1) });
+      renderizarVantagensFicha();
+      salvarFicha(true);
     }
 
     function renderizarListaVantagens() {
@@ -4607,9 +5016,11 @@
       const filtro = filtroTipoVantagem?.value || 'todos';
       const busca = normalizarPesquisa(pesquisaVantagem?.value || '');
 
-      const listaFiltrada = vantagensDefeitosV5.filter((item) => {
+      const listaFiltrada = vantagensDefeitosCatalogo.filter((item) => {
         const tipoOk = filtro === 'todos' || item.tipo === filtro;
-        const buscaOk = !busca || normalizarPesquisa(item.nome).includes(busca);
+        const buscaOk = !busca
+          || normalizarPesquisa(item.nome).includes(busca)
+          || item.niveis.some((nivel) => normalizarPesquisa(nivel.descricao).includes(busca));
         return tipoOk && buscaOk;
       });
 
@@ -4619,53 +5030,70 @@
       }
 
       listaVantagensModal.innerHTML = listaFiltrada.map((item) => {
-        const indice = vantagensDefeitosV5.indexOf(item);
-        const valoresPontos = valoresPontosDaVantagem(item.pontos);
-        const opcoesPontos = valoresPontos
-          .map((valor) => `<option value="${valor}">${escapeHtml(formatarPontos(valor))} ponto${Math.abs(valor) === 1 ? '' : 's'}</option>`)
-          .join('');
-        const escolhaPontos = valoresPontos.length > 1 ? `
-              <div class="vantagem-pontos-escolha">
-                <label for="pontosVantagem${indice}">Pontos aplicados</label>
-                <select id="pontosVantagem${indice}" class="vantagem-pontos-select" data-pontos-vantagem="${indice}">
-                  ${opcoesPontos}
-                </select>
-              </div>
-        ` : '';
+        const nivelSelecionado = Number(selecaoNivelVantagensModal[item.id] || item.minNivel || 1);
+        const dadosNivel = dadosNivelCatalogo(item, nivelSelecionado) || item.niveis[0];
+        selecaoNivelVantagensModal[item.id] = dadosNivel?.nivel || item.minNivel || 1;
 
         return `
           <article class="vantagem-card">
-            <div>
-              <strong class="vantagem-nome">${escapeHtml(item.nome)}</strong>
-              <div class="vantagem-tags">
-                <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
-                <span class="tag-vantagem-pontos">${escapeHtml(item.pontos)}</span>
+            <div class="vantagem-card-topo">
+              <div class="vantagem-titulo-area">
+                <strong class="vantagem-nome">${escapeHtml(item.nome)}</strong>
+                <div class="vantagem-tags">
+                  <span class="tag-vantagem-tipo">${escapeHtml(tipoVantagemLabel(item.tipo))}</span>
+                  <span class="tag-vantagem-pontos">Nível ${escapeHtml(String(dadosNivel?.nivel || 1))} • ${escapeHtml(formatarPontos(dadosNivel?.pontosValor || 0))}</span>
+                </div>
               </div>
-              <p class="vantagem-descricao">${escapeHtml(item.descricao)}</p>
-              ${escolhaPontos}
+              <div class="vantagem-nivel-bloco">
+                <span class="vantagem-nivel-label">Nível</span>
+                <div class="vantagem-bolinhas">
+                  ${bolinhasVantagemHtml({
+                    nivelAtual: Number(dadosNivel?.nivel || 1),
+                    maxNivel: item.maxNivel,
+                    niveisDisponiveis: item.niveisDisponiveis,
+                    dataAtributoIndice: `data-vantagem-modal="${escapeHtml(item.id)}"`,
+                    dataAtributoNivel: 'data-vantagem-modal-nivel',
+                    ariaBase: `${item.nome} nível`
+                  })}
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn-modal-add" data-add-vantagem="${indice}">Adicionar</button>
+            <p class="vantagem-descricao">${escapeHtml(dadosNivel?.descricao || 'Sem descrição cadastrada.')}</p>
+            <div class="vantagem-card-rodape">
+              <span class="tag-vantagem-pontos">${escapeHtml(tipoVantagemLabel(item.tipo))} ${escapeHtml(formatarPontos(dadosNivel?.pontosValor || 0))}</span>
+              <button type="button" class="btn-modal-add" data-add-vantagem="${escapeHtml(item.id)}">Adicionar</button>
+            </div>
           </article>
         `;
       }).join('');
     }
 
-    function adicionarVantagemPadrao(item, pontosValor = null) {
-      if (!item) return;
-      adicionarVantagemNaFicha({ ...item, pontosValor });
+    function adicionarVantagemPadrao(catalogo, nivel = null) {
+      if (!catalogo) return;
+      const dadosNivel = dadosNivelCatalogo(catalogo, nivel || catalogo.minNivel);
+      if (!dadosNivel) return;
+
+      adicionarVantagemNaFicha({
+        nome: catalogo.nome,
+        tipo: catalogo.tipo,
+        pontos: formatarPontos(dadosNivel.pontosValor),
+        pontosValor: dadosNivel.pontosValor,
+        descricao: dadosNivel.descricao,
+        catalogoId: catalogo.id,
+        nivel: dadosNivel.nivel,
+        maxNivel: catalogo.maxNivel
+      });
       mostrarAviso('Vantagem ou defeito adicionado.');
     }
 
     function abrirAdicionarVantagem() {
       if (filtroTipoVantagem) filtroTipoVantagem.value = 'todos';
       if (pesquisaVantagem) pesquisaVantagem.value = '';
+      selecaoNivelVantagensModal = {};
       renderizarListaVantagens();
       abrirModal(modalVantagens);
       setTimeout(() => pesquisaVantagem?.focus(), 50);
     }
-
-
-
     function abrirNovaVantagemDefeito() {
       if (novaVantagemNome) novaVantagemNome.value = '';
       if (novaVantagemTipo) novaVantagemTipo.value = 'qualidade';
@@ -5230,6 +5658,40 @@
       fecharModal(modalDado);
     }
 
+    function aumentarFomePorRouseCheck() {
+      const campo = getCampo('fome');
+      if (!campo) return { antes: 0, depois: 0, maximo: 5 };
+
+      const numerosValor = numerosDaBarra(campo.value || '');
+      const numerosPlaceholder = numerosDaBarra(campo.placeholder || '');
+      const antes = Math.max(0, Math.floor(numerosValor[0] ?? 0));
+      let maximo = Math.floor(numerosValor[1] ?? numerosPlaceholder[1] ?? 5);
+
+      if (!Number.isFinite(maximo) || maximo <= 0 || maximo > 5) maximo = 5;
+      const depois = Math.min(maximo, antes + 1);
+      campo.value = `${depois}/${maximo}`;
+      campo.dataset.maximoBarra = String(maximo);
+      atualizarBarra(campo);
+      salvarFicha(true);
+      return { antes, depois, maximo };
+    }
+
+    function rolarRouseCheck() {
+      const valor = Math.floor(Math.random() * 10) + 1;
+      const sucesso = valor >= 6;
+      let textoResultado = 'Sucesso: a Fome não aumenta.';
+
+      if (!sucesso) {
+        const fome = aumentarFomePorRouseCheck();
+        textoResultado = fome.depois >= fome.maximo && fome.antes >= fome.maximo
+          ? `Falha: a Fome já estava no máximo (${fome.maximo}/${fome.maximo}).`
+          : `Falha: Fome +1 (${fome.depois}/${fome.maximo}).`;
+      }
+
+      mostrarRolagemAtributo(`Rouse Check — ${textoResultado}`, 1, 0, [{ valor, fome: false }]);
+      fecharModal(modalDado);
+    }
+
     function initRolagemAtributos() {
       document.querySelectorAll('.atributos-bloco .attr-row label').forEach((label) => {
         label.title = 'Clique para rolar este atributo';
@@ -5350,11 +5812,12 @@
       localStorage.setItem('personagensVampiro', JSON.stringify(lista));
     }
 
-    function salvarFicha(silencioso = false) {
+    function salvarFicha(silencioso = false, salvarRemoto = true) {
       fichaAtual = coletarFicha();
       localStorage.setItem('personagemVampiroIdAtual', fichaAtual.id);
       localStorage.setItem('personagemVampiroAtual', JSON.stringify(fichaAtual));
       salvarNaLista(fichaAtual);
+      if (salvarRemoto) agendarSalvarFichaFirebase(fichaAtual, silencioso);
       if (!silencioso) mostrarAviso('Ficha salva.');
     }
 
@@ -5409,7 +5872,7 @@
       if (!String(mapa.experiencia || '').trim()) {
         const total = String(mapa.experienciaTotal || '').trim();
         const gasta = String(mapa.experienciaGasta || '').trim();
-        mapa.experiencia = total && gasta ? `${gasta}/${total}` : (total || gasta || '');
+        mapa.experiencia = total && gasta ? `${gasta}/${total}` : (total || gasta || '0/0');
       }
       mapa.deslocamento = String(mapa.deslocamento || '').trim() || '9m';
       aplicarMapaHabilidadesCriacao(mapa);
@@ -5609,17 +6072,41 @@
       };
     }
 
-    function carregarFicha() {
-      const salvo = localStorage.getItem('personagemVampiroAtual');
-      if (!salvo) {
-        aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
-        carregarDisciplinasAdicionadas([], '');
-        carregarVantagensAdicionadas([], '');
-        carregarItensAdicionados([], '');
-        return;
+    async function carregarFicha() {
+      const params = new URLSearchParams(window.location.search);
+      const idUrl = params.get('id') || params.get('characterId');
+      let fichaCarregada = null;
+
+      if (idUrl) fichaCarregada = await carregarFichaFirebasePorId(idUrl) || obterFichaLocalPorId(idUrl);
+
+      if (!fichaCarregada) {
+        const salvo = localStorage.getItem('personagemVampiroAtual');
+        if (!salvo) {
+          aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
+          carregarDisciplinasAdicionadas([], '');
+          carregarVantagensAdicionadas([], '');
+          carregarItensAdicionados([], '');
+          return;
+        }
+        try {
+          fichaCarregada = JSON.parse(salvo);
+        } catch (erro) {
+          console.warn('Não foi possível carregar a ficha:', erro);
+          aplicarCampos({ nome: 'Personagem sem nome', nomeDescricao: 'Personagem sem nome' });
+          carregarDisciplinasAdicionadas([], '');
+          carregarVantagensAdicionadas([], '');
+          carregarItensAdicionados([], '');
+          return;
+        }
       }
+
       try {
-        fichaAtual = JSON.parse(salvo);
+        fichaAtual = fichaCarregada;
+        if (fichaAtual?.id) {
+          localStorage.setItem('personagemVampiroIdAtual', fichaAtual.id);
+          localStorage.setItem('personagemVampiroAtual', JSON.stringify(fichaAtual));
+          salvarNaLista(fichaAtual);
+        }
         const campos = fichaAtual.campos || {};
         const listas = listasCompatibilidadeCriacao(fichaAtual, campos);
         aplicarCampos(campos);
@@ -5714,6 +6201,7 @@
     btnAdicionarDadoManual?.addEventListener('click', () => alterarDadoManualExtra(1));
     btnRemoverDadoManual?.addEventListener('click', () => alterarDadoManualExtra(-1));
     btnRolarDadoManual?.addEventListener('click', rolarDadoManual);
+    btnRouseCheck?.addEventListener('click', rolarRouseCheck);
     btnAdicionarDisciplina?.addEventListener('click', abrirAdicionarDisciplina);
     btnNovaDisciplina?.addEventListener('click', abrirNovaDisciplina);
     btnSalvarNovaDisciplina?.addEventListener('click', salvarNovaDisciplina);
@@ -5736,11 +6224,26 @@
         return;
       }
 
+      const botaoNivelVantagemModal = evento.target.closest('[data-vantagem-modal][data-vantagem-modal-nivel]');
+      if (botaoNivelVantagemModal) {
+        const catalogo = obterCatalogoVantagem(botaoNivelVantagemModal.dataset.vantagemModal || '');
+        if (catalogo) {
+          selecaoNivelVantagensModal[catalogo.id] = Number(botaoNivelVantagemModal.dataset.vantagemModalNivel || catalogo.minNivel || 1);
+          renderizarListaVantagens();
+        }
+        return;
+      }
+
       const botaoAdicionarVantagem = evento.target.closest('[data-add-vantagem]');
       if (botaoAdicionarVantagem) {
-        const indice = Number(botaoAdicionarVantagem.dataset.addVantagem);
-        const seletorPontos = modalVantagens?.querySelector(`[data-pontos-vantagem="${indice}"]`);
-        adicionarVantagemPadrao(vantagensDefeitosV5[indice], seletorPontos?.value);
+        const catalogo = obterCatalogoVantagem(botaoAdicionarVantagem.dataset.addVantagem || '');
+        if (catalogo) adicionarVantagemPadrao(catalogo, selecaoNivelVantagensModal[catalogo.id]);
+        return;
+      }
+
+      const botaoNivelVantagemFicha = evento.target.closest('[data-vantagem-ficha][data-vantagem-ficha-nivel]');
+      if (botaoNivelVantagemFicha) {
+        alterarNivelVantagemFicha(Number(botaoNivelVantagemFicha.dataset.vantagemFicha), Number(botaoNivelVantagemFicha.dataset.vantagemFichaNivel));
         return;
       }
 

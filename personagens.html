@@ -529,6 +529,76 @@
       border-color: rgba(255, 255, 255, 0.42);
     }
 
+
+
+    .lista-personagens {
+      display: grid;
+      gap: 14px;
+    }
+
+    .personagem-card {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.055);
+      padding: 12px;
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.025);
+    }
+
+    .personagem-foto {
+      width: 84px;
+      height: 104px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.28);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,.72);
+      font-size: .7rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .personagem-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .personagem-info { min-width: 0; display: grid; gap: 8px; }
+
+    .personagem-info h3 { color: #fff; font-size: 1.05rem; line-height: 1.15; text-transform: uppercase; letter-spacing: .08em; overflow-wrap: anywhere; }
+
+    .personagem-meta { display: grid; gap: 4px; color: rgba(244,240,255,.74); font-size: .84rem; line-height: 1.35; }
+
+    .personagem-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+    .btn-card-personagem {
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 11px;
+      background: rgba(255,255,255,.07);
+      color: #fff;
+      padding: 0 11px;
+      cursor: pointer;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      transition: .22s ease;
+    }
+
+    .btn-card-personagem:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.13); }
+    .btn-card-personagem.perigo:hover { background: rgba(255,0,120,.22); }
+
+    @media (max-width: 560px) {
+      .personagem-card { grid-template-columns: 1fr; }
+      .personagem-foto { width: min(100%, 220px); height: 220px; justify-self: center; }
+      .personagem-acoes { flex-direction: column; }
+      .btn-card-personagem { width: 100%; }
+    }
+
     @keyframes brilhoAtrasColorido {
       0% {
         text-shadow:
@@ -836,10 +906,11 @@
       </div>
 
       <aside class="painel-lateral">
-        <div class="card-vazio">
+        <div id="listaPersonagens" class="lista-personagens"></div>
+        <div id="cardVazio" class="card-vazio">
           <h2>Nenhum personagem</h2>
           <p>
-            Quando os personagens forem criados, eles podem aparecer aqui em cards com imagem, nome, modelo de ficha e botão para acessar.
+            Quando os personagens forem criados, eles aparecerão aqui com imagem, nome, modelo de ficha e botões para acessar.
           </p>
         </div>
       </aside>
@@ -875,6 +946,22 @@
   </div>
 
 
+
+  <!-- Firebase: preencha este bloco com a configuração do seu projeto -->
+  <script>
+    window.DADO_FIREBASE_CONFIG = window.DADO_FIREBASE_CONFIG || window.firebaseConfig || {
+      apiKey: "COLE_AQUI_SUA_API_KEY",
+      authDomain: "COLE_AQUI_SEU_AUTH_DOMAIN",
+      projectId: "COLE_AQUI_SEU_PROJECT_ID",
+      storageBucket: "COLE_AQUI_SEU_STORAGE_BUCKET",
+      messagingSenderId: "COLE_AQUI_SEU_MESSAGING_SENDER_ID",
+      appId: "COLE_AQUI_SEU_APP_ID"
+    };
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
   <script>
     const usuarioNome = document.getElementById('usuarioNome');
     const btnSair = document.getElementById('btnSair');
@@ -884,91 +971,250 @@
     const btnCancelarModal = document.getElementById('btnCancelarModal');
     const formModeloFicha = document.getElementById('formModeloFicha');
     const modeloFicha = document.getElementById('modeloFicha');
+    const listaPersonagens = document.getElementById('listaPersonagens');
+    const cardVazio = document.getElementById('cardVazio');
+
+    const COLECAO_PERSONAGENS_FIREBASE = 'characters';
+    let dbPersonagensFirebase = null;
+    let personagensCarregados = [];
+
+    function firebaseConfigEstaPreenchida(config) {
+      if (!config || typeof config !== 'object') return false;
+      const obrigatorios = ['apiKey', 'authDomain', 'projectId', 'appId'];
+      return obrigatorios.every((chave) => {
+        const valor = String(config[chave] || '').trim();
+        return valor && !/COLE_AQUI|YOUR_|undefined|null/i.test(valor);
+      });
+    }
+
+    function obterDbPersonagensFirebase() {
+      const config = window.DADO_FIREBASE_CONFIG || window.firebaseConfig;
+      if (!window.firebase || typeof firebase.initializeApp !== 'function') return null;
+      if (!firebaseConfigEstaPreenchida(config)) return null;
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(config);
+        dbPersonagensFirebase = dbPersonagensFirebase || firebase.firestore();
+        return dbPersonagensFirebase;
+      } catch (erro) {
+        console.warn('Não foi possível iniciar o Firebase:', erro);
+        return null;
+      }
+    }
+
+
+    function aguardarAuthFirebase() {
+      const db = obterDbPersonagensFirebase();
+      if (!db || !firebase.auth) return Promise.resolve(null);
+
+      try {
+        const auth = firebase.auth();
+        if (auth.currentUser) return Promise.resolve(auth.currentUser);
+
+        return new Promise((resolve) => {
+          let resolvido = false;
+          const encerrar = (usuario) => {
+            if (resolvido) return;
+            resolvido = true;
+            try { cancelar(); } catch (erro) {}
+            resolve(usuario || auth.currentUser || null);
+          };
+          const cancelar = auth.onAuthStateChanged(encerrar, () => encerrar(null));
+          window.setTimeout(() => encerrar(auth.currentUser || null), 1500);
+        });
+      } catch (erro) {
+        return Promise.resolve(null);
+      }
+    }
+
+    function obterUsuarioAtualParaFirebase() {
+      let usuarioLocal = {};
+      try { usuarioLocal = JSON.parse(localStorage.getItem('usuarioLogado') || '{}') || {}; }
+      catch (erro) { usuarioLocal = {}; }
+      let usuarioAuth = null;
+      try {
+        const db = obterDbPersonagensFirebase();
+        if (db && firebase.auth) usuarioAuth = firebase.auth().currentUser;
+      } catch (erro) { usuarioAuth = null; }
+      const uid = usuarioAuth?.uid || usuarioLocal.uid || usuarioLocal.userId || usuarioLocal.id || usuarioLocal.email || usuarioLocal.nome || 'visitante';
+      return { uid, nome: usuarioAuth?.displayName || usuarioLocal.nome || usuarioLocal.displayName || 'Visitante', email: usuarioAuth?.email || usuarioLocal.email || '' };
+    }
+
+    function escapeHtml(valor) {
+      return String(valor || '').replace(/[&<>\"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] || char));
+    }
+
+    function fichaAPartirDoPersonagem(personagem) {
+      return {
+        id: personagem.id,
+        modelo: personagem.modeloNome || personagem.modelo || 'Vampiro: A Máscara',
+        criadoEm: personagem.criadoEm || new Date().toISOString(),
+        atualizadoEm: personagem.atualizadoEm || new Date().toISOString(),
+        imagem: personagem.imagem || '',
+        campos: personagem.campos || {},
+        listas: personagem.listas || {},
+        resumo: personagem.resumo || {
+          nome: personagem.nome || personagem.campos?.nome || 'Personagem sem nome',
+          jogador: personagem.campos?.jogador || '',
+          cla: personagem.campos?.claFinal || personagem.campos?.claSelect || '',
+          predador: personagem.campos?.predadorFinal || personagem.campos?.predadorSelect || '',
+          cronica: personagem.campos?.cronicaNome || ''
+        }
+      };
+    }
+
+    function salvarPersonagemAtualLocal(personagem) {
+      const ficha = fichaAPartirDoPersonagem(personagem);
+      localStorage.setItem('personagemVampiroIdAtual', ficha.id);
+      localStorage.setItem('personagemVampiroAtual', JSON.stringify(ficha));
+      salvarNaListaLocal(ficha);
+      return ficha;
+    }
+
+    function salvarNaListaLocal(ficha) {
+      const lista = obterPersonagensLocais();
+      const indice = lista.findIndex((item) => item.id === ficha.id);
+      if (indice >= 0) lista[indice] = ficha;
+      else lista.push(ficha);
+      localStorage.setItem('personagensVampiro', JSON.stringify(lista));
+    }
+
+    function obterPersonagensLocais() {
+      try { return JSON.parse(localStorage.getItem('personagensVampiro') || '[]').filter(Boolean); }
+      catch (erro) { return []; }
+    }
+
+    function normalizarPersonagemFirebase(doc) {
+      const dados = doc.data() || {};
+      return { id: doc.id, ...dados, resumo: dados.resumo || {}, campos: dados.campos || {}, listas: dados.listas || {} };
+    }
+
+    async function carregarPersonagensFirebase() {
+      await aguardarAuthFirebase();
+      const db = obterDbPersonagensFirebase();
+      const usuario = obterUsuarioAtualParaFirebase();
+      if (!db || !usuario.uid || usuario.uid === 'visitante') return [];
+      try {
+        const snapshot = await db.collection(COLECAO_PERSONAGENS_FIREBASE).where('ownerId', '==', usuario.uid).get();
+        return snapshot.docs.map(normalizarPersonagemFirebase);
+      } catch (erro) {
+        console.warn('Não foi possível listar personagens do Firebase:', erro);
+        return [];
+      }
+    }
+
+    function ordenarPersonagens(lista) {
+      return [...lista].sort((a, b) => Number(b.updatedAtMs || Date.parse(b.atualizadoEm || 0) || 0) - Number(a.updatedAtMs || Date.parse(a.atualizadoEm || 0) || 0));
+    }
+
+    function renderizarPersonagens(lista) {
+      personagensCarregados = ordenarPersonagens(lista);
+      listaPersonagens.innerHTML = '';
+      cardVazio.style.display = personagensCarregados.length ? 'none' : 'flex';
+      personagensCarregados.forEach((personagem) => {
+        const ficha = fichaAPartirDoPersonagem(personagem);
+        const resumo = ficha.resumo || {};
+        const foto = ficha.imagem ? `<img src="${escapeHtml(ficha.imagem)}" alt="Imagem de ${escapeHtml(resumo.nome || 'personagem')}" />` : 'Sem foto';
+        const card = document.createElement('article');
+        card.className = 'personagem-card';
+        card.innerHTML = `
+          <div class="personagem-foto">${foto}</div>
+          <div class="personagem-info">
+            <h3>${escapeHtml(resumo.nome || personagem.nome || 'Personagem sem nome')}</h3>
+            <div class="personagem-meta">
+              <span><strong>Modelo:</strong> ${escapeHtml(personagem.modeloNome || ficha.modelo || 'Vampiro: A Máscara')}</span>
+              <span><strong>Clã:</strong> ${escapeHtml(resumo.cla || ficha.campos.claFinal || ficha.campos.claSelect || '—')}</span>
+              <span><strong>Predador:</strong> ${escapeHtml(resumo.predador || ficha.campos.predadorFinal || ficha.campos.predadorSelect || '—')}</span>
+            </div>
+            <div class="personagem-acoes">
+              <button type="button" class="btn-card-personagem" data-editar-personagem="${escapeHtml(ficha.id)}">Editar</button>
+              <button type="button" class="btn-card-personagem" data-jogar-personagem="${escapeHtml(ficha.id)}">Jogar</button>
+              <button type="button" class="btn-card-personagem perigo" data-excluir-personagem="${escapeHtml(ficha.id)}">Excluir</button>
+            </div>
+          </div>`;
+        listaPersonagens.appendChild(card);
+      });
+    }
+
+    async function carregarPersonagens() {
+      cardVazio.querySelector('h2').textContent = 'Carregando...';
+      cardVazio.querySelector('p').textContent = 'Buscando personagens salvos.';
+      const firebaseLista = await carregarPersonagensFirebase();
+      const lista = firebaseLista.length ? firebaseLista : obterPersonagensLocais();
+      renderizarPersonagens(lista);
+      if (!lista.length) {
+        cardVazio.querySelector('h2').textContent = 'Nenhum personagem';
+        cardVazio.querySelector('p').textContent = 'Quando os personagens forem criados, eles aparecerão aqui com imagem, nome, modelo de ficha e botões para acessar.';
+      }
+    }
 
     function carregarUsuario() {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
-
-      if (!usuarioSalvo) {
-        usuarioNome.textContent = 'Visitante';
-        btnSair.textContent = 'Login';
-        return;
-      }
-
+      if (!usuarioSalvo) { usuarioNome.textContent = 'Visitante'; btnSair.textContent = 'Login'; return; }
       try {
         const usuario = JSON.parse(usuarioSalvo);
-
         if (!usuario || usuario.logado !== true || !usuario.nome) {
-          localStorage.removeItem('usuarioLogado');
-          usuarioNome.textContent = 'Visitante';
-          btnSair.textContent = 'Login';
-          return;
+          localStorage.removeItem('usuarioLogado'); usuarioNome.textContent = 'Visitante'; btnSair.textContent = 'Login'; return;
         }
-
-        usuarioNome.textContent = usuario.nome;
-        btnSair.textContent = 'Sair';
+        usuarioNome.textContent = usuario.nome; btnSair.textContent = 'Sair';
       } catch (erro) {
-        localStorage.removeItem('usuarioLogado');
-        usuarioNome.textContent = 'Visitante';
-        btnSair.textContent = 'Login';
+        localStorage.removeItem('usuarioLogado'); usuarioNome.textContent = 'Visitante'; btnSair.textContent = 'Login';
       }
     }
 
     btnSair.addEventListener('click', () => {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
-
-      if (usuarioSalvo) {
-        localStorage.removeItem('usuarioLogado');
-        usuarioNome.textContent = 'Visitante';
-        btnSair.textContent = 'Login';
-        return;
-      }
-
+      if (usuarioSalvo) { localStorage.removeItem('usuarioLogado'); usuarioNome.textContent = 'Visitante'; btnSair.textContent = 'Login'; return; }
       window.location.href = 'login.html';
     });
 
-    function abrirModalPersonagem() {
-      modalPersonagem.classList.add('mostrar');
-      modalPersonagem.setAttribute('aria-hidden', 'false');
-      modeloFicha.focus();
-    }
-
-    function fecharModalPersonagem() {
-      modalPersonagem.classList.remove('mostrar');
-      modalPersonagem.setAttribute('aria-hidden', 'true');
-      formModeloFicha.reset();
-      btnCriarPersonagem.focus();
-    }
+    function abrirModalPersonagem() { modalPersonagem.classList.add('mostrar'); modalPersonagem.setAttribute('aria-hidden', 'false'); modeloFicha.focus(); }
+    function fecharModalPersonagem() { modalPersonagem.classList.remove('mostrar'); modalPersonagem.setAttribute('aria-hidden', 'true'); formModeloFicha.reset(); btnCriarPersonagem.focus(); }
 
     btnCriarPersonagem.addEventListener('click', abrirModalPersonagem);
     btnFecharModal.addEventListener('click', fecharModalPersonagem);
     btnCancelarModal.addEventListener('click', fecharModalPersonagem);
-
-    modalPersonagem.addEventListener('click', (evento) => {
-      if (evento.target === modalPersonagem) {
-        fecharModalPersonagem();
-      }
-    });
-
-    document.addEventListener('keydown', (evento) => {
-      if (evento.key === 'Escape' && modalPersonagem.classList.contains('mostrar')) {
-        fecharModalPersonagem();
-      }
-    });
+    modalPersonagem.addEventListener('click', (evento) => { if (evento.target === modalPersonagem) fecharModalPersonagem(); });
+    document.addEventListener('keydown', (evento) => { if (evento.key === 'Escape' && modalPersonagem.classList.contains('mostrar')) fecharModalPersonagem(); });
 
     formModeloFicha.addEventListener('submit', (evento) => {
       evento.preventDefault();
-
-      if (!modeloFicha.value) {
-        modeloFicha.focus();
-        return;
-      }
-
+      if (!modeloFicha.value) { modeloFicha.focus(); return; }
       localStorage.setItem('modeloFichaSelecionado', modeloFicha.value);
-      window.location.href = 'ficha_vampiro_criação.html';
+      localStorage.removeItem('personagemVampiroIdAtual');
+      localStorage.removeItem('personagemVampiroAtual');
+      window.location.href = `ficha_vampiro_criação.html?novo=1&modelo=${encodeURIComponent(modeloFicha.value)}`;
     });
 
+    listaPersonagens.addEventListener('click', async (evento) => {
+      const editar = evento.target.closest('[data-editar-personagem]');
+      const jogar = evento.target.closest('[data-jogar-personagem]');
+      const excluir = evento.target.closest('[data-excluir-personagem]');
+      const id = editar?.dataset.editarPersonagem || jogar?.dataset.jogarPersonagem || excluir?.dataset.excluirPersonagem;
+      if (!id) return;
+      const personagem = personagensCarregados.find((item) => item.id === id);
+      if (!personagem) return;
+      if (excluir) {
+        const nome = fichaAPartirDoPersonagem(personagem).resumo?.nome || 'este personagem';
+        if (!confirm(`Excluir ${nome}?`)) return;
+        const db = obterDbPersonagensFirebase();
+        if (db) {
+          try { await db.collection(COLECAO_PERSONAGENS_FIREBASE).doc(id).delete(); }
+          catch (erro) { console.warn('Não foi possível excluir do Firebase:', erro); }
+        }
+        const locais = obterPersonagensLocais().filter((item) => item.id !== id);
+        localStorage.setItem('personagensVampiro', JSON.stringify(locais));
+        personagensCarregados = personagensCarregados.filter((item) => item.id !== id);
+        renderizarPersonagens(personagensCarregados);
+        return;
+      }
+      salvarPersonagemAtualLocal(personagem);
+      if (editar) window.location.href = `ficha_vampiro_criação.html?id=${encodeURIComponent(id)}`;
+      if (jogar) window.location.href = `ficha_vampiro_jogo.html?id=${encodeURIComponent(id)}`;
+    });
 
     carregarUsuario();
+    carregarPersonagens();
   </script>
+
 </body>
 </html>
