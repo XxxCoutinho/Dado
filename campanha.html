@@ -1374,7 +1374,8 @@
       query,
       where,
       getDocs,
-      limit
+      limit,
+      onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
     import { firebaseConfig, firebaseEstaConfigurado } from "./firebase-config.js";
 
@@ -1437,6 +1438,8 @@
     let usuarioFirebaseAtual = null;
     let personagensFirebaseCache = [];
     let carregandoCampanha = false;
+    let unsubscribeCampanhaTempoReal = null;
+    let atualizacaoLocalEmAndamento = false;
 
     function usuarioDoFirebase(usuarioFirebase) {
       if (!usuarioFirebase) return null;
@@ -1692,6 +1695,44 @@
 
       atualizarCabecalhoCampanha();
       renderizarAba();
+    }
+
+
+    function pararEscutaCampanhaTempoReal() {
+      if (typeof unsubscribeCampanhaTempoReal === 'function') {
+        unsubscribeCampanhaTempoReal();
+      }
+
+      unsubscribeCampanhaTempoReal = null;
+    }
+
+    function iniciarEscutaCampanhaTempoReal() {
+      pararEscutaCampanhaTempoReal();
+
+      if (!db || !campanhaAtual || campanhaAtual._origem !== 'firebase') return;
+
+      const referencia = obterReferenciaCampanhaFirebase();
+      if (!referencia) return;
+
+      unsubscribeCampanhaTempoReal = onSnapshot(referencia, async (snapshot) => {
+        if (!snapshot.exists()) return;
+
+        const dadosAtualizados = snapshot.data();
+        campanhaAtual = normalizarCampanha(
+          dadosAtualizados,
+          snapshot.id,
+          'firebase',
+          campanhaAtual._colecaoFirebase || COLECAO_CAMPANHAS_PADRAO
+        );
+
+        salvarCampanhaLocal(campanhaAtual);
+        await carregarPersonagensFirebase();
+        atualizarCabecalhoCampanha();
+        renderizarAba();
+      }, (erro) => {
+        console.error('Erro ao acompanhar campanha em tempo real:', erro);
+        mostrarAviso('Não consegui atualizar a campanha em tempo real. Recarregue a página se necessário.');
+      });
     }
 
     function mostrarErroCampanha(mensagem = 'Crie uma campanha primeiro ou acesse uma campanha existente pela lista.') {
@@ -2075,6 +2116,59 @@
     async function adicionarPersonagemNaCampanha(personagem) {
       if (!campanhaAtual || !personagem) return;
 
+      const usuario = obterUsuarioAtual();
+      const novoVinculo = {
+        id: personagem.id,
+        origem: personagem.origem,
+        nome: personagem.nome,
+        sistema: personagem.sistema,
+        jogador: personagem.jogador || usuario?.nome || usuario?.email || '',
+        jogadorUid: usuario?.uid || usuario?.id || '',
+        jogadorEmail: usuario?.email || '',
+        imagem: personagem.imagem,
+        pagina: personagem.pagina,
+        vinculadoEm: new Date().toISOString()
+      };
+
+      if (db && campanhaAtual._origem === 'firebase') {
+        const referencia = obterReferenciaCampanhaFirebase();
+
+        try {
+          await runTransaction(db, async (transacao) => {
+            const snapshot = await transacao.get(referencia);
+            if (!snapshot.exists()) throw new Error('Campanha não encontrada no Firebase.');
+
+            const dados = snapshot.data();
+            const personagens = Array.isArray(dados.personagens) ? [...dados.personagens] : [];
+            const jaAdicionado = personagens.some((vinculo) => obterIdVinculoPersonagem(vinculo) === personagem.id);
+
+            if (jaAdicionado) {
+              campanhaAtual = normalizarCampanha(dados, snapshot.id, 'firebase', campanhaAtual._colecaoFirebase);
+              return;
+            }
+
+            personagens.push(novoVinculo);
+
+            transacao.update(referencia, {
+              personagens,
+              atualizadoEm: serverTimestamp()
+            });
+
+            campanhaAtual = normalizarCampanha({ ...dados, personagens }, snapshot.id, 'firebase', campanhaAtual._colecaoFirebase);
+          });
+
+          salvarCampanhaLocal(campanhaAtual);
+          renderizarListaPersonagensDisponiveis();
+          renderizarAba();
+          mostrarAviso('Personagem adicionado à campanha.');
+          return;
+        } catch (erro) {
+          console.error('Erro ao adicionar personagem no Firebase:', erro);
+          mostrarAviso('Não consegui adicionar o personagem no Firebase. Verifique se você entrou na campanha e se as regras foram publicadas.');
+          return;
+        }
+      }
+
       const personagens = obterVinculosPersonagensCampanha().slice();
       const jaAdicionado = personagens.some((vinculo) => obterIdVinculoPersonagem(vinculo) === personagem.id);
 
@@ -2084,16 +2178,7 @@
         return;
       }
 
-      personagens.push({
-        id: personagem.id,
-        origem: personagem.origem,
-        nome: personagem.nome,
-        sistema: personagem.sistema,
-        jogador: personagem.jogador,
-        imagem: personagem.imagem,
-        pagina: personagem.pagina,
-        vinculadoEm: new Date().toISOString()
-      });
+      personagens.push(novoVinculo);
 
       await salvarCampanhaAtualizada({ personagens });
       renderizarListaPersonagensDisponiveis();
@@ -2103,12 +2188,43 @@
     async function removerPersonagemDaCampanha(id, origem = '') {
       if (!campanhaAtual || !id) return;
 
-      const personagens = obterVinculosPersonagensCampanha().filter((vinculo) => {
+      const filtrarPersonagens = (lista) => lista.filter((vinculo) => {
         const mesmoId = obterIdVinculoPersonagem(vinculo) === id;
         const mesmaOrigem = !origem || obterOrigemVinculoPersonagem(vinculo) === origem;
         return !(mesmoId && mesmaOrigem);
       });
 
+      if (db && campanhaAtual._origem === 'firebase') {
+        const referencia = obterReferenciaCampanhaFirebase();
+
+        try {
+          await runTransaction(db, async (transacao) => {
+            const snapshot = await transacao.get(referencia);
+            if (!snapshot.exists()) throw new Error('Campanha não encontrada no Firebase.');
+
+            const dados = snapshot.data();
+            const personagens = filtrarPersonagens(Array.isArray(dados.personagens) ? dados.personagens : []);
+
+            transacao.update(referencia, {
+              personagens,
+              atualizadoEm: serverTimestamp()
+            });
+
+            campanhaAtual = normalizarCampanha({ ...dados, personagens }, snapshot.id, 'firebase', campanhaAtual._colecaoFirebase);
+          });
+
+          salvarCampanhaLocal(campanhaAtual);
+          renderizarAba();
+          mostrarAviso('Personagem removido da campanha.');
+          return;
+        } catch (erro) {
+          console.error('Erro ao remover personagem no Firebase:', erro);
+          mostrarAviso('Não consegui remover o personagem no Firebase.');
+          return;
+        }
+      }
+
+      const personagens = filtrarPersonagens(obterVinculosPersonagensCampanha());
       await salvarCampanhaAtualizada({ personagens });
       mostrarAviso('Personagem removido da campanha.');
     }
@@ -2267,7 +2383,8 @@
         salvarCampanhaLocal(campanhaAtual);
         await carregarPersonagensFirebase();
         atualizarCabecalhoCampanha();
-        await processarConviteRecebido();
+        const conviteProcessado = await processarConviteRecebido();
+        iniciarEscutaCampanhaTempoReal();
         renderizarAba();
       } finally {
         carregandoCampanha = false;
@@ -2340,25 +2457,30 @@
       const params = new URLSearchParams(window.location.search);
       const codigoConvite = params.get('convite');
 
-      if (!codigoConvite || !campanhaAtual) return;
+      if (!codigoConvite || !campanhaAtual) return false;
 
       const usuario = obterUsuarioAtual();
 
       if (!usuario) {
         redirecionarParaLoginComRetorno();
-        return;
+        return false;
       }
 
       if (String(codigoConvite) !== String(campanhaAtual.conviteCodigo)) {
         mostrarAviso('Convite inválido ou expirado.');
-        return;
+        return false;
       }
 
-      await adicionarUsuarioComoJogador(usuario);
-      params.delete('convite');
-      const novaQuery = params.toString();
-      const novaUrl = `${window.location.pathname}${novaQuery ? `?${novaQuery}` : ''}`;
-      window.history.replaceState({}, document.title, novaUrl);
+      const entrou = await adicionarUsuarioComoJogador(usuario);
+
+      if (entrou) {
+        params.delete('convite');
+        const novaQuery = params.toString();
+        const novaUrl = `${window.location.pathname}${novaQuery ? `?${novaQuery}` : ''}`;
+        window.history.replaceState({}, document.title, novaUrl);
+      }
+
+      return entrou;
     }
 
     function usuarioJaEstaNaCampanha(jogadores, usuario) {
@@ -2375,7 +2497,7 @@
     }
 
     async function adicionarUsuarioComoJogador(usuario) {
-      if (!campanhaAtual || !usuario) return;
+      if (!campanhaAtual || !usuario) return false;
 
       const jogador = {
         uid: usuario.uid || usuario.id || '',
@@ -2385,17 +2507,12 @@
         entradaEm: new Date().toISOString()
       };
 
-      if (!jogador.id) return;
-
-      const jogadoresAtuais = Array.isArray(campanhaAtual.jogadores) ? [...campanhaAtual.jogadores] : [];
-
-      if (usuarioJaEstaNaCampanha(jogadoresAtuais, usuario)) {
-        mostrarAviso('Você já está nesta campanha.');
-        return;
-      }
+      if (!jogador.id) return false;
 
       if (db && campanhaAtual._origem === 'firebase') {
         const referencia = obterReferenciaCampanhaFirebase();
+        let jaEstavaNaLista = false;
+        let alterouDados = false;
 
         try {
           await runTransaction(db, async (transacao) => {
@@ -2406,17 +2523,25 @@
             const jogadores = Array.isArray(dados.jogadores) ? [...dados.jogadores] : [];
             const membros = dados.membros && typeof dados.membros === 'object' ? { ...dados.membros } : {};
 
-            if (!usuarioJaEstaNaCampanha(jogadores, usuario)) {
+            jaEstavaNaLista = usuarioJaEstaNaCampanha(jogadores, usuario);
+
+            if (!jaEstavaNaLista) {
               jogadores.push(jogador);
+              alterouDados = true;
             }
 
-            if (jogador.uid) membros[jogador.uid] = true;
+            if (jogador.uid && membros[jogador.uid] !== true) {
+              membros[jogador.uid] = true;
+              alterouDados = true;
+            }
 
-            transacao.update(referencia, {
-              jogadores,
-              membros,
-              atualizadoEm: serverTimestamp()
-            });
+            if (alterouDados) {
+              transacao.update(referencia, {
+                jogadores,
+                membros,
+                atualizadoEm: serverTimestamp()
+              });
+            }
 
             campanhaAtual = normalizarCampanha({ ...dados, jogadores, membros }, snapshot.id, 'firebase', campanhaAtual._colecaoFirebase);
           });
@@ -2424,20 +2549,25 @@
           salvarCampanhaLocal(campanhaAtual);
           atualizarCabecalhoCampanha();
           renderizarAba();
-          mostrarAviso('Você entrou na campanha.');
-          return;
+          mostrarAviso(alterouDados && !jaEstavaNaLista ? 'Você entrou na campanha.' : 'Você já está nesta campanha.');
+          return true;
         } catch (erro) {
           console.error('Erro ao entrar na campanha:', erro);
-          mostrarAviso('Não consegui adicionar você no Firebase. Verifique as regras do Firestore.');
-          return;
+          mostrarAviso('Não consegui adicionar você no Firebase. Publique as regras atualizadas do Firestore.');
+          return false;
         }
       }
 
-      jogadoresAtuais.push(jogador);
+      const jogadoresAtuais = Array.isArray(campanhaAtual.jogadores) ? [...campanhaAtual.jogadores] : [];
       const membros = { ...(campanhaAtual.membros || {}) };
+      const jaEstavaNaLista = usuarioJaEstaNaCampanha(jogadoresAtuais, usuario);
+
+      if (!jaEstavaNaLista) jogadoresAtuais.push(jogador);
       if (jogador.uid) membros[jogador.uid] = true;
+
       await salvarCampanhaAtualizada({ jogadores: jogadoresAtuais, membros });
-      mostrarAviso('Você entrou na campanha.');
+      mostrarAviso(jaEstavaNaLista ? 'Você já está nesta campanha.' : 'Você entrou na campanha.');
+      return true;
     }
 
     function abrirModalEditar() {
