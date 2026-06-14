@@ -120,6 +120,237 @@
     .aviso-flutuante { position:fixed; left:50%; bottom:24px; z-index:30; transform:translateX(-50%) translateY(20px); max-width:min(520px, calc(100% - 30px)); border:1px solid rgba(255,255,255,.18); border-radius:16px; background:rgba(9,7,18,.96); color:#fff; padding:12px 16px; box-shadow:0 0 22px rgba(0,200,255,.14); opacity:0; pointer-events:none; transition:.25s ease; text-align:center; font-weight:800; }
     .aviso-flutuante.mostrar { opacity:1; transform:translateX(-50%) translateY(0); }
 
+
+
+    .dock-mesa-gestor {
+      position:absolute; left:50%; bottom:16px; z-index:20; transform:translateX(-50%);
+      width:min(770px, calc(100% - 38px)); min-height:74px; display:grid; gap:12px; align-content:end;
+      padding:10px 18px; border:1px solid rgba(255,255,255,.13); border-radius:34px;
+      background:rgba(7,6,11,.88); backdrop-filter:blur(18px);
+      box-shadow:0 0 26px rgba(0,0,0,.50), 0 0 22px rgba(255,0,120,.12), 0 0 30px rgba(0,200,255,.10), inset 0 0 30px rgba(255,255,255,.025);
+      transition:transform .28s ease, width .28s ease, border-radius .28s ease, padding .28s ease, background .28s ease;
+    }
+    .dock-mesa-gestor.com-tray {
+      transform:translateX(-50%) translateY(-16px); width:min(830px, calc(100% - 38px)); padding:16px 18px 14px;
+      border-radius:30px; background:#07060b;
+      box-shadow:0 0 34px rgba(0,0,0,.58), 0 0 24px rgba(255,0,120,.16), 0 0 36px rgba(0,200,255,.12), inset 0 0 36px rgba(255,255,255,.022);
+    }
+    .dock-tray-ativos {
+      min-height:130px; max-height:174px; overflow-x:auto; overflow-y:hidden; padding:0 2px 12px;
+      scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.22) transparent;
+    }
+    .dock-tray-ativos[hidden] { display:none; }
+    .dock-tray-ativos::-webkit-scrollbar { height:8px; }
+    .dock-tray-ativos::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:999px; }
+    .dock-lista-ativos { min-height:118px; display:flex; align-items:center; gap:18px; }
+    .dock-cena-card {
+      flex:0 0 145px; width:145px; height:118px; border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:0;
+      background:rgba(255,255,255,.045); cursor:pointer; overflow:hidden; position:relative; color:#fff;
+      box-shadow:0 10px 22px rgba(0,0,0,.32); transition:.22s ease;
+    }
+    .dock-cena-card:hover, .dock-cena-card:focus-visible {
+      transform:translateY(-3px) scale(1.02); border-color:rgba(255,255,255,.36); outline:none;
+      box-shadow:0 14px 30px rgba(0,0,0,.38), 0 0 16px rgba(255,0,120,.24), 0 0 26px rgba(0,200,255,.16);
+    }
+    .dock-cena-card img { width:100%; height:100%; object-fit:cover; display:block; filter:saturate(.88) contrast(1.05); }
+    .dock-cena-card::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 42%, rgba(0,0,0,.80) 100%); pointer-events:none; }
+    .dock-cena-card strong {
+      position:absolute; left:10px; right:10px; bottom:9px; z-index:2; display:block; color:#fff; font-size:.82rem; line-height:1.1;
+      text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 8px rgba(0,0,0,.85);
+    }
+    .dock-cena-vazio {
+      width:100%; min-height:116px; border:1px dashed rgba(255,255,255,.16); border-radius:18px; display:grid; place-items:center; padding:16px;
+      background:rgba(255,255,255,.035); color:rgba(244,240,255,.68); text-align:center; font-weight:900; line-height:1.42;
+    }
+    .dock-atalhos { display:flex; align-items:center; justify-content:center; gap:16px; min-width:0; }
+    .dock-gestor-btn {
+      flex:0 0 auto; width:54px; height:54px; border-radius:18px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.055); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:.22s ease; position:relative; overflow:hidden;
+    }
+    .dock-gestor-btn::before {
+      content:""; position:absolute; inset:-2px; opacity:0; pointer-events:none;
+      background:radial-gradient(circle at 30% 20%, rgba(255,0,120,.36), transparent 42%), radial-gradient(circle at 75% 80%, rgba(0,200,255,.34), transparent 42%);
+      transition:.22s ease;
+    }
+    .dock-gestor-btn:hover, .dock-gestor-btn:focus-visible, .dock-gestor-btn.ativo {
+      transform:translateY(-2px) scale(1.04); border-color:rgba(255,255,255,.42);
+      box-shadow:0 0 16px rgba(255,0,120,.28), 0 0 28px rgba(0,200,255,.18), inset 0 0 18px rgba(255,255,255,.06);
+      outline:none;
+    }
+    .dock-gestor-btn:hover::before, .dock-gestor-btn:focus-visible::before, .dock-gestor-btn.ativo::before { opacity:1; }
+    .dock-gestor-btn svg { width:30px; height:30px; fill:none; stroke:currentColor; stroke-width:2.15; stroke-linecap:round; stroke-linejoin:round; position:relative; z-index:1; filter:drop-shadow(0 0 5px rgba(255,255,255,.42)); }
+    .dock-gestor-btn.dock-text-btn { width:auto; min-width:86px; padding:0 15px; text-transform:uppercase; letter-spacing:.13em; font-size:.72rem; font-weight:1000; }
+    .dock-gestor-btn.dock-text-btn span { position:relative; z-index:1; color:#fff; text-shadow:0 0 8px rgba(255,255,255,.42), 0 0 14px rgba(0,200,255,.18); }
+    .dock-dados-painel { width:100%; display:grid; gap:12px; align-content:start; }
+    .dock-dados-topo { display:grid; gap:10px; }
+    .dock-dados-titulo { color:#fff; font-size:.76rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .dock-dados-botoes { display:flex; flex-wrap:wrap; gap:8px; }
+    .dock-dado-btn { min-width:52px; min-height:34px; padding:0 10px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.055); color:#fff; cursor:pointer; font-size:.72rem; font-weight:900; letter-spacing:.04em; transition:.2s ease; }
+    .dock-dado-btn:hover, .dock-dado-btn:focus-visible { transform:translateY(-2px); border-color:rgba(255,255,255,.36); box-shadow:0 0 12px rgba(255,0,120,.16), 0 0 20px rgba(0,200,255,.12); outline:none; }
+    .dock-v5-rapido { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; align-items:end; }
+    .dock-v5-rapido label { display:grid; gap:5px; color:rgba(244,240,255,.78); font-size:.64rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .dock-v5-rapido input { width:100%; min-height:34px; border:1px solid rgba(255,255,255,.14); border-radius:11px; background:rgba(0,0,0,.24); color:#fff; padding:8px 10px; font:inherit; font-weight:800; }
+    .dock-v5-rapido button { min-height:34px; border-radius:11px; border:1px solid rgba(255,255,255,.24); color:#fff; cursor:pointer; background:linear-gradient(90deg, rgba(255,0,120,.68), rgba(0,200,255,.56), rgba(138,43,226,.66)); background-size:220% 220%; animation:moverCores 5s linear infinite; text-transform:uppercase; letter-spacing:.08em; font-size:.65rem; font-weight:900; padding:0 10px; }
+    .dock-rolagem-resultado { min-height:44px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.04); padding:10px 12px; color:#fff; line-height:1.45; font-size:.82rem; }
+    .dock-rolagem-resultado .dado-tag { min-width:28px; min-height:28px; }
+
+    .modal-gestor-mesa {
+      position:fixed; inset:0; z-index:80; padding:18px; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.68); backdrop-filter:blur(10px);
+      animation: gestorFade .18s ease forwards;
+    }
+    .modal-gestor-mesa[hidden] { display:none; }
+    .gestor-janela {
+      width:min(1220px, 100%); height:min(720px, calc(100vh - 36px)); overflow:hidden;
+      display:grid; grid-template-columns:176px 1fr; border-radius:24px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(13,12,24,.98), rgba(5,4,10,.98));
+      box-shadow:0 0 44px rgba(0,0,0,.58), 0 0 34px rgba(255,0,120,.14), 0 0 54px rgba(0,200,255,.10), inset 0 0 32px rgba(255,255,255,.025);
+      animation: gestorSubir .22s ease forwards;
+    }
+    .gestor-sidebar {
+      background:linear-gradient(180deg, #151624 0%, #08070d 100%); border-right:1px solid rgba(255,255,255,.09);
+      padding:16px 10px; display:grid; align-content:start; gap:18px; min-width:0;
+    }
+    .gestor-sidebar-bloco { display:grid; gap:8px; }
+    .gestor-sidebar-titulo { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 8px; color:rgba(244,240,255,.72); font-size:.76rem; font-weight:900; letter-spacing:.02em; }
+    .gestor-mini-acoes { display:flex; align-items:center; gap:8px; color:rgba(244,240,255,.62); font-size:1.05rem; line-height:1; }
+    .gestor-colecao, .gestor-etiqueta {
+      min-height:36px; border:0; border-radius:12px; padding:0 12px; display:flex; align-items:center; gap:10px;
+      color:#fff; background:transparent; cursor:pointer; text-align:left; font-weight:900; transition:.2s ease;
+    }
+    .gestor-colecao:hover, .gestor-colecao.ativo, .gestor-etiqueta:hover { background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+    .gestor-colecao.ativo { background:linear-gradient(90deg, rgba(138,43,226,.30), rgba(255,255,255,.06)); }
+    .gestor-ponto { width:13px; height:13px; border-radius:999px; flex:0 0 auto; box-shadow:0 0 12px currentColor; }
+    .gestor-ponto.cor-favorito { color:#ff4d68; background:#ff4d68; }
+    .gestor-ponto.cor-nova { color:#75ff6a; background:#75ff6a; }
+    .gestor-conteudo { min-width:0; display:grid; grid-template-rows:66px 38px 1fr; background:#202437; }
+    .gestor-topo {
+      display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 12px 12px 24px; min-width:0;
+      background:#292d40; border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .gestor-titulo-area { min-width:0; display:flex; align-items:baseline; gap:10px; }
+    .gestor-titulo-area h2 { color:#fff; font-size:1.26rem; line-height:1; letter-spacing:.02em; margin:0; }
+    .gestor-contador { color:rgba(244,240,255,.56); font-size:.72rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; white-space:nowrap; }
+    .gestor-acoes { display:flex; align-items:center; gap:10px; min-width:0; }
+    .gestor-busca {
+      width:min(260px, 28vw); min-height:40px; border:1px solid rgba(255,255,255,.20); border-radius:999px;
+      display:flex; align-items:center; gap:9px; padding:0 13px; background:rgba(0,0,0,.12); color:#fff;
+    }
+    .gestor-busca svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.4; opacity:.9; flex:0 0 auto; }
+    .gestor-busca input { border:0; outline:0; background:transparent; color:#fff; min-width:0; width:100%; font-weight:800; }
+    .gestor-busca input::placeholder { color:rgba(244,240,255,.52); }
+    .gestor-add, .gestor-fechar {
+      min-height:38px; border:1px solid rgba(255,255,255,.18); color:#fff; cursor:pointer; transition:.22s ease; font-weight:900;
+    }
+    .gestor-add {
+      border-radius:16px; padding:0 16px; text-transform:uppercase; letter-spacing:.06em;
+      background:linear-gradient(90deg, rgba(186,118,255,.94), rgba(255,0,120,.64)); box-shadow:0 0 18px rgba(186,118,255,.22);
+    }
+    .gestor-fechar { width:38px; border-radius:14px; background:rgba(255,255,255,.06); font-size:1.25rem; line-height:1; }
+    .gestor-add:hover, .gestor-fechar:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.38); box-shadow:0 0 18px rgba(255,0,120,.22), 0 0 26px rgba(0,200,255,.14); }
+    .gestor-tabs { display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); background:#171b2b; border-bottom:1px solid rgba(255,255,255,.07); }
+    .gestor-tab {
+      border:0; border-right:1px solid rgba(255,255,255,.055); background:transparent; color:rgba(244,240,255,.66); cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px; font-size:.72rem; font-weight:900; transition:.18s ease; min-width:0;
+    }
+    .gestor-tab svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; opacity:.9; }
+    .gestor-tab span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .gestor-tab:hover, .gestor-tab.ativo { color:#fff; background:rgba(255,255,255,.07); }
+    .gestor-tab.ativo { box-shadow:inset 0 -2px 0 rgba(186,118,255,.95), inset 0 0 22px rgba(255,0,120,.08); }
+    .gestor-grade {
+      overflow:auto; padding:24px 20px 28px; display:grid; align-content:start; grid-template-columns:repeat(auto-fill, minmax(164px, 1fr)); gap:18px;
+      background:radial-gradient(circle at 15% 8%, rgba(255,0,120,.06), transparent 28%), radial-gradient(circle at 87% 90%, rgba(0,200,255,.07), transparent 28%), #202437;
+    }
+    .gestor-card {
+      border:1px solid rgba(255,255,255,.10); border-radius:17px; overflow:hidden; background:#07060b; min-width:0; cursor:pointer; position:relative;
+      box-shadow:0 10px 22px rgba(0,0,0,.28); transition:.22s ease;
+    }
+    .gestor-card:hover { transform:translateY(-4px); border-color:rgba(255,255,255,.28); box-shadow:0 14px 30px rgba(0,0,0,.35), 0 0 18px rgba(255,0,120,.20), 0 0 28px rgba(0,200,255,.12); }
+    .gestor-thumb { width:100%; aspect-ratio:1 / .86; position:relative; overflow:hidden; background:linear-gradient(135deg, rgba(255,0,120,.20), rgba(0,200,255,.12), rgba(138,43,226,.18)); display:flex; align-items:center; justify-content:center; }
+    .gestor-thumb img { width:100%; height:100%; object-fit:cover; display:block; filter:saturate(.86) contrast(1.04); }
+    .gestor-thumb::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 42%, rgba(0,0,0,.78) 100%); pointer-events:none; }
+    .gestor-thumb-vazio { width:54px; height:54px; border-radius:18px; display:flex; align-items:center; justify-content:center; color:#fff; background:rgba(255,255,255,.08); box-shadow:0 0 20px rgba(0,200,255,.12); }
+    .gestor-thumb-vazio svg { width:30px; height:30px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .gestor-card-info { position:absolute; left:0; right:0; bottom:0; z-index:2; padding:34px 13px 12px; min-width:0; }
+    .gestor-card-info strong { display:block; color:#fff; font-size:.92rem; line-height:1.15; text-shadow:0 2px 8px rgba(0,0,0,.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .gestor-card-info span { display:block; margin-top:4px; color:rgba(244,240,255,.70); font-size:.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .gestor-card-acao { position:absolute; top:9px; right:9px; z-index:3; width:31px; height:31px; border-radius:11px; border:1px solid rgba(255,255,255,.20); background:rgba(0,0,0,.42); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:.88; transition:.18s ease; }
+    .gestor-card-acao:hover { opacity:1; transform:scale(1.05); box-shadow:0 0 14px rgba(0,200,255,.22); }
+    .gestor-card-acao svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .gestor-vazio { grid-column:1 / -1; min-height:210px; border:1px dashed rgba(255,255,255,.16); border-radius:20px; background:rgba(7,6,11,.36); display:grid; place-items:center; text-align:center; padding:24px; color:rgba(244,240,255,.70); font-weight:800; line-height:1.55; }
+    .modal-ficha-mesa {
+      position:absolute; inset:0; z-index:46; padding:16px; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.58); backdrop-filter:blur(8px); animation:gestorFade .18s ease forwards;
+    }
+    .modal-ficha-mesa[hidden] { display:none; }
+    .ficha-janela-mesa {
+      width:min(1040px, 100%); height:min(720px, calc(100% - 10px)); min-height:420px; overflow:hidden;
+      display:grid; grid-template-rows:auto 1fr; border-radius:24px; border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(13,12,24,.98), rgba(5,4,10,.98));
+      box-shadow:0 0 44px rgba(0,0,0,.62), 0 0 28px rgba(255,0,120,.16), 0 0 42px rgba(0,200,255,.12), inset 0 0 32px rgba(255,255,255,.026);
+      animation:gestorSubir .22s ease forwards;
+    }
+    .ficha-topo-mesa {
+      min-height:66px; display:grid; grid-template-columns:1fr minmax(180px, 290px) auto auto; align-items:center; gap:10px;
+      padding:12px 14px 12px 18px; border-bottom:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(90deg, rgba(255,0,120,.18), rgba(0,200,255,.11), rgba(138,43,226,.15));
+    }
+    .ficha-titulo-mesa { min-width:0; display:grid; gap:4px; }
+    .ficha-titulo-mesa strong { color:#fff; text-transform:uppercase; letter-spacing:.08em; font-size:.9rem; line-height:1.1; }
+    .ficha-titulo-mesa span { color:rgba(244,240,255,.64); font-size:.76rem; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .ficha-select-mesa {
+      width:100%; min-height:40px; border:1px solid rgba(255,255,255,.15); border-radius:14px; background:rgba(0,0,0,.28); color:#fff;
+      padding:0 12px; outline:none; font-weight:900;
+    }
+    .ficha-btn-mesa {
+      min-height:40px; padding:0 13px; border-radius:14px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06);
+      color:#fff; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; font-weight:900; text-transform:uppercase; letter-spacing:.07em; font-size:.68rem; transition:.2s ease;
+    }
+    .ficha-btn-mesa:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.36); box-shadow:0 0 16px rgba(255,0,120,.18), 0 0 24px rgba(0,200,255,.12); }
+    .ficha-fechar-mesa { width:40px; padding:0; font-size:1.2rem; line-height:1; }
+    .ficha-corpo-mesa { min-height:0; position:relative; background:#05040a; }
+    .iframe-ficha-mesa { width:100%; height:100%; border:0; display:block; background:#05040a; }
+    .iframe-ficha-mesa[hidden] { display:none; }
+    .ficha-vazio-mesa {
+      height:100%; display:grid; place-items:center; padding:24px; text-align:center; color:rgba(244,240,255,.72); font-weight:900; line-height:1.5;
+      background:radial-gradient(circle at 30% 20%, rgba(255,0,120,.12), transparent 34%), radial-gradient(circle at 80% 78%, rgba(0,200,255,.10), transparent 34%), #05040a;
+    }
+    .ficha-vazio-mesa[hidden] { display:none; }
+    .mapa-fullscreen:fullscreen .modal-ficha-mesa, .mapa-fullscreen:-webkit-full-screen .modal-ficha-mesa { position:fixed; inset:0; padding:18px; }
+    .mapa-fullscreen:fullscreen .ficha-janela-mesa, .mapa-fullscreen:-webkit-full-screen .ficha-janela-mesa { width:min(1180px, calc(100vw - 36px)); height:calc(100vh - 36px); }
+    @media (max-width: 760px) {
+      .modal-ficha-mesa { padding:9px; }
+      .ficha-janela-mesa { border-radius:18px; min-height:360px; height:calc(100% - 6px); }
+      .ficha-topo-mesa { grid-template-columns:1fr auto; align-items:stretch; }
+      .ficha-select-mesa { grid-column:1 / -1; }
+      .ficha-btn-mesa:not(.ficha-fechar-mesa) { grid-column:1 / 2; }
+      .ficha-fechar-mesa { grid-column:2 / 3; grid-row:1 / 2; justify-self:end; }
+    }
+    body.gestor-mesa-aberto { overflow:hidden; }
+    @keyframes gestorFade { from { opacity:0; } to { opacity:1; } }
+    @keyframes gestorSubir { from { opacity:0; transform:translateY(16px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+    @media (max-width: 860px) {
+      .gestor-janela { grid-template-columns:1fr; height:calc(100vh - 26px); }
+      .gestor-sidebar { display:none; }
+      .gestor-conteudo { grid-template-rows:auto auto 1fr; }
+      .gestor-topo { padding:12px; align-items:stretch; flex-direction:column; }
+      .gestor-acoes { width:100%; }
+      .gestor-busca { width:100%; }
+      .gestor-tabs { grid-template-columns:repeat(4, minmax(0, 1fr)); }
+      .gestor-tab { min-height:38px; }
+    }
+    @media (max-width: 560px) {
+      .modal-gestor-mesa { padding:9px; }
+      .gestor-janela { border-radius:18px; height:calc(100vh - 18px); }
+      .gestor-add { padding:0 11px; font-size:.7rem; }
+      .gestor-tabs { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .gestor-grade { padding:14px; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+      .dock-mesa-gestor { bottom:12px; }
+    }
+
     @keyframes brilhoAtrasColorido {
       0% { text-shadow: 0 0 8px #ff004c, 0 0 18px #ff004c, 0 0 34px #ff004c, 0 0 58px #8a2be2; }
       25% { text-shadow: 0 0 8px #00c8ff, 0 0 18px #00c8ff, 0 0 34px #00c8ff, 0 0 58px #004cff; }
@@ -229,7 +460,44 @@
     }
     .medida-info[hidden] { display:none; }
     .btn-limpar-regua { min-height:30px; padding:0 9px; border-radius:10px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.07); color:#fff; cursor:pointer; font-size:.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
-    .tokens-virados .token-mesa, .tokens-virados .token-mesa img { transform:scaleX(-1); }
+    .camada-tokens-mesa {
+      position:absolute; inset:0; z-index:6; pointer-events:none; overflow:hidden; border-radius:18px;
+    }
+    .token-mesa {
+      --token-x:50%; --token-y:50%; --token-size:76px;
+      position:absolute; left:var(--token-x); top:var(--token-y); width:var(--token-size); height:var(--token-size);
+      transform:translate(-50%, -50%); pointer-events:auto; cursor:grab; user-select:none; touch-action:none;
+      border-radius:999px; filter:drop-shadow(0 10px 18px rgba(0,0,0,.52)); z-index:1;
+    }
+    .token-mesa.arrastando { cursor:grabbing; z-index:5; }
+    .token-mesa-corpo {
+      width:100%; height:100%; border-radius:999px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+      border:3px solid rgba(255,255,255,.88); background:linear-gradient(135deg, rgba(255,0,120,.34), rgba(0,200,255,.20), rgba(138,43,226,.28));
+      box-shadow:0 0 0 2px rgba(7,6,11,.86), 0 0 16px rgba(255,255,255,.22), 0 0 24px rgba(0,200,255,.14), inset 0 0 18px rgba(255,255,255,.06);
+    }
+    .token-mesa-corpo img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+    .token-mesa-inicial { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:calc(var(--token-size) * .38); font-weight:900; text-shadow:0 0 10px rgba(0,0,0,.82); }
+    .token-mesa-nome {
+      position:absolute; left:50%; bottom:-23px; transform:translateX(-50%); max-width:140px; padding:3px 8px; border-radius:999px;
+      background:rgba(7,6,11,.82); border:1px solid rgba(255,255,255,.16); color:#fff; font-size:.66rem; font-weight:900;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 6px rgba(0,0,0,.85); pointer-events:none;
+    }
+    .token-controle {
+      position:absolute; z-index:3; width:23px; height:23px; border-radius:999px; border:1px solid rgba(255,255,255,.30);
+      background:rgba(7,6,11,.88); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
+      font-size:.82rem; font-weight:900; line-height:1; opacity:0; transition:.18s ease; box-shadow:0 0 10px rgba(0,0,0,.45);
+    }
+    .token-mesa:hover .token-controle, .token-mesa:focus-within .token-controle, .token-mesa.arrastando .token-controle { opacity:1; }
+    .token-controle:hover { transform:scale(1.08); border-color:rgba(255,255,255,.58); box-shadow:0 0 12px rgba(255,0,120,.26), 0 0 18px rgba(0,200,255,.18); }
+    .token-controle.excluir { top:-9px; right:-9px; background:rgba(70,7,22,.92); }
+    .token-controle.mais { right:-9px; bottom:-9px; }
+    .token-controle.menos { left:-9px; bottom:-9px; }
+    .tokens-virados .token-mesa-corpo img, .tokens-virados .token-mesa-inicial { transform:scaleX(-1); }
+    .dock-personagem-card { flex-basis:112px; width:112px; height:112px; border-radius:20px; }
+    .dock-personagem-card .dock-token-inicial {
+      width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:2rem; font-weight:900;
+      background:linear-gradient(135deg, rgba(255,0,120,.34), rgba(0,200,255,.20), rgba(138,43,226,.28));
+    }
     .chat-mensagens { min-height:170px; max-height:310px; overflow:auto; padding:12px; display:grid; align-content:start; gap:10px; }
     .chat-vazio { color:var(--muted); line-height:1.45; text-align:center; padding:24px 10px; font-weight:800; }
     .chat-msg { border:1px solid rgba(255,255,255,.11); border-radius:14px; background:rgba(255,255,255,.045); padding:10px 11px; color:#fff; }
@@ -251,13 +519,16 @@
     .mapa-fullscreen:fullscreen .painel-chat-mesa, .mapa-fullscreen:-webkit-full-screen .painel-chat-mesa { position:fixed; top:70px; right:16px; width:min(380px, calc(100vw - 32px)); max-height:calc(100vh - 86px); }
     .mapa-fullscreen:fullscreen .mapa-painel-ferramenta, .mapa-fullscreen:-webkit-full-screen .mapa-painel-ferramenta { position:fixed; top:72px; left:16px; width:min(420px, calc(100vw - 32px)); max-height:calc(100vh - 88px); }
     .mapa-fullscreen:fullscreen .mapa-grade, .mapa-fullscreen:-webkit-full-screen .mapa-grade { border-radius:0; }
+    .mapa-fullscreen:fullscreen .camada-tokens-mesa, .mapa-fullscreen:-webkit-full-screen .camada-tokens-mesa { border-radius:0; }
     .mapa-fullscreen:fullscreen .medida-info, .mapa-fullscreen:-webkit-full-screen .medida-info { position:fixed; left:16px; bottom:16px; }
+    .mapa-fullscreen:fullscreen .dock-mesa-gestor, .mapa-fullscreen:-webkit-full-screen .dock-mesa-gestor { position:fixed; bottom:18px; }
     .botoes-dados { display:grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap:8px; margin-top:12px; }
     .historico-rolagens { max-height: 290px; overflow:auto; display:grid; gap:10px; padding-right:4px; }
     .historico-item { border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.04); padding:12px; color:var(--muted); line-height:1.55; }
     .historico-item strong { color:#fff; }
     @media (max-width: 560px) {
       .botoes-dados { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .dock-v5-rapido { grid-template-columns:repeat(2, minmax(0, 1fr)); }
       .btn-mapa-tela-cheia { top:10px; left:10px; max-width:140px; overflow:hidden; }
       .btn-chat-mesa { top:10px; right:10px; width:42px; height:42px; }
       .painel-chat-mesa { top:60px; right:10px; width:calc(100% - 20px); max-height:calc(100% - 70px); }
@@ -394,6 +665,56 @@
               </form>
             </div>
 
+            <div id="dockMesaGestor" class="dock-mesa-gestor" aria-label="Ações rápidas da mesa">
+              <div id="dockTrayAtivos" class="dock-tray-ativos" hidden>
+                <div id="dockListaAtivos" class="dock-lista-ativos" aria-live="polite"></div>
+              </div>
+              <div class="dock-atalhos">
+                <button type="button" id="btnDockCenas" class="dock-gestor-btn" aria-label="Abrir cenas" title="Cenas" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4Z"></path><path d="m8 15 2.5-3 2 2.4 1.6-1.9L18 17H6Z"></path><circle cx="8.2" cy="8.2" r="1"></circle></svg>
+                </button>
+                <button type="button" id="btnDockMapas" class="dock-gestor-btn" aria-label="Abrir mapas" title="Mapas" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3V7Z"></path><path d="M9 4v13"></path><path d="M15 7v13"></path></svg>
+                </button>
+                <button type="button" id="btnDockPersonagens" class="dock-gestor-btn" aria-label="Abrir personagens" title="Personagens" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg>
+                </button>
+                <button type="button" id="btnDockOutros" class="dock-gestor-btn" aria-label="Abrir outros ativos" title="Outros">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6.8v5.4c0 4.7 3.2 7.5 7.5 8.8 4.3-1.3 7.5-4.1 7.5-8.8V6.8L12 3Z"></path><path d="M8.5 12.2h.1"></path><path d="M15.4 12.2h.1"></path><path d="M9.2 15.7c1.8 1.1 3.8 1.1 5.6 0"></path></svg>
+                </button>
+                <button type="button" id="btnDockDado" class="dock-gestor-btn" aria-label="Abrir rolagens rápidas" title="Dado" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"></rect><circle cx="9" cy="9" r="1.1" fill="currentColor" stroke="none"></circle><circle cx="15" cy="9" r="1.1" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"></circle><circle cx="9" cy="15" r="1.1" fill="currentColor" stroke="none"></circle><circle cx="15" cy="15" r="1.1" fill="currentColor" stroke="none"></circle></svg>
+                </button>
+                <button type="button" id="btnAbrirGestorMesa" class="dock-gestor-btn" aria-label="Abrir gestor de ativos" title="Gestor de ativos">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3.5 6.5h6l1.7 2h9.3v9.8a2.2 2.2 0 0 1-2.2 2.2H5.7a2.2 2.2 0 0 1-2.2-2.2V6.5Z"></path>
+                    <path d="M3.5 8.5V5.7a2.2 2.2 0 0 1 2.2-2.2h3.8l1.7 2h4.3"></path>
+                  </svg>
+                </button>
+                <button type="button" id="btnDockFicha" class="dock-gestor-btn" aria-label="Abrir fichas" title="Fichas">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6Z"></path><path d="M15 3v4h4"></path><path d="M9 11h6"></path><path d="M9 15h6"></path><path d="M9 19h4"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <div id="modalFichaMesa" class="modal-ficha-mesa" role="dialog" aria-modal="true" aria-labelledby="tituloFichaMesa" hidden>
+              <div class="ficha-janela-mesa">
+                <div class="ficha-topo-mesa">
+                  <div class="ficha-titulo-mesa">
+                    <strong id="tituloFichaMesa">Ficha do personagem</strong>
+                    <span id="subtituloFichaMesa">Selecione um personagem da campanha</span>
+                  </div>
+                  <select id="seletorFichaMesa" class="ficha-select-mesa" aria-label="Selecionar personagem"></select>
+                  <a id="btnAbrirFichaNovaAba" class="ficha-btn-mesa" href="#" target="_blank" rel="noopener">Abrir</a>
+                  <button type="button" id="btnFecharFichaMesa" class="ficha-btn-mesa ficha-fechar-mesa" aria-label="Fechar ficha">×</button>
+                </div>
+                <div class="ficha-corpo-mesa">
+                  <div id="fichaMesaVazio" class="ficha-vazio-mesa">Nenhum personagem com ficha foi encontrado nesta campanha.</div>
+                  <iframe id="iframeFichaMesa" class="iframe-ficha-mesa" title="Ficha do personagem" hidden></iframe>
+                </div>
+              </div>
+            </div>
+
             <svg id="reguaCamada" class="regua-camada" aria-hidden="true"></svg>
             <div id="mapaGrade" class="mapa-grade" aria-hidden="true"></div>
             <div id="infoRegua" class="medida-info" hidden>
@@ -401,28 +722,15 @@
               <button type="button" id="btnLimparRegua" class="btn-limpar-regua">Limpar</button>
             </div>
             <div id="areaMapa" class="mapa-area">Nenhum mapa selecionado.</div>
+            <div id="camadaTokensMesa" class="camada-tokens-mesa" aria-label="Tokens da mesa"></div>
           </div>
-          <div class="linha" style="margin-top:12px;">
-            <label class="campo">
-              Nome da cena
-              <input type="text" id="nomeCena" placeholder="Ex.: Salão principal, refúgio, beco..." />
-            </label>
-            <label class="campo">
-              Imagem do mapa/cena
-              <input type="file" id="campoMapa" accept="image/*" />
-            </label>
-            <div class="campo">
-              Ações
-              <div class="acoes-card" style="margin-top:0;">
-                <button type="button" id="btnSalvarCena" class="btn-primario">Salvar cena</button>
-                <button type="button" id="btnLimparMapa" class="btn-secundario">Limpar mapa</button>
-              </div>
-            </div>
+          <div class="controles-cena-ocultos" hidden aria-hidden="true">
+            <input type="hidden" id="nomeCena" />
+            <input type="file" id="campoMapa" accept="image/*" />
+            <textarea id="descricaoCena"></textarea>
+            <button type="button" id="btnSalvarCena"></button>
+            <button type="button" id="btnLimparMapa"></button>
           </div>
-          <label class="campo">
-            Descrição rápida da cena
-            <textarea id="descricaoCena" placeholder="Anote onde os personagens estão, clima, perigo, NPCs presentes..."></textarea>
-          </label>
         </section>
 
         <section class="card">
@@ -508,6 +816,63 @@
       </div>
     </section>
   </main>
+
+  <div id="modalGestorMesa" class="modal-gestor-mesa" hidden>
+    <div class="gestor-janela" role="dialog" aria-modal="true" aria-labelledby="gestorTitulo">
+      <aside class="gestor-sidebar" aria-label="Coleções do gestor">
+        <div class="gestor-sidebar-bloco">
+          <div class="gestor-sidebar-titulo"><span>Coleções</span><span class="gestor-mini-acoes">••• +</span></div>
+          <button type="button" class="gestor-colecao ativo" data-gestor-atalho="cenas">✦ <span>Padrão</span></button>
+        </div>
+        <div class="gestor-sidebar-bloco">
+          <div class="gestor-sidebar-titulo"><span>Etiquetas</span><span class="gestor-mini-acoes">••• +</span></div>
+          <button type="button" class="gestor-etiqueta" data-gestor-atalho="favoritos"><span class="gestor-ponto cor-favorito"></span><span>Favoritos</span></button>
+          <button type="button" class="gestor-etiqueta" data-gestor-atalho="cenas"><span class="gestor-ponto cor-nova"></span><span>Nova etiqueta</span></button>
+        </div>
+      </aside>
+      <section class="gestor-conteudo">
+        <header class="gestor-topo">
+          <div class="gestor-titulo-area">
+            <h2 id="gestorTitulo">Ativos</h2>
+            <span id="gestorContador" class="gestor-contador">0 itens</span>
+          </div>
+          <div class="gestor-acoes">
+            <label class="gestor-busca" for="buscaGestorMesa">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4.2-4.2"></path></svg>
+              <input type="search" id="buscaGestorMesa" placeholder="Procurar" autocomplete="off" />
+            </label>
+            <button type="button" id="btnAdicionarAtivoGestor" class="gestor-add">Adicionar +</button>
+            <button type="button" id="btnFecharGestorMesa" class="gestor-fechar" aria-label="Fechar gestor">×</button>
+          </div>
+        </header>
+        <nav class="gestor-tabs" aria-label="Tipos de ativos">
+          <button type="button" class="gestor-tab ativo" data-gestor-aba="cenas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4Z"></path><path d="m8 15 2.5-3 2 2.4 1.6-1.9L18 17H6Z"></path><circle cx="8.2" cy="8.2" r="1"></circle></svg><span>Cenas</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="mapas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3V7Z"></path><path d="M9 4v13"></path><path d="M15 7v13"></path></svg><span>Mapas</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="aderecos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M7 8h10"></path><path d="M8.5 21h7"></path><path d="m5 8 2.5 6L10 8"></path><path d="m14 8 2.5 6L19 8"></path></svg><span>Adereços</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="montagens">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9v9H4Z"></path><path d="M11 11h9v9h-9Z"></path><path d="M8 4h9v9"></path></svg><span>Montagens</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="personagens">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg><span>Personagens</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="anexos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12.5 13.8 6.7a3.2 3.2 0 0 1 4.5 4.5l-7.1 7.1a4.6 4.6 0 0 1-6.5-6.5l7.7-7.7"></path></svg><span>Anexos</span>
+          </button>
+          <button type="button" class="gestor-tab" data-gestor-aba="notas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5Z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg><span>Notas</span>
+          </button>
+        </nav>
+        <div id="listaAtivosGestor" class="gestor-grade" aria-live="polite"></div>
+      </section>
+    </div>
+    <input type="file" id="campoGestorArquivo" accept="image/*" multiple hidden />
+  </div>
 
   <div id="avisoFlutuante" class="aviso-flutuante" role="status" aria-live="polite"></div>
 
@@ -674,6 +1039,7 @@
 
 
     const areaMapa = document.getElementById('areaMapa');
+    const camadaTokensMesa = document.getElementById('camadaTokensMesa');
     const mapaFullscreen = document.getElementById('mapaFullscreen');
     const nomeCena = document.getElementById('nomeCena');
     const campoMapa = document.getElementById('campoMapa');
@@ -715,8 +1081,32 @@
     const infoRegua = document.getElementById('infoRegua');
     const textoRegua = document.getElementById('textoRegua');
     const btnLimparRegua = document.getElementById('btnLimparRegua');
+    const dockMesaGestor = document.getElementById('dockMesaGestor');
+    const dockTrayAtivos = document.getElementById('dockTrayAtivos');
+    const dockListaAtivos = document.getElementById('dockListaAtivos');
+    const btnDockCenas = document.getElementById('btnDockCenas');
+    const btnDockMapas = document.getElementById('btnDockMapas');
+    const btnDockPersonagens = document.getElementById('btnDockPersonagens');
+    const btnDockOutros = document.getElementById('btnDockOutros');
+    const btnDockDado = document.getElementById('btnDockDado');
+    const btnDockFicha = document.getElementById('btnDockFicha');
+    const btnAbrirGestorMesa = document.getElementById('btnAbrirGestorMesa');
+    const modalFichaMesa = document.getElementById('modalFichaMesa');
+    const btnFecharFichaMesa = document.getElementById('btnFecharFichaMesa');
+    const seletorFichaMesa = document.getElementById('seletorFichaMesa');
+    const iframeFichaMesa = document.getElementById('iframeFichaMesa');
+    const fichaMesaVazio = document.getElementById('fichaMesaVazio');
+    const subtituloFichaMesa = document.getElementById('subtituloFichaMesa');
+    const btnAbrirFichaNovaAba = document.getElementById('btnAbrirFichaNovaAba');
+    const modalGestorMesa = document.getElementById('modalGestorMesa');
+    const btnFecharGestorMesa = document.getElementById('btnFecharGestorMesa');
+    const btnAdicionarAtivoGestor = document.getElementById('btnAdicionarAtivoGestor');
+    const campoGestorArquivo = document.getElementById('campoGestorArquivo');
+    const buscaGestorMesa = document.getElementById('buscaGestorMesa');
+    const listaAtivosGestor = document.getElementById('listaAtivosGestor');
+    const gestorContador = document.getElementById('gestorContador');
 
-    const ESTADO_MESA_PADRAO = { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [], chat: [], musica: '', iniciativa: [], criterioIniciativa: 'aleatorio', gridAtivo: false, tokensVirados: false, regua: null };
+    const ESTADO_MESA_PADRAO = { nomeCena: '', descricaoCena: '', mapa: '', registro: '', historico: [], chat: [], musica: '', iniciativa: [], criterioIniciativa: 'aleatorio', gridAtivo: false, tokensVirados: false, regua: null, ativos: [], tokens: [] };
     let estadoMesa = { ...ESTADO_MESA_PADRAO };
     let reguaAtiva = false;
     let pontosTemporariosRegua = [];
@@ -1134,6 +1524,596 @@
       atualizarReguaAtiva();
     }
 
+
+    let abaGestorAtiva = 'cenas';
+    let dockModoAtivo = 'cenas';
+    let tokenArrastando = null;
+
+    function normalizarBuscaGestor(texto) {
+      return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+
+    function obterIconeGestor(tipo) {
+      const icones = {
+        cenas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4Z"></path><path d="m8 15 2.5-3 2 2.4 1.6-1.9L18 17H6Z"></path></svg>',
+        mapas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3V7Z"></path><path d="M9 4v13"></path><path d="M15 7v13"></path></svg>',
+        personagens: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path></svg>',
+        notas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5Z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>',
+        anexos: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12.5 13.8 6.7a3.2 3.2 0 0 1 4.5 4.5l-7.1 7.1a4.6 4.6 0 0 1-6.5-6.5l7.7-7.7"></path></svg>',
+        aderecos: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M7 8h10"></path><path d="M8.5 21h7"></path></svg>',
+        montagens: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9v9H4Z"></path><path d="M11 11h9v9h-9Z"></path><path d="M8 4h9v9"></path></svg>'
+      };
+      return icones[tipo] || icones.anexos;
+    }
+
+    function obterRotuloGestor(tipo) {
+      const rotulos = { cenas: 'Cena', mapas: 'Mapa', aderecos: 'Adereço', montagens: 'Montagem', personagens: 'Personagem', anexos: 'Anexo', notas: 'Nota' };
+      return rotulos[tipo] || 'Ativo';
+    }
+
+    function obterAtivosGestor() {
+      const ativos = [];
+      const nomeAtual = estadoMesa.nomeCena || 'Cena atual';
+      if (estadoMesa.mapa || estadoMesa.nomeCena || estadoMesa.descricaoCena) {
+        ativos.push({ id: 'cena-atual', tipo: 'cenas', nome: nomeAtual, detalhe: 'Cena salva na mesa', imagem: estadoMesa.mapa || '', descricao: estadoMesa.descricaoCena || '', origem: 'mesa' });
+      }
+      if (estadoMesa.mapa) {
+        ativos.push({ id: 'mapa-atual', tipo: 'mapas', nome: estadoMesa.nomeCena ? `Mapa — ${estadoMesa.nomeCena}` : 'Mapa atual', detalhe: 'Imagem ativa no tabuleiro', imagem: estadoMesa.mapa, origem: 'mesa' });
+      }
+      const personalizados = Array.isArray(estadoMesa.ativos) ? estadoMesa.ativos : [];
+      personalizados.forEach((ativo, indice) => {
+        if (!ativo || typeof ativo !== 'object') return;
+        ativos.push({
+          id: String(ativo.id || `ativo-${indice}`),
+          tipo: String(ativo.tipo || 'cenas'),
+          nome: String(ativo.nome || `Ativo ${indice + 1}`),
+          detalhe: String(ativo.detalhe || obterRotuloGestor(ativo.tipo || 'cenas')),
+          imagem: String(ativo.imagem || ''),
+          descricao: String(ativo.descricao || ''),
+          origem: 'ativo'
+        });
+      });
+      obterPersonagensCampanha().forEach((personagem, indice) => {
+        const nome = obterNomePersonagem(personagem, indice);
+        ativos.push({
+          id: `personagem-${obterIdPersonagem(personagem) || indice}`,
+          tipo: 'personagens',
+          nome,
+          detalhe: obterSistemaPersonagem(personagem),
+          imagem: obterImagemPersonagem(personagem),
+          link: montarLinkFicha(personagem),
+          origem: 'personagem'
+        });
+      });
+      if (estadoMesa.registro) ativos.push({ id: 'nota-registro', tipo: 'notas', nome: 'Registro da mesa', detalhe: 'Anotações da sessão', descricao: estadoMesa.registro, origem: 'nota' });
+      if (estadoMesa.descricaoCena) ativos.push({ id: 'nota-cena', tipo: 'notas', nome: 'Descrição da cena', detalhe: nomeAtual, descricao: estadoMesa.descricaoCena, origem: 'nota' });
+      if (estadoMesa.musica) ativos.push({ id: 'anexo-musica', tipo: 'anexos', nome: 'Música da mesa', detalhe: 'Link salvo', descricao: estadoMesa.musica, origem: 'anexo' });
+      return ativos;
+    }
+
+    function renderizarGestorAtivos() {
+      if (!listaAtivosGestor) return;
+      document.querySelectorAll('.gestor-tab').forEach((botao) => botao.classList.toggle('ativo', botao.dataset.gestorAba === abaGestorAtiva));
+      const termo = normalizarBuscaGestor(buscaGestorMesa?.value || '');
+      const todos = obterAtivosGestor();
+      const filtrados = todos.filter((ativo) => {
+        const mesmaAba = ativo.tipo === abaGestorAtiva;
+        const texto = normalizarBuscaGestor(`${ativo.nome} ${ativo.detalhe} ${ativo.descricao}`);
+        return mesmaAba && (!termo || texto.includes(termo));
+      });
+      gestorContador.textContent = `${filtrados.length} ${filtrados.length === 1 ? 'item' : 'itens'}`;
+      if (!filtrados.length) {
+        listaAtivosGestor.innerHTML = `<div class="gestor-vazio">Nenhum ativo encontrado nesta aba.<br>Use “Adicionar +” para carregar imagens ou salve uma cena na mesa.</div>`;
+        return;
+      }
+      listaAtivosGestor.innerHTML = filtrados.map((ativo) => {
+        const imagem = ativo.imagem ? `<img src="${escaparTexto(ativo.imagem)}" alt="${escaparTexto(ativo.nome)}">` : `<div class="gestor-thumb-vazio">${obterIconeGestor(ativo.tipo)}</div>`;
+        const acaoTitulo = ativo.link ? 'Abrir ficha' : (ativo.imagem ? 'Usar na mesa' : 'Abrir ativo');
+        return `
+          <article class="gestor-card" data-gestor-id="${escaparTexto(ativo.id)}" tabindex="0" role="button" aria-label="${escaparTexto(acaoTitulo)}: ${escaparTexto(ativo.nome)}">
+            <button type="button" class="gestor-card-acao" title="${escaparTexto(acaoTitulo)}" aria-label="${escaparTexto(acaoTitulo)}">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11v11"></path><path d="M19 5 5 19"></path></svg>
+            </button>
+            <div class="gestor-thumb">${imagem}</div>
+            <div class="gestor-card-info">
+              <strong>${escaparTexto(ativo.nome)}</strong>
+              <span>${escaparTexto(ativo.detalhe || obterRotuloGestor(ativo.tipo))}</span>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function selecionarAbaGestor(aba) {
+      abaGestorAtiva = aba || 'cenas';
+      renderizarGestorAtivos();
+    }
+
+    function abrirGestorMesa(aba = 'cenas') {
+      abaGestorAtiva = aba;
+      modalGestorMesa.hidden = false;
+      document.body.classList.add('gestor-mesa-aberto');
+      renderizarGestorAtivos();
+      setTimeout(() => buscaGestorMesa?.focus(), 60);
+    }
+
+    function fecharGestorMesa() {
+      modalGestorMesa.hidden = true;
+      document.body.classList.remove('gestor-mesa-aberto');
+    }
+
+    async function adicionarArquivosGestor() {
+      const arquivos = Array.from(campoGestorArquivo.files || []);
+      if (!arquivos.length) return;
+      estadoMesa.ativos = Array.isArray(estadoMesa.ativos) ? estadoMesa.ativos : [];
+      for (const arquivo of arquivos) {
+        if (!arquivo.type.startsWith('image/')) continue;
+        try {
+          const imagem = await lerImagemComoBase64(arquivo);
+          const tipoPermitido = ['cenas', 'mapas', 'aderecos', 'montagens', 'personagens', 'anexos'].includes(abaGestorAtiva) ? abaGestorAtiva : 'cenas';
+          estadoMesa.ativos.unshift({
+            id: `ativo-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            tipo: tipoPermitido,
+            nome: arquivo.name.replace(/\.[^.]+$/, '') || 'Novo ativo',
+            detalhe: obterRotuloGestor(tipoPermitido),
+            imagem,
+            criadoEm: new Date().toISOString()
+          });
+        } catch (erro) {
+          mostrarAviso(`Não consegui carregar ${arquivo.name}.`);
+        }
+      }
+      estadoMesa.ativos = estadoMesa.ativos.slice(0, 90);
+      campoGestorArquivo.value = '';
+      salvarEstadoMesa();
+      renderizarGestorAtivos();
+      renderizarDockCenas();
+      mostrarAviso('Ativo adicionado ao gestor.');
+    }
+
+    function acionarAtivoGestor(id) {
+      const ativo = obterAtivosGestor().find((item) => item.id === id);
+      if (!ativo) return;
+      if (ativo.link && ativo.link !== 'personagens.html') {
+        window.location.href = ativo.link;
+        return;
+      }
+      if (ativo.imagem && ['personagens', 'aderecos', 'montagens', 'anexos'].includes(ativo.tipo)) {
+        adicionarTokenMesa(ativo.id);
+        fecharGestorMesa();
+        fecharDockCenas();
+        return;
+      }
+      if (ativo.imagem && ['cenas', 'mapas'].includes(ativo.tipo)) {
+        estadoMesa.mapa = ativo.imagem;
+        if (ativo.tipo === 'cenas' || ativo.tipo === 'mapas') {
+          estadoMesa.nomeCena = ativo.tipo === 'mapas' && ativo.nome.startsWith('Mapa — ') ? ativo.nome.replace('Mapa — ', '') : ativo.nome;
+          if (ativo.descricao) estadoMesa.descricaoCena = ativo.descricao;
+          nomeCena.value = estadoMesa.nomeCena;
+          descricaoCena.value = estadoMesa.descricaoCena || '';
+        }
+        salvarEstadoMesa();
+        renderizarMapa();
+        fecharGestorMesa();
+        fecharDockCenas();
+        renderizarDockCenas();
+        mostrarAviso('Cena aplicada na mesa.');
+        return;
+      }
+      if (ativo.descricao) mostrarAviso(ativo.descricao.slice(0, 180));
+    }
+
+    function obterFichasMesa() {
+      const vistos = new Set();
+      return obterPersonagensCampanha()
+        .map((personagem, indice) => {
+          const nome = obterNomePersonagem(personagem, indice);
+          const sistema = obterSistemaPersonagem(personagem);
+          const link = montarLinkFicha(personagem);
+          const id = obterIdPersonagem(personagem) || `personagem-${indice}`;
+          return { id: String(id), nome, sistema, link };
+        })
+        .filter((item) => item.link && item.link !== 'personagens.html')
+        .filter((item) => {
+          const chave = `${item.id}|${item.link}|${item.nome}`;
+          if (vistos.has(chave)) return false;
+          vistos.add(chave);
+          return true;
+        });
+    }
+
+    function preencherSeletorFichaMesa(fichas, idSelecionado = '') {
+      if (!seletorFichaMesa) return;
+      seletorFichaMesa.innerHTML = fichas.map((ficha) => `
+        <option value="${escaparTexto(ficha.id)}">${escaparTexto(ficha.nome)} — ${escaparTexto(ficha.sistema)}</option>
+      `).join('');
+      if (idSelecionado && fichas.some((ficha) => ficha.id === idSelecionado)) seletorFichaMesa.value = idSelecionado;
+    }
+
+    function carregarFichaMesa(idFicha = '') {
+      const fichas = obterFichasMesa();
+      if (!fichas.length) {
+        if (seletorFichaMesa) seletorFichaMesa.hidden = true;
+        if (iframeFichaMesa) {
+          iframeFichaMesa.hidden = true;
+          iframeFichaMesa.removeAttribute('src');
+        }
+        if (btnAbrirFichaNovaAba) btnAbrirFichaNovaAba.hidden = true;
+        if (fichaMesaVazio) {
+          fichaMesaVazio.hidden = false;
+          fichaMesaVazio.innerHTML = 'Nenhum personagem com ficha foi encontrado nesta campanha.<br>Adicione um personagem na campanha para abrir a ficha aqui.';
+        }
+        if (subtituloFichaMesa) subtituloFichaMesa.textContent = 'Nenhuma ficha disponível';
+        return;
+      }
+      if (seletorFichaMesa) seletorFichaMesa.hidden = fichas.length <= 1;
+      if (btnAbrirFichaNovaAba) btnAbrirFichaNovaAba.hidden = false;
+      const ficha = fichas.find((item) => item.id === idFicha) || fichas[0];
+      preencherSeletorFichaMesa(fichas, ficha.id);
+      if (subtituloFichaMesa) subtituloFichaMesa.textContent = `${ficha.nome} • ${ficha.sistema}`;
+      if (btnAbrirFichaNovaAba) btnAbrirFichaNovaAba.href = ficha.link;
+      if (fichaMesaVazio) fichaMesaVazio.hidden = true;
+      if (iframeFichaMesa) {
+        iframeFichaMesa.hidden = false;
+        if (iframeFichaMesa.getAttribute('src') !== ficha.link) iframeFichaMesa.src = ficha.link;
+      }
+    }
+
+    function abrirModalFichaMesa(idFicha = '') {
+      fecharDockCenas();
+      fecharPaineisFerramenta();
+      if (painelChatMesa && !painelChatMesa.hidden) fecharChatMesa();
+      if (modalFichaMesa) modalFichaMesa.hidden = false;
+      if (btnDockFicha) {
+        btnDockFicha.classList.add('ativo');
+        btnDockFicha.setAttribute('aria-pressed', 'true');
+      }
+      carregarFichaMesa(idFicha);
+    }
+
+    function fecharModalFichaMesa() {
+      if (modalFichaMesa) modalFichaMesa.hidden = true;
+      if (btnDockFicha) {
+        btnDockFicha.classList.remove('ativo');
+        btnDockFicha.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    function obterPersonagensDock() {
+      const vistos = new Set();
+      return obterAtivosGestor()
+        .filter((ativo) => ativo?.tipo === 'personagens')
+        .filter((ativo) => {
+          const chave = `${ativo.id}|${ativo.nome}|${ativo.imagem}`;
+          if (vistos.has(chave)) return false;
+          vistos.add(chave);
+          return true;
+        })
+        .slice(0, 24);
+    }
+
+    function normalizarTokensMesa() {
+      estadoMesa.tokens = Array.isArray(estadoMesa.tokens) ? estadoMesa.tokens : [];
+      return estadoMesa.tokens;
+    }
+
+    function obterAtivoPorId(id) {
+      return obterAtivosGestor().find((item) => String(item.id) === String(id));
+    }
+
+    function adicionarTokenMesa(idAtivo) {
+      const ativo = obterAtivoPorId(idAtivo);
+      const tiposToken = ['personagens', 'aderecos', 'montagens', 'anexos'];
+      if (!ativo || !tiposToken.includes(ativo.tipo)) return;
+      const tokens = normalizarTokensMesa();
+      const deslocamento = Math.min(tokens.length, 8) * 0.035;
+      const ehOutro = ativo.tipo !== 'personagens';
+      tokens.push({
+        id: `token-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        ativoId: ativo.id,
+        tipo: ativo.tipo,
+        nome: ativo.nome || (ehOutro ? 'Outro' : 'Personagem'),
+        imagem: ativo.imagem || '',
+        x: Math.min(0.82, 0.50 + deslocamento),
+        y: Math.min(0.76, 0.50 + deslocamento),
+        tamanho: ehOutro ? 72 : (ativo.imagem ? 76 : 70)
+      });
+      salvarEstadoMesa();
+      renderizarTokensMesa();
+      mostrarAviso(ehOutro ? 'Imagem adicionada à mesa.' : 'Token adicionado à mesa.');
+    }
+
+    function removerTokenMesa(idToken) {
+      estadoMesa.tokens = normalizarTokensMesa().filter((token) => String(token.id) !== String(idToken));
+      salvarEstadoMesa();
+      renderizarTokensMesa();
+      mostrarAviso('Token removido.');
+    }
+
+    function redimensionarTokenMesa(idToken, delta) {
+      const token = normalizarTokensMesa().find((item) => String(item.id) === String(idToken));
+      if (!token) return;
+      token.tamanho = Math.max(42, Math.min(180, Number(token.tamanho || 76) + delta));
+      salvarEstadoMesa();
+      renderizarTokensMesa();
+    }
+
+    function renderizarTokensMesa() {
+      if (!camadaTokensMesa) return;
+      const tokens = normalizarTokensMesa();
+      camadaTokensMesa.innerHTML = tokens.map((token) => {
+        const tamanho = Math.max(42, Math.min(180, Number(token.tamanho || 76)));
+        const x = Math.max(0.02, Math.min(0.98, Number(token.x || 0.5)));
+        const y = Math.max(0.02, Math.min(0.98, Number(token.y || 0.5)));
+        const nome = String(token.nome || 'Token');
+        const conteudo = token.imagem
+          ? `<img src="${escaparTexto(token.imagem)}" alt="${escaparTexto(nome)}">`
+          : `<span class="token-mesa-inicial">${escaparTexto(obterInicial(nome))}</span>`;
+        return `
+          <div class="token-mesa" data-token-id="${escaparTexto(token.id)}" style="--token-x:${x * 100}%; --token-y:${y * 100}%; --token-size:${tamanho}px;" tabindex="0" aria-label="Token de ${escaparTexto(nome)}">
+            <div class="token-mesa-corpo">${conteudo}</div>
+            <span class="token-mesa-nome">${escaparTexto(nome)}</span>
+            <button type="button" class="token-controle excluir" data-token-acao="excluir" title="Excluir token" aria-label="Excluir token">×</button>
+            <button type="button" class="token-controle menos" data-token-acao="diminuir" title="Diminuir token" aria-label="Diminuir token">−</button>
+            <button type="button" class="token-controle mais" data-token-acao="aumentar" title="Aumentar token" aria-label="Aumentar token">+</button>
+          </div>`;
+      }).join('');
+    }
+
+    function seletorSeguroToken(idToken) {
+      if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(idToken));
+      return String(idToken).replace(/"/g, '\\"');
+    }
+
+    function atualizarPosicaoTokenPorPonteiro(idToken, clientX, clientY) {
+      const token = normalizarTokensMesa().find((item) => String(item.id) === String(idToken));
+      if (!token || !mapaFullscreen) return;
+      const retangulo = mapaFullscreen.getBoundingClientRect();
+      const tamanho = Math.max(42, Math.min(180, Number(token.tamanho || 76)));
+      const margemX = Math.min(0.48, (tamanho / 2) / Math.max(1, retangulo.width));
+      const margemY = Math.min(0.48, (tamanho / 2) / Math.max(1, retangulo.height));
+      token.x = Math.max(margemX, Math.min(1 - margemX, (clientX - retangulo.left) / Math.max(1, retangulo.width)));
+      token.y = Math.max(margemY, Math.min(1 - margemY, (clientY - retangulo.top) / Math.max(1, retangulo.height)));
+      const elemento = camadaTokensMesa?.querySelector(`[data-token-id="${seletorSeguroToken(idToken)}"]`);
+      if (elemento) {
+        elemento.style.setProperty('--token-x', `${token.x * 100}%`);
+        elemento.style.setProperty('--token-y', `${token.y * 100}%`);
+      }
+    }
+
+    function iniciarArrastoToken(evento) {
+      const tokenEl = evento.target.closest('.token-mesa');
+      if (!tokenEl || evento.target.closest('.token-controle')) return;
+      evento.preventDefault();
+      evento.stopPropagation();
+      tokenArrastando = { id: tokenEl.dataset.tokenId, pointerId: evento.pointerId };
+      tokenEl.classList.add('arrastando');
+      tokenEl.setPointerCapture?.(evento.pointerId);
+      atualizarPosicaoTokenPorPonteiro(tokenArrastando.id, evento.clientX, evento.clientY);
+    }
+
+    function moverTokenArrastando(evento) {
+      if (!tokenArrastando || tokenArrastando.pointerId !== evento.pointerId) return;
+      evento.preventDefault();
+      atualizarPosicaoTokenPorPonteiro(tokenArrastando.id, evento.clientX, evento.clientY);
+    }
+
+    function finalizarArrastoToken(evento) {
+      if (!tokenArrastando || tokenArrastando.pointerId !== evento.pointerId) return;
+      const tokenEl = camadaTokensMesa?.querySelector(`[data-token-id="${seletorSeguroToken(tokenArrastando.id)}"]`);
+      tokenEl?.classList.remove('arrastando');
+      tokenArrastando = null;
+      salvarEstadoMesa();
+    }
+
+    function obterAtivosDockPorTipo(tipo) {
+      const vistos = new Set();
+      return obterAtivosGestor()
+        .filter((ativo) => ativo?.imagem && ativo.tipo === tipo)
+        .filter((ativo) => {
+          const chave = `${ativo.tipo}|${ativo.nome}|${ativo.imagem}`;
+          if (vistos.has(chave)) return false;
+          vistos.add(chave);
+          return true;
+        })
+        .slice(0, 18);
+    }
+
+    function obterCenasDock() { return obterAtivosDockPorTipo('cenas'); }
+    function obterMapasDock() { return obterAtivosDockPorTipo('mapas'); }
+    function obterOutrosDock() {
+      const vistos = new Set();
+      return obterAtivosGestor()
+        .filter((ativo) => ativo?.imagem && ['aderecos', 'montagens', 'anexos'].includes(ativo.tipo))
+        .filter((ativo) => {
+          const chave = `${ativo.tipo}|${ativo.nome}|${ativo.imagem}`;
+          if (vistos.has(chave)) return false;
+          vistos.add(chave);
+          return true;
+        })
+        .slice(0, 24);
+    }
+
+    function renderizarDockCenas() {
+      if (!dockListaAtivos) return;
+      if (dockModoAtivo === 'dados') {
+        const ultimo = estadoMesa.ultimoResultadoRapido || 'Clique em um dado rápido para rolar.';
+        dockListaAtivos.innerHTML = `
+          <div class="dock-dados-painel">
+            <div class="dock-dados-topo">
+              <div class="dock-dados-titulo">Rolagens rápidas</div>
+              <div class="dock-dados-botoes">
+                <button type="button" class="dock-dado-btn" data-dock-dado="4">d4</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="6">d6</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="8">d8</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="10">d10</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="12">d12</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="20">d20</button>
+                <button type="button" class="dock-dado-btn" data-dock-dado="100">d100</button>
+              </div>
+            </div>
+            <div class="dock-dados-topo">
+              <div class="dock-dados-titulo">Vampiro V5 rápido</div>
+              <div class="dock-v5-rapido">
+                <label>Comuns<input type="number" id="dockV5Comuns" min="0" max="30" value="4"></label>
+                <label>Fome<input type="number" id="dockV5Fome" min="0" max="5" value="1"></label>
+                <label>Dificuldade<input type="number" id="dockV5Dificuldade" min="0" max="20" value="1"></label>
+                <button type="button" id="btnDockRolarV5">Rolar V5</button>
+              </div>
+            </div>
+            <div id="dockResultadoRolagem" class="dock-rolagem-resultado">${ultimo}</div>
+          </div>`;
+        return;
+      }
+      if (dockModoAtivo === 'personagens') {
+        const personagens = obterPersonagensDock();
+        if (!personagens.length) {
+          dockListaAtivos.innerHTML = '<div class="dock-cena-vazio">Nenhum personagem foi adicionado ainda.<br>Adicione personagens à campanha ou use “Adicionar +” no gestor.</div>';
+          return;
+        }
+        dockListaAtivos.innerHTML = personagens.map((ativo) => {
+          const imagem = ativo.imagem
+            ? `<img src="${escaparTexto(ativo.imagem)}" alt="${escaparTexto(ativo.nome)}">`
+            : `<span class="dock-token-inicial">${escaparTexto(obterInicial(ativo.nome))}</span>`;
+          return `
+            <button type="button" class="dock-cena-card dock-personagem-card" data-dock-personagem-id="${escaparTexto(ativo.id)}" title="Adicionar token de ${escaparTexto(ativo.nome)} na mesa">
+              ${imagem}
+              <strong>${escaparTexto(ativo.nome)}</strong>
+            </button>`;
+        }).join('');
+        return;
+      }
+
+      if (dockModoAtivo === 'outros') {
+        const outros = obterOutrosDock();
+        if (!outros.length) {
+          dockListaAtivos.innerHTML = '<div class="dock-cena-vazio">Nenhuma imagem em Outros ainda.<br>Use “Adicionar +” no gestor, nas abas Adereços, Montagens ou Anexos.</div>';
+          return;
+        }
+        dockListaAtivos.innerHTML = outros.map((ativo) => `
+          <button type="button" class="dock-cena-card dock-personagem-card" data-dock-token-id="${escaparTexto(ativo.id)}" title="Adicionar ${escaparTexto(ativo.nome)} na mesa">
+            <img src="${escaparTexto(ativo.imagem)}" alt="${escaparTexto(ativo.nome)}">
+            <strong>${escaparTexto(ativo.nome)}</strong>
+          </button>
+        `).join('');
+        return;
+      }
+
+      const tipoDock = dockModoAtivo === 'mapas' ? 'mapas' : 'cenas';
+      const ativos = tipoDock === 'mapas' ? obterMapasDock() : obterCenasDock();
+      if (!ativos.length) {
+        const mensagem = tipoDock === 'mapas'
+          ? 'Nenhum mapa salvo ainda.<br>Use “Adicionar +” no gestor, na aba Mapas, para adicionar imagens.'
+          : 'Nenhuma cena salva ainda.<br>Use “Adicionar +” no gestor ou salve uma cena com imagem.';
+        dockListaAtivos.innerHTML = `<div class="dock-cena-vazio">${mensagem}</div>`;
+        return;
+      }
+      dockListaAtivos.innerHTML = ativos.map((ativo) => `
+        <button type="button" class="dock-cena-card" data-dock-ativo-id="${escaparTexto(ativo.id)}" title="Usar ${escaparTexto(ativo.nome)} na mesa">
+          <img src="${escaparTexto(ativo.imagem)}" alt="${escaparTexto(ativo.nome)}">
+          <strong>${escaparTexto(ativo.nome)}</strong>
+        </button>
+      `).join('');
+    }
+
+    function ativarBotaoDock(botaoAtivo) {
+      [btnDockCenas, btnDockMapas, btnDockPersonagens, btnDockOutros, btnDockDado].forEach((botao) => {
+        if (!botao) return;
+        const ativo = botao === botaoAtivo;
+        botao.classList.toggle('ativo', ativo);
+        botao.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      });
+    }
+
+    function abrirDockCenas() {
+      dockModoAtivo = 'cenas';
+      renderizarDockCenas();
+      dockMesaGestor.classList.add('com-tray');
+      dockTrayAtivos.hidden = false;
+      ativarBotaoDock(btnDockCenas);
+    }
+
+    function abrirDockMapas() {
+      dockModoAtivo = 'mapas';
+      renderizarDockCenas();
+      dockMesaGestor.classList.add('com-tray');
+      dockTrayAtivos.hidden = false;
+      ativarBotaoDock(btnDockMapas);
+    }
+
+    function abrirDockPersonagens() {
+      dockModoAtivo = 'personagens';
+      renderizarDockCenas();
+      dockMesaGestor.classList.add('com-tray');
+      dockTrayAtivos.hidden = false;
+      ativarBotaoDock(btnDockPersonagens);
+    }
+
+    function abrirDockOutros() {
+      dockModoAtivo = 'outros';
+      renderizarDockCenas();
+      dockMesaGestor.classList.add('com-tray');
+      dockTrayAtivos.hidden = false;
+      ativarBotaoDock(btnDockOutros);
+    }
+
+    function abrirDockDados() {
+      dockModoAtivo = 'dados';
+      renderizarDockCenas();
+      dockMesaGestor.classList.add('com-tray');
+      dockTrayAtivos.hidden = false;
+      ativarBotaoDock(btnDockDado);
+    }
+
+    function fecharDockCenas() {
+      if (!dockMesaGestor || !dockTrayAtivos) return;
+      dockMesaGestor.classList.remove('com-tray');
+      dockTrayAtivos.hidden = true;
+      ativarBotaoDock(null);
+    }
+
+    function alternarDockCenas() {
+      if (dockTrayAtivos.hidden || dockModoAtivo !== 'cenas') abrirDockCenas();
+      else fecharDockCenas();
+    }
+
+    function alternarDockMapas() {
+      if (dockTrayAtivos.hidden || dockModoAtivo !== 'mapas') abrirDockMapas();
+      else fecharDockCenas();
+    }
+
+    function alternarDockPersonagens() {
+      if (dockTrayAtivos.hidden || dockModoAtivo !== 'personagens') abrirDockPersonagens();
+      else fecharDockCenas();
+    }
+
+    function alternarDockOutros() {
+      if (dockTrayAtivos.hidden || dockModoAtivo !== 'outros') abrirDockOutros();
+      else fecharDockCenas();
+    }
+
+    function alternarDockDados() {
+      if (dockTrayAtivos.hidden || dockModoAtivo !== 'dados') abrirDockDados();
+      else fecharDockCenas();
+    }
+
+    function salvarCenaAtualComoAtivo() {
+      if (!estadoMesa.mapa) return;
+      estadoMesa.ativos = Array.isArray(estadoMesa.ativos) ? estadoMesa.ativos : [];
+      const nome = estadoMesa.nomeCena || 'Cena sem nome';
+      const jaExiste = estadoMesa.ativos.some((ativo) => ativo?.tipo === 'cenas' && ativo.imagem === estadoMesa.mapa && String(ativo.nome || '') === nome);
+      if (jaExiste) return;
+      estadoMesa.ativos.unshift({
+        id: `cena-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        tipo: 'cenas',
+        nome,
+        detalhe: 'Cena salva',
+        imagem: estadoMesa.mapa,
+        descricao: estadoMesa.descricaoCena || '',
+        criadoEm: new Date().toISOString()
+      });
+      estadoMesa.ativos = estadoMesa.ativos.slice(0, 90);
+    }
+
     function renderizarHistorico() {
       const itens = Array.isArray(estadoMesa.historico) ? estadoMesa.historico : [];
       if (!itens.length) {
@@ -1235,6 +2215,52 @@
       return resultados.map((valor) => `<span class="dado-tag ${classe}">${valor}</span>`).join('');
     }
 
+    function salvarResultadoRapidoDock(html) {
+      estadoMesa.ultimoResultadoRapido = html;
+      salvarEstadoMesa();
+      const resultadoDock = document.getElementById('dockResultadoRolagem');
+      if (resultadoDock) resultadoDock.innerHTML = html;
+    }
+
+    function rolarDadoRapidoDock(faces) {
+      const resultados = [rolar(faces)];
+      const html = `<div><strong>1d${faces} = ${resultados[0]}</strong></div><div>${criarTagsDados(resultados)}</div>`;
+      resultadoDado.innerHTML = html;
+      adicionarHistorico(`1d${faces}`, html);
+      salvarResultadoRapidoDock(html);
+    }
+
+    function rolarV5RapidoDock() {
+      const comuns = Math.max(0, Math.min(30, Number(document.getElementById('dockV5Comuns')?.value) || 0));
+      const fome = Math.max(0, Math.min(5, Number(document.getElementById('dockV5Fome')?.value) || 0));
+      const dificuldade = Math.max(0, Number(document.getElementById('dockV5Dificuldade')?.value) || 0);
+      if (comuns + fome <= 0) { mostrarAviso('Informe pelo menos 1 dado para rolar.'); return; }
+      const resultadosComuns = Array.from({ length: comuns }, () => rolar(10));
+      const resultadosFome = Array.from({ length: fome }, () => rolar(10));
+      const todos = [...resultadosComuns, ...resultadosFome];
+      const sucessosBase = todos.filter((valor) => valor >= 6).length;
+      const dezenas = todos.filter((valor) => valor === 10).length;
+      const bonusCritico = Math.floor(dezenas / 2) * 2;
+      const sucessos = sucessosBase + bonusCritico;
+      const venceu = sucessos >= dificuldade;
+      const critico = dezenas >= 2;
+      const criticoBaguncado = critico && resultadosFome.includes(10);
+      const falhaBestial = !venceu && resultadosFome.includes(1);
+      const observacoes = [];
+      if (criticoBaguncado) observacoes.push('Crítico bagunçado');
+      else if (critico) observacoes.push('Crítico');
+      if (falhaBestial) observacoes.push('Falha bestial');
+      observacoes.push(venceu ? 'Sucesso' : 'Falha');
+      const html = `
+        <div><strong>${sucessos} sucesso(s)</strong> contra dificuldade ${dificuldade} — ${observacoes.join(' / ')}</div>
+        <div>Comuns: ${criarTagsDados(resultadosComuns) || 'nenhum'}</div>
+        <div>Fome: ${criarTagsDados(resultadosFome, 'dado-fome') || 'nenhum'}</div>
+      `;
+      resultadoV5.innerHTML = html;
+      adicionarHistorico('Vampiro V5', html);
+      salvarResultadoRapidoDock(html);
+    }
+
     function rolarV5() {
       const comuns = Math.max(0, Math.min(30, Number(dadosComuns.value) || 0));
       const fome = Math.max(0, Math.min(5, Number(dadosFome.value) || 0));
@@ -1286,10 +2312,12 @@
       descricaoCena.value = estadoMesa.descricaoCena || '';
       registroMesa.value = estadoMesa.registro || '';
       renderizarMapa();
+      renderizarTokensMesa();
       renderizarPersonagens();
       renderizarHistorico();
       renderizarChat();
       atualizarFerramentasMesa();
+      renderizarDockCenas();
       linkEscudo.href = `escudo_mestre.html?id=${encodeURIComponent(campanhaAtual.id)}`;
     }
 
@@ -1345,6 +2373,8 @@
         estadoMesa.mapa = await lerImagemComoBase64(arquivo);
         salvarEstadoMesa();
         renderizarMapa();
+        renderizarDockCenas();
+        if (!modalGestorMesa.hidden) renderizarGestorAtivos();
         mostrarAviso('Mapa atualizado.');
       } catch (erro) {
         mostrarAviso('Não consegui carregar a imagem.');
@@ -1354,7 +2384,10 @@
     btnSalvarCena.addEventListener('click', () => {
       estadoMesa.nomeCena = nomeCena.value.trim();
       estadoMesa.descricaoCena = descricaoCena.value.trim();
+      salvarCenaAtualComoAtivo();
       salvarEstadoMesa();
+      renderizarDockCenas();
+      if (!modalGestorMesa.hidden) renderizarGestorAtivos();
       mostrarAviso('Cena salva.');
     });
 
@@ -1363,6 +2396,8 @@
       campoMapa.value = '';
       salvarEstadoMesa();
       renderizarMapa();
+      renderizarDockCenas();
+      if (!modalGestorMesa.hidden) renderizarGestorAtivos();
       mostrarAviso('Mapa removido.');
     });
 
@@ -1389,11 +2424,95 @@
     mapaFullscreen.addEventListener('click', registrarPontoRegua);
     window.addEventListener('resize', renderizarReguaMesa);
 
+    camadaTokensMesa.addEventListener('pointerdown', iniciarArrastoToken);
+    camadaTokensMesa.addEventListener('pointermove', moverTokenArrastando);
+    camadaTokensMesa.addEventListener('pointerup', finalizarArrastoToken);
+    camadaTokensMesa.addEventListener('pointercancel', finalizarArrastoToken);
+    camadaTokensMesa.addEventListener('click', (evento) => {
+      const controle = evento.target.closest('[data-token-acao]');
+      if (!controle) return;
+      evento.stopPropagation();
+      const token = controle.closest('.token-mesa');
+      if (!token) return;
+      const acao = controle.dataset.tokenAcao;
+      if (acao === 'excluir') removerTokenMesa(token.dataset.tokenId);
+      if (acao === 'diminuir') redimensionarTokenMesa(token.dataset.tokenId, -10);
+      if (acao === 'aumentar') redimensionarTokenMesa(token.dataset.tokenId, 10);
+    });
+
+    btnDockCenas.addEventListener('click', alternarDockCenas);
+    btnDockMapas.addEventListener('click', alternarDockMapas);
+    btnDockPersonagens.addEventListener('click', alternarDockPersonagens);
+    dockListaAtivos.addEventListener('click', (evento) => {
+      const dadoBtn = evento.target.closest('[data-dock-dado]');
+      if (dadoBtn) {
+        rolarDadoRapidoDock(Number(dadoBtn.dataset.dockDado));
+        return;
+      }
+      if (evento.target.closest('#btnDockRolarV5')) {
+        rolarV5RapidoDock();
+        return;
+      }
+      const tokenCard = evento.target.closest('[data-dock-personagem-id], [data-dock-token-id]');
+      if (tokenCard) {
+        adicionarTokenMesa(tokenCard.dataset.dockPersonagemId || tokenCard.dataset.dockTokenId);
+        return;
+      }
+      const card = evento.target.closest('[data-dock-ativo-id]');
+      if (!card) return;
+      acionarAtivoGestor(card.dataset.dockAtivoId);
+    });
+    btnDockOutros.addEventListener('click', alternarDockOutros);
+    btnDockDado.addEventListener('click', alternarDockDados);
+    btnDockFicha.addEventListener('click', () => {
+      if (modalFichaMesa && !modalFichaMesa.hidden) fecharModalFichaMesa();
+      else abrirModalFichaMesa();
+    });
+    btnFecharFichaMesa.addEventListener('click', fecharModalFichaMesa);
+    seletorFichaMesa.addEventListener('change', () => carregarFichaMesa(seletorFichaMesa.value));
+    modalFichaMesa.addEventListener('click', (evento) => {
+      if (evento.target === modalFichaMesa) fecharModalFichaMesa();
+    });
+    btnAbrirGestorMesa.addEventListener('click', () => {
+      fecharDockCenas();
+      abrirGestorMesa('cenas');
+    });
+    btnFecharGestorMesa.addEventListener('click', fecharGestorMesa);
+    modalGestorMesa.addEventListener('click', (evento) => {
+      if (evento.target === modalGestorMesa) fecharGestorMesa();
+    });
+    document.querySelectorAll('.gestor-tab').forEach((botao) => {
+      botao.addEventListener('click', () => selecionarAbaGestor(botao.dataset.gestorAba));
+    });
+    document.querySelectorAll('[data-gestor-atalho]').forEach((botao) => {
+      botao.addEventListener('click', () => selecionarAbaGestor(botao.dataset.gestorAtalho === 'favoritos' ? 'cenas' : botao.dataset.gestorAtalho));
+    });
+    buscaGestorMesa.addEventListener('input', renderizarGestorAtivos);
+    btnAdicionarAtivoGestor.addEventListener('click', () => campoGestorArquivo.click());
+    campoGestorArquivo.addEventListener('change', adicionarArquivosGestor);
+    listaAtivosGestor.addEventListener('click', (evento) => {
+      const card = evento.target.closest('.gestor-card');
+      if (!card) return;
+      acionarAtivoGestor(card.dataset.gestorId);
+    });
+    listaAtivosGestor.addEventListener('keydown', (evento) => {
+      if (evento.key !== 'Enter' && evento.key !== ' ') return;
+      const card = evento.target.closest('.gestor-card');
+      if (!card) return;
+      evento.preventDefault();
+      acionarAtivoGestor(card.dataset.gestorId);
+    });
+
     btnChatMesa.addEventListener('click', alternarChatMesa);
     btnFecharChat.addEventListener('click', fecharChatMesa);
     formChatMesa.addEventListener('submit', enviarMensagemChat);
     document.addEventListener('keydown', (evento) => {
-      if (evento.key === 'Escape' && !painelChatMesa.hidden && !obterElementoTelaCheia()) fecharChatMesa();
+      if (evento.key !== 'Escape') return;
+      if (!modalGestorMesa.hidden) {
+        fecharGestorMesa();
+        return;
+      }
+      if (!painelChatMesa.hidden && !obterElementoTelaCheia()) fecharChatMesa();
     });
     window.addEventListener('storage', (evento) => {
       if (!campanhaAtual || evento.key !== chaveMesa()) return;
@@ -1402,9 +2521,11 @@
       descricaoCena.value = estadoMesa.descricaoCena || '';
       registroMesa.value = estadoMesa.registro || '';
       renderizarMapa();
+      renderizarTokensMesa();
       renderizarHistorico();
       renderizarChat();
       atualizarFerramentasMesa();
+      if (!modalGestorMesa.hidden) renderizarGestorAtivos();
     });
 
     document.getElementById('btnRolarV5').addEventListener('click', rolarV5);
